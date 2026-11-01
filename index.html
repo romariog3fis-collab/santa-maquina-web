@@ -276,31 +276,6 @@
       flex-shrink: 0;
     }
 
-    .erp-link-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 1px solid rgba(23, 21, 19, 0.15);
-      background: transparent;
-      color: var(--muted);
-      transition: all 0.2s var(--ease);
-      min-height: 40px;
-    }
-
-    .erp-link-btn:hover {
-      color: var(--ink);
-      border-color: var(--ink);
-      background: rgba(255, 255, 255, 0.5);
-    }
-
     .cart-trigger-btn {
       display: inline-flex;
       align-items: center;
@@ -705,16 +680,21 @@
       font-size: 0.80rem;
       color: var(--muted);
       line-height: 1.4;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      min-height: 2.8em;
     }
 
     /* Seletor de Tamanhos Touch-Friendly */
     .size-selector-box {
       margin-bottom: 14px;
+      min-height: 62px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
     }
 
     .size-label-row {
@@ -737,15 +717,16 @@
       align-items: center;
       gap: 6px;
       flex-wrap: wrap;
+      min-height: 36px;
     }
 
     .size-btn {
-      min-width: 40px;
+      min-width: 42px;
       height: 36px;
       padding: 0 10px;
       border-radius: 6px;
       border: 1px solid var(--line);
-      background-color: var(--surface-subtle);
+      background-color: #ffffff;
       font-family: var(--font-mono);
       font-size: 0.74rem;
       font-weight: 700;
@@ -759,27 +740,44 @@
     }
 
     .size-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background-color: #ffffff;
+      border-color: var(--ink);
+      color: var(--ink);
+      background-color: var(--surface-subtle);
     }
 
     .size-btn.active {
       background-color: var(--accent);
       color: #ffffff;
       border-color: var(--accent);
-      box-shadow: 0 2px 8px rgba(140, 90, 43, 0.3);
+      box-shadow: 0 2px 6px rgba(140, 90, 43, 0.25);
+    }
+
+    /* Badge elegante para peças de tamanho único (Boné e Lenços) */
+    .single-size-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      height: 36px;
+      border-radius: 6px;
+      background-color: var(--surface-subtle);
+      border: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.04em;
     }
 
     /* Botão Adicionar à Sacola Imediato */
     .btn-add-cart {
       width: 100%;
       background-color: var(--ink);
-      color: var(--ink-inverted);
+      color: #ffffff;
       font-family: var(--font-mono);
-      font-size: 0.78rem;
+      font-size: 0.80rem;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       padding: 12px 16px;
       border-radius: 6px;
@@ -794,15 +792,32 @@
       touch-action: manipulation;
     }
 
-    .btn-add-cart:hover, .btn-add-cart:active {
-      background-color: var(--accent);
-      border-color: var(--accent);
-      box-shadow: 0 4px 14px rgba(140, 90, 43, 0.3);
+    .btn-add-cart:hover {
+      background-color: #2b2927;
+      border-color: #2b2927;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-add-cart:active {
+      transform: translateY(0);
+      background-color: #121212;
     }
 
     .btn-add-cart.added {
-      background-color: var(--success);
-      border-color: var(--success);
+      background-color: #245a27 !important;
+      border-color: #245a27 !important;
+      color: #ffffff !important;
+    }
+
+    .btn-add-cart:disabled {
+      background-color: #f0ede6 !important;
+      border-color: #e0dcd5 !important;
+      color: #888888 !important;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
     }
 
     /* ==========================================================================
@@ -1566,13 +1581,6 @@
       .brand-subtext {
         font-size: 0.58rem;
       }
-      .erp-link-btn span {
-        display: none;
-      }
-      .erp-link-btn {
-        padding: 7px 9px;
-        min-height: 36px;
-      }
       .cart-trigger-btn {
         padding: 8px 12px;
         min-height: 36px;
@@ -1769,11 +1777,8 @@
           </button>
         </nav>
 
-        <!-- AÇÕES DO HEADER: ERP E SACOLA -->
+        <!-- AÇÕES DO HEADER: SACOLA -->
         <div class="header-actions">
-          <a href="erp.html" class="erp-link-btn" title="Painel de Gestão ERP">
-            ⚙ <span>ERP</span>
-          </a>
           <button type="button" class="cart-trigger-btn" id="openCartBtn" aria-label="Abrir sacola de compras">
             🛒 <span class="label">SACOLA</span>
             <span class="cart-badge" id="headerCartCount">0</span>
@@ -1790,7 +1795,6 @@
         <button type="button" class="pill-btn" data-open-story="simbolos">🧭 Os 4 Símbolos</button>
         <button type="button" class="pill-btn" data-open-story="medidas">📏 Guia de Medidas</button>
         <button type="button" class="pill-btn" data-open-story="envios">📦 Envios & Trocas</button>
-        <a href="erp.html" class="pill-btn">⚙ Painel ERP</a>
       </div>
     </div>
 
@@ -2090,7 +2094,7 @@
                   <span class="stock-status">Ajustável</span>
                 </div>
                 <div class="size-pill-row">
-                  <button type="button" class="size-btn active" data-size="UNICO">TAMANHO ÚNICO (SNAPBACK)</button>
+                  <span class="single-size-badge">✦ Fecho Snapback Regulável</span>
                 </div>
               </div>
               <button type="button" class="btn-add-cart" data-add-id="bone-trucker-logo-preto">
@@ -2188,7 +2192,7 @@
                   <span class="stock-status">55 x 55 cm</span>
                 </div>
                 <div class="size-pill-row">
-                  <button type="button" class="size-btn active" data-size="UNICO">55 x 55 CM (ÚNICO)</button>
+                  <span class="single-size-badge">✦ Dimensões: 55 × 55 cm</span>
                 </div>
               </div>
               <button type="button" class="btn-add-cart" data-add-id="lenco-terral-azul">
@@ -2198,7 +2202,7 @@
           </article>
 
           <!-- 8. LENÇO TERRAL OFF-WHITE -->
-          <article class="product-card" data-category="acessorios local" data-product-id="lenco-terral-off">
+          <article class="product-card" data-category="acessorios local" data-product-id="lenco-terral-off-white">
             <div class="product-badge-bar">
               <span class="badge-collection">✦ BANDANA / LENÇO</span>
               <span class="badge-sub">OFF-WHITE</span>
@@ -2235,10 +2239,10 @@
                   <span class="stock-status">55 x 55 cm</span>
                 </div>
                 <div class="size-pill-row">
-                  <button type="button" class="size-btn active" data-size="UNICO">55 x 55 CM (ÚNICO)</button>
+                  <span class="single-size-badge">✦ Dimensões: 55 × 55 cm</span>
                 </div>
               </div>
-              <button type="button" class="btn-add-cart" data-add-id="lenco-terral-off">
+              <button type="button" class="btn-add-cart" data-add-id="lenco-terral-off-white">
                 🛒 Adicionar à Sacola
               </button>
             </div>
@@ -2276,7 +2280,7 @@
               <li><a href="https://wa.me/5585999999999" target="_blank" rel="noopener">WhatsApp Direto</a></li>
               <li><button type="button" data-open-story="envios">Política de Frete</button></li>
               <li><button type="button" data-open-story="envios">Trocas & Devoluções</button></li>
-              <li><a href="erp.html">Painel ERP / Estoque</a></li>
+              <li><a href="https://wa.me/5585999999999" target="_blank" rel="noopener">Falar com Especialista</a></li>
             </ul>
           </div>
           <div>
@@ -2723,10 +2727,10 @@
           if (addBtn) {
             if (!currentSize || stockOfChosen <= 0) {
               addBtn.setAttribute('disabled', 'disabled');
-              addBtn.innerHTML = '✕ Tamanho Esgotado';
+              addBtn.innerHTML = '✕ ESGOTADO';
             } else {
               addBtn.removeAttribute('disabled');
-              addBtn.innerHTML = '🛒 Adicionar à Sacola (' + (currentSize === 'UNICO' ? 'Único' : currentSize) + ')';
+              addBtn.innerHTML = '🛒 ADICIONAR À SACOLA';
             }
           }
         });
@@ -2911,7 +2915,7 @@
 
           const card = addBtn.closest('.product-card');
           const productId = addBtn.getAttribute('data-add-id') || (card && card.getAttribute('data-product-id'));
-          const chosenSize = selectedSizesByProduct[productId] || 'M';
+          const chosenSize = selectedSizesByProduct[productId] || (card && card.querySelector('.size-btn.active') ? card.querySelector('.size-btn.active').getAttribute('data-size') : 'UNICO');
 
           if (SMC.addToCart) {
             const res = SMC.addToCart(productId, chosenSize, 1);
@@ -3126,6 +3130,14 @@
       window.addEventListener('load', function () {
         syncShowroomWithERP();
         updateCartUI();
+      });
+
+      // Atalho secreto do lojista (Ctrl + Shift + E) para abrir o Painel ERP sem expor botão ao público
+      window.addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
+          e.preventDefault();
+          window.open('erp.html', '_blank');
+        }
       });
 
     })();
