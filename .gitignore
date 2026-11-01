@@ -1,0 +1,24 @@
+# Dependências e SO
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários e backups
+*.zip
+*.tar.gz
+*.bak
+scratch/
+*.log
+
+# Pastas de engenharia reversa e legados
+legacy_site/
+reversa/
+reversa-main/
+.reversa/
+_reversa_sdd/
+
+# Ambiente local
+.env
+.env.local
+.gemini/
+.system_generated/

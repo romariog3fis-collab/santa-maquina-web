@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SANTA MÁQUINA ERP — Sistema de Gestão, Estoque, PDV & Financeiro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0b0908;
+      --bg-panel: #13100e;
+      --surface: #1a1512;
+      --surface-2: #241d18;
+      --ink: #f4eee3;
+      --muted: #9e9183;
+      --accent: #fdc656;
+      --green: #5ce080;
+      --red: #ff5757;
+      --orange: #ff9f43;
+      --blue: #54a0ff;
+      --line: rgba(244, 238, 227, 0.12);
+      --line-strong: rgba(253, 198, 86, 0.38);
+
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      overflow-x: hidden;
+    }
+
+    button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    input, select { font: inherit; color: var(--ink); }
+
+    /* SIDEBAR */
+    .erp-sidebar {
+      background: var(--bg-panel);
+      border-right: 1px solid var(--line);
+      padding: 1.4rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 1.2rem;
+    }
+    .brand-box img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      object-fit: cover;
+    }
+    .brand-box h1 {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      letter-spacing: 0.06em;
+      line-height: 1;
+    }
+    .brand-box span {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      display: block;
+      margin-top: 0.15rem;
+    }
+
+    .erp-nav {
+      display: grid;
+      gap: 0.35rem;
+    }
+    .erp-nav-btn {
+      width: 100%;
+      text-align: left;
+      padding: 0.78rem 0.9rem;
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+    .erp-nav-btn:hover {
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .erp-nav-btn.active {
+      background: rgba(253, 198, 86, 0.12);
+      color: var(--accent);
+      border-color: var(--line-strong);
+      font-weight: 700;
+    }
+    .nav-counter {
+      background: var(--surface-2);
+      color: var(--accent);
+      padding: 0.1rem 0.45rem;
+      font-size: 0.65rem;
+      border: 1px solid var(--line);
+    }
+
+    .sidebar-footer {
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 0.55rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+    }
+    .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--green);
+      font-size: 0.65rem;
+    }
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    /* MAIN AREA */
+    .erp-main {
+      padding: 1.75rem 2.2rem 4rem;
+      max-width: 1600px;
+      width: 100%;
+    }
+    .erp-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.75rem;
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .erp-topbar h2 {
+      font-family: var(--font-display);
+      font-size: 2.35rem;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-gold {
+      padding: 0.68rem 1.15rem;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border: 1px solid var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.2s ease;
+    }
+    .btn-gold:hover { background: var(--ink); border-color: var(--ink); }
+
+    .btn-outline {
+      padding: 0.65rem 1rem;
+      background: var(--surface);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid var(--line);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* TAB PANELS */
+    .erp-tab { display: none; }
+    .erp-tab.active { display: block; }
+
+    /* KPI GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 1.2rem;
+      position: relative;
+    }
+    .kpi-card.highlight {
+      border-color: var(--accent);
+      background: linear-gradient(145deg, #1d1712 0%, #14100d 100%);
+    }
+    .kpi-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .kpi-value {
+      font-family: var(--font-display);
+      font-size: 2.3rem;
+      line-height: 1;
+      letter-spacing: 0.03em;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .kpi-sub {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      color: var(--muted);
+    }
+
+    /* CARDS & TABLES */
+    .panel-grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .erp-box {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 1.35rem;
+    }
+    .erp-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.85rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .erp-box-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+
+    .erp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+    .erp-table th {
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      padding: 0.7rem 0.65rem;
+      border-bottom: 1px solid var(--line);
+      background: rgba(11, 9, 8, 0.45);
+    }
+    .erp-table td {
+      padding: 0.75rem 0.65rem;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+    .erp-table tr:hover td {
+      background: rgba(253, 198, 86, 0.03);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.22rem 0.55rem;
+      font-family: var(--font-mono);
+      font-size: 0.63rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .status-pago { background: rgba(253, 198, 86, 0.18); color: var(--accent); border: 1px solid var(--accent); }
+    .status-etiqueta { background: rgba(84, 160, 255, 0.18); color: var(--blue); border: 1px solid var(--blue); }
+    .status-enviado { background: rgba(255, 159, 67, 0.18); color: var(--orange); border: 1px solid var(--orange); }
+    .status-entregue { background: rgba(92, 224, 128, 0.18); color: var(--green); border: 1px solid var(--green); }
+
+    /* KANBAN DE PEDIDOS */
+    .kanban-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .kanban-col {
+      background: var(--bg-panel);
+      border: 1px solid var(--line);
+      padding: 0.9rem;
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .kanban-col-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .kanban-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 0.85rem;
+      display: grid;
+      gap: 0.45rem;
+      font-size: 0.8rem;
+    }
+    .kanban-card:hover { border-color: var(--accent); }
+
+    /* ESTOQUE POR GRADE */
+    .grade-pills-editor {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .grade-cell {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      padding: 0.35rem 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+    }
+    .grade-cell.zero {
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .mini-step-btn {
+      width: 20px;
+      height: 20px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      display: inline-grid;
+      place-items: center;
+    }
+    .mini-step-btn:hover { background: var(--accent); color: var(--bg); }
+
+    .erp-input {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      padding: 0.5rem 0.65rem;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--ink);
+      width: 100%;
+    }
+    .erp-input:focus { outline: none; border-color: var(--accent); }
+
+    /* PDV EVENTOS */
+    .pdv-layout {
+      display: grid;
+      grid-template-columns: 1.35fr 0.85fr;
+      gap: 1.25rem;
+    }
+    .pdv-products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+    }
+    .pdv-prod-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 0.9rem;
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 0.85rem;
+      align-items: center;
+    }
+    .pdv-prod-card img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      background: #f4efe6;
+      padding: 4px;
+    }
+
+    .erp-toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.8rem 1.3rem;
+      z-index: 9999;
+      transform: translateY(150%);
+      transition: transform 0.3s ease;
+    }
+    .erp-toast.show { transform: translateY(0); }
+
+    /* TELA DE LOGIN / BLOQUEIO ADMINISTRATIVO */
+    .admin-auth-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: radial-gradient(circle at 50% 30%, #1c1713 0%, #090807 75%);
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+    }
+    .admin-auth-gate.unlocked {
+      display: none;
+    }
+    .auth-card {
+      width: min(430px, 94vw);
+      background: #13100d;
+      border: 1px solid var(--accent);
+      padding: 2.2rem 2rem;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.9);
+      text-align: center;
+    }
+    .auth-card img {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      margin-inline: auto;
+      margin-bottom: 1rem;
+      object-fit: cover;
+    }
+
+    @media (max-width: 1100px) {
+      body { grid-template-columns: 1fr; }
+      .erp-sidebar { position: static; height: auto; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .kanban-grid, .panel-grid-2, .pdv-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE BLOQUEIO ADMINISTRATIVO (ACESSO EXCLUSIVO DO LOJISTA) -->
+  <div class="admin-auth-gate" id="adminAuthGate">
+    <div class="auth-card">
+      <img src="assets/logo_selo.jpg" onerror="this.onerror=null;this.src='assets/logo_preto.png';" alt="Santa Máquina" />
+      <span style="font-family: var(--font-mono); font-size: 0.66rem; color: var(--accent); letter-spacing: 0.14em;">
+        🔒 ÁREA RESTRITA · GESTÃO INTERNA
+      </span>
+      <h2 style="font-family: var(--font-display); font-size: 2.3rem; line-height: 1; margin-block: 0.35rem 0.6rem;">
+        SANTA MÁQUINA ERP
+      </h2>
+      <p style="font-size: 0.84rem; color: var(--muted); margin-bottom: 1.25rem;">
+        Acesso exclusivo para administração de pedidos, estoque, DRE e dados protegidos (LGPD).
+      </p>
+      <form id="adminLoginForm" onsubmit="return false;" style="display: grid; gap: 0.75rem; text-align: left;">
+        <div>
+          <label class="field-label" for="adminPinInput">SENHA / PIN DO ADMINISTRADOR</label>
+          <input type="password" id="adminPinInput" class="erp-input" placeholder="Digite a senha (padrão: santa2019)" required autofocus />
+        </div>
+        <div id="adminAuthError" style="display: none; font-family: var(--font-mono); font-size: 0.7rem; color: var(--red);">
+          ⚠️ Senha incorreta. Tente novamente.
+        </div>
+        <button type="submit" class="btn-gold" style="justify-content: center; width: 100%; padding: 0.85rem;">
+          Desbloquear Painel ERP →
+        </button>
+      </form>
+      <div style="margin-top: 1rem; padding-top: 0.85rem; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);">
+        Senha padrão inicial: <strong style="color: var(--accent);">santa2019</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="erp-sidebar">
+    <div>
+      <div class="brand-box">
+        <img src="assets/logo_selo.jpg" onerror="this.onerror=null;this.src='assets/logo_preto.png';" alt="Santa Máquina" />
+        <div>
+          <h1>SANTA MÁQUINA</h1>
+          <span>ERP & BACKOFFICE v2.0</span>
+        </div>
+      </div>
+
+      <nav class="erp-nav" aria-label="Módulos do ERP">
+        <button type="button" class="erp-nav-btn active" data-erp-tab="dashboard">
+          <span>📊 01. Dashboard & DRE</span>
+        </button>
+        <button type="button" class="erp-nav-btn" data-erp-tab="pedidos">
+          <span>📦 02. Pedidos & Envios</span>
+          <span class="nav-counter" id="navOrdersBadge">0</span>
+        </button>
+        <button type="button" class="erp-nav-btn" data-erp-tab="estoque">
+          <span>👕 03. Estoque & Custos</span>
+          <span class="nav-counter" id="navStockBadge">0</span>
+        </button>
+        <button type="button" class="erp-nav-btn" data-erp-tab="pdv">
+          <span>⚡ 04. PDV Evento / DGR</span>
+        </button>
+        <button type="button" class="erp-nav-btn" data-erp-tab="financeiro">
+          <span>💰 05. Financeiro & Caixa</span>
+        </button>
+        <button type="button" class="erp-nav-btn" data-erp-tab="crm">
+          <span>🏍️ 06. CRM Pilotos</span>
+          <span class="nav-counter" id="navCrmBadge">0</span>
+        </button>
+        <button type="button" class="erp-nav-btn" data-erp-tab="config">
+          <span>⚙️ 07. Gateway & Cupons</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sync-status">
+        <span class="sync-dot"></span>
+        <span>SINCRONIZADO COM A LOJA</span>
+      </div>
+      <div id="sidebarGatewayLabel" style="color: var(--muted);">Gateway: Mercado Pago</div>
+      <a href="index.html" class="btn-gold" style="justify-content: center; margin-top: 0.3rem;">
+        ← Abrir Vitrine Oficial
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="erp-main">
+    <header class="erp-topbar">
+      <div>
+        <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent); letter-spacing: 0.14em;">
+          RUA PADRE FRANCISCO PITA, 600 · FORTALEZA, CE · ESTD. 2019
+        </span>
+        <h2 id="currentTabTitle">01. DASHBOARD EXECUTIVO & DRE EM TEMPO REAL</h2>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn-outline" data-jump-tab="pdv">⚡ Nova Venda Presencial (PDV)</button>
+        <button type="button" class="btn-outline" id="btnResetDemo" title="Restaurar dados iniciais de demonstração">↺ Resetar Dados Padrão</button>
+        <button type="button" class="btn-outline" id="btnLockErp" title="Encerrar sessão administrativa">🔒 Bloquear</button>
+        <a href="index.html#showroom" class="btn-gold">🛒 Ver Loja ↗</a>
+      </div>
+    </header>
+
+    <!-- ======================================================================
+         MÓDULO 1: DASHBOARD EXECUTIVO & DRE AUTOMÁTICO
+         ====================================================================== -->
+    <section class="erp-tab active" id="tab-dashboard">
+      <div class="kpi-grid" id="dashboardKpis"></div>
+
+      <div class="panel-grid-2">
+        <!-- DRE Simplificado -->
+        <div class="erp-box">
+          <div class="erp-box-header">
+            <h3 class="erp-box-title">DEMONSTRATIVO DE RESULTADO (DRE AUTOMÁTICO)</h3>
+            <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent);">CÁLCULO REAL POR PEDIDO</span>
+          </div>
+          <table class="erp-table" id="dreTable"></table>
+        </div>
+
+        <!-- Curva ABC de Produtos -->
+        <div class="erp-box">
+          <div class="erp-box-header">
+            <h3 class="erp-box-title">CURVA ABC & GIRO DE ESTOQUE</h3>
+            <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted);">RANKING DE RECEITA</span>
+          </div>
+          <div id="abcListContainer" style="display: grid; gap: 0.7rem;"></div>
+        </div>
+      </div>
+
+      <!-- Últimos Pedidos no Dashboard -->
+      <div class="erp-box">
+        <div class="erp-box-header">
+          <h3 class="erp-box-title">ÚLTIMOS PEDIDOS SINCRONIZADOS (SITE + PDV)</h3>
+          <button type="button" class="btn-outline" data-jump-tab="pedidos">Ver Kanban de Expedição →</button>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="erp-table" id="dashRecentOrders"></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MÓDULO 2: KANBAN DE PEDIDOS, ETIQUETA CORREIOS & RASTREIO WHATSAPP
+         ====================================================================== -->
+    <section class="erp-tab" id="tab-pedidos">
+      <div class="kanban-grid" id="ordersKanban"></div>
+
+      <div class="erp-box">
+        <div class="erp-box-header">
+          <h3 class="erp-box-title">FILA COMPLETA DE EXPEDIÇÃO (SLA 24H · MELHOR ENVIO / CORREIOS)</h3>
+          <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted);">
+            Gere a etiqueta de envio ou avise o cliente no WhatsApp em 1 clique
+          </span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="erp-table" id="fullOrdersTable"></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MÓDULO 3: ESTOQUE POR GRADE (P AO XG) & FICHA TÉCNICA DE CUSTO (CMV)
+         ====================================================================== -->
+    <section class="erp-tab" id="tab-estoque">
+      <div class="erp-box" style="margin-bottom: 1.5rem;">
+        <div class="erp-box-header">
+          <div>
+            <h3 class="erp-box-title">CONTROLE DE ESTOQUE POR GRADE (P · M · G · GG · XG · ÚNICO) & CMV</h3>
+            <p style="font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem;">
+              Qualquer alteração de estoque ou preço aqui atualiza <strong>instantaneamente</strong> os botões da vitrine em <code>index.html</code>.
+            </p>
+          </div>
+          <button type="button" class="btn-gold" id="btnRestockAll">🔄 Repor Lote (+5 un. em toda a grade)</button>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="erp-table" id="inventoryTable"></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MÓDULO 4: PDV PRESENCIAL (MODO EVENTO / DGR FORTALEZA)
+         ====================================================================== -->
+    <section class="erp-tab" id="tab-pdv">
+      <div class="pdv-layout">
+        <div class="erp-box">
+          <div class="erp-box-header">
+            <h3 class="erp-box-title">SELECIONE AS PEÇAS (VENDA RÁPIDA EM EVENTOS / DGR)</h3>
+            <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent);">BAIXA NO MESMO ESTOQUE DO SITE</span>
+          </div>
+          <div class="pdv-products-grid" id="pdvProductsGrid"></div>
+        </div>
+
+        <div class="erp-box">
+          <div class="erp-box-header">
+            <h3 class="erp-box-title">CAIXA PDV · FECHAR VENDA</h3>
+            <button type="button" class="btn-outline" id="btnClearPdv">Limpar</button>
+          </div>
+
+          <div id="pdvCartList" style="display: grid; gap: 0.5rem; margin-bottom: 1rem; min-height: 90px;"></div>
+
+          <div style="display: grid; gap: 0.65rem; border-top: 1px solid var(--line); padding-top: 0.9rem;">
+            <div>
+              <label style="font-family:var(--font-mono); font-size:0.65rem; color:var(--muted);">NOME DO PILOTO / CLIENTE</label>
+              <input type="text" id="pdvCustName" class="erp-input" placeholder="Ex: João Batista" />
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+              <div>
+                <label style="font-family:var(--font-mono); font-size:0.65rem; color:var(--muted);">WHATSAPP</label>
+                <input type="tel" id="pdvCustPhone" class="erp-input" placeholder="85999999999" />
+              </div>
+              <div>
+                <label style="font-family:var(--font-mono); font-size:0.65rem; color:var(--muted);">MOTO DO CLIENTE</label>
+                <input type="text" id="pdvCustBike" class="erp-input" placeholder="Ex: Iron 883 / Classic 350" />
+              </div>
+            </div>
+            <div>
+              <label style="font-family:var(--font-mono); font-size:0.65rem; color:var(--muted);">FORMA DE PAGAMENTO</label>
+              <select id="pdvPayMethod" class="erp-input">
+                <option value="PIX">⚡ PIX Instantâneo (5% OFF)</option>
+                <option value="CARTAO">💳 Maquininha / Cartão de Crédito</option>
+                <option value="DINHEIRO">💵 Dinheiro (Taxa R$ 0,00)</option>
+              </select>
+            </div>
+
+            <div id="pdvTotalBox" style="padding: 0.85rem; background: var(--bg); border: 1px solid var(--accent); font-family: var(--font-mono); display: flex; justify-content: space-between; align-items: center;">
+              <span>TOTAL A RECEBER:</span>
+              <strong id="pdvTotalVal" style="font-size: 1.25rem; color: var(--accent);">R$ 0,00</strong>
+            </div>
+
+            <button type="button" class="btn-gold" id="btnFinishPdv" style="width: 100%; justify-content: center; padding: 0.95rem;">
+              ✓ Registrar Venda & Dar Baixa no Estoque
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MÓDULO 5: FINANCEIRO, FLUXO DE CAIXA & DESPESAS DE PRODUÇÃO
+         ====================================================================== -->
+    <section class="erp-tab" id="tab-financeiro">
+      <div class="panel-grid-2">
+        <div class="erp-box">
+          <div class="erp-box-header">
+            <h3 class="erp-box-title">EXTRATO DE ENTRADAS (PEDIDOS LIQUIDADOS)</h3>
+            <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--green);">JÁ DESCONTANDO TAXAS E CMV</span>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="erp-table" id="financeIncomesTable"></table>
+          </div>
+        </div>
+
+        <div class="erp-box">
+          <div class="erp-box-header">
+            <h3 class="erp-box-title">LANÇAR DESPESA OPERACIONAL / LOTE</h3>
+          </div>
+          <form id="expenseForm" style="display: grid; gap: 0.65rem; margin-bottom: 1.25rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+              <div>
+                <label style="font-family:var(--font-mono); font-size:0.64rem; color:var(--muted);">CATEGORIA</label>
+                <select id="expCat" class="erp-input">
+                  <option value="Produção / Malha">Produção / Malha Cearense</option>
+                  <option value="Estamparia / Silk">Estamparia / Serigrafia</option>
+                  <option value="Embalagens & Tags">Embalagens & Adesivos</option>
+                  <option value="Marketing / Eventos">Marketing / Eventos DGR</option>
+                  <option value="Logística / Correios">Logística / Envio</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-family:var(--font-mono); font-size:0.64rem; color:var(--muted);">VALOR (R$)</label>
+                <input type="number" step="0.01" id="expAmount" class="erp-input" required placeholder="150.00" />
+              </div>
+            </div>
+            <div>
+              <label style="font-family:var(--font-mono); font-size:0.64rem; color:var(--muted);">DESCRIÇÃO DO CUSTO / FORNECEDOR</label>
+              <input type="text" id="expDesc" class="erp-input" required placeholder="Ex: Pagamento Facção Lote Camiseta Local" />
+            </div>
+            <button type="submit" class="btn-gold" style="justify-content: center;">+ Registrar Saída no Caixa</button>
+          </form>
+
+          <table class="erp-table" id="expensesTable"></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MÓDULO 6: CRM CLUBE DE PILOTOS & SEGURANÇA LGPD
+         ====================================================================== -->
+    <section class="erp-tab" id="tab-crm">
+      <div class="erp-box">
+        <div class="erp-box-header">
+          <div>
+            <h3 class="erp-box-title">CLUBE DE PILOTOS SANTA MÁQUINA (CRM & LTV)</h3>
+            <p style="font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem;">
+              🔒 <strong>Conformidade LGPD & PCI-DSS Ativa:</strong> CPFs são mascarados e nenhum dado sensível de cartão fica armazenado no banco local.
+            </p>
+          </div>
+          <button type="button" class="btn-gold" id="btnExportCrmCsv">📥 Exportar Base de Clientes (CSV)</button>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="erp-table" id="crmTable"></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MÓDULO 7: CONFIGURAÇÕES DE GATEWAY (MERCADO PAGO VS ASAAS) & CUPONS
+         ====================================================================== -->
+    <section class="erp-tab" id="tab-config">
+      <div class="panel-grid-2">
+        <div class="erp-box">
+          <div class="erp-box-header">
+            <h3 class="erp-box-title">GATEWAY DE PAGAMENTO & LOGÍSTICA</h3>
+            <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent);">ALTERE E VEJA O IMPACTO NAS TAXAS</span>
+          </div>
+
+          <div style="display: grid; gap: 0.9rem;">
+            <div>
+              <label style="font-family:var(--font-mono); font-size:0.68rem; color:var(--accent); display:block; margin-bottom:0.35rem;">
+                PROVEDOR ATIVO NO CHECKOUT DA LOJA:
+              </label>
+              <select id="cfgGatewaySelect" class="erp-input" style="font-weight: 700; border-color: var(--accent);">
+                <option value="mercadopago">Mercado Pago — PIX 0,99% na hora | Cartão 3,99% (Antifraude Blindado)</option>
+                <option value="asaas">Asaas ERP — PIX R$ 1,99 fixo | Cartão 2,99% + R$ 0,49 (Menor Taxa Cartão)</option>
+              </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div>
+                <label style="font-family:var(--font-mono); font-size:0.65rem; color:var(--muted);">META DE FRETE GRÁTIS (R$)</label>
+                <input type="number" step="1" id="cfgFreeShip" class="erp-input" />
+              </div>
+              <div>
+                <label style="font-family:var(--font-mono); font-size:0.65rem; color:var(--muted);">TAXA MOTOBOY FORTALEZA (R$)</label>
+                <input type="number" step="0.1" id="cfgMotoboy" class="erp-input" />
+              </div>
+            </div>
+
+            <div>
+              <label style="font-family:var(--font-mono); font-size:0.65rem; color:var(--muted);">CHAVE PÚBLICA / API KEY DO GATEWAY (PRODUÇÃO)</label>
+              <input type="text" id="cfgApiKey" class="erp-input" placeholder="Cole sua chave APP_USR-... ou $aact_..." />
+            </div>
+
+            <button type="button" class="btn-gold" id="btnSaveSettings" style="justify-content: center;">
+              💾 Salvar Configurações & Sincronizar com a Loja
+            </button>
+          </div>
+        </div>
+
+        <!-- Gerenciador de Cupons -->
+        <div class="erp-box">
+          <div class="erp-box-header">
+            <h3 class="erp-box-title">CUPONS DE DESCONTO ATIVOS NA LOJA</h3>
+          </div>
+
+          <form id="couponForm" style="display: grid; grid-template-columns: 1fr 90px auto; gap: 0.5rem; margin-bottom: 1rem;">
+            <input type="text" id="newCouponCode" class="erp-input" required placeholder="CÓDIGO (ex: SERTAO15)" />
+            <input type="number" id="newCouponPct" class="erp-input" required placeholder="% OFF" min="1" max="80" />
+            <button type="submit" class="btn-gold">+ Criar Cupom</button>
+          </form>
+
+          <table class="erp-table" id="couponsTable"></table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="erp-toast" id="erpToast">Sincronizado com sucesso!</div>
+  <!-- ==========================================================================
+       SCRIPT DO SISTEMA ERP SANTA MÁQUINA (CONECTADO AO santa-maquina-core.js)
+       ========================================================================== -->
+  <script src="santa-maquina-core.js"></script>
+  <script>
+    const {
+      loadERPState,
+      saveERPState,
+      resetERPStateToDefault,
+      subscribeToERPUpdates,
+      getUnitCost,
+      getTotalProductStock,
+      createOrder,
+      formatBRL
+    } = window.SMCore;
+
+    const toastEl = document.getElementById("erpToast");
+    let toastTimer = null;
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+    }
+
+    const TAB_TITLES = {
+      dashboard: "01. DASHBOARD EXECUTIVO & DRE EM TEMPO REAL",
+      pedidos: "02. KANBAN DE PEDIDOS, ETIQUETAS CORREIOS & WHATSAPP",
+      estoque: "03. ESTOQUE POR GRADE (P AO XG) & FICHA DE CUSTOS (CMV)",
+      pdv: "04. PDV PRESENCIAL (MODO EVENTO / DGR FORTALEZA)",
+      financeiro: "05. FINANCEIRO, FLUXO DE CAIXA & CUSTOS DE LOTE",
+      crm: "06. CRM — CLUBE DE PILOTOS SANTA MÁQUINA (LGPD)",
+      config: "07. CONFIGURAÇÕES DE GATEWAY (MERCADO PAGO / ASAAS) & CUPONS"
+    };
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".erp-nav-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.erpTab === tabId);
+      });
+      document.querySelectorAll(".erp-tab").forEach((panel) => {
+        panel.classList.toggle("active", panel.id === `tab-${tabId}`);
+      });
+      document.getElementById("currentTabTitle").textContent = TAB_TITLES[tabId] || "SANTA MÁQUINA ERP";
+    }
+
+    document.querySelectorAll("[data-erp-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.erpTab));
+    });
+    document.querySelectorAll("[data-jump-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.jumpTab));
+    });
+
+    /* --------------------------------------------------------------------------
+       1. RENDERIZAR DASHBOARD, KPIS, DRE & CURVA ABC
+       -------------------------------------------------------------------------- */
+    function renderDashboard(state) {
+      let grossRevenue = 0;
+      let totalGatewayFees = 0;
+      let totalCmvSold = 0;
+      let totalDiscounts = 0;
+      const productSalesMap = {};
+
+      state.orders.forEach((o) => {
+        grossRevenue += Number(o.payment.total || 0);
+        totalGatewayFees += Number(o.payment.gatewayFee || 0);
+        totalCmvSold += Number(o.payment.totalCmv || 0);
+        totalDiscounts += Number(o.payment.discount || 0);
+
+        o.items.forEach((item) => {
+          if (!productSalesMap[item.productId]) {
+            productSalesMap[item.productId] = { title: item.title, qty: 0, rev: 0 };
+          }
+          productSalesMap[item.productId].qty += item.qty;
+          productSalesMap[item.productId].rev += item.qty * item.price;
+        });
+      });
+
+      const totalFixedExpenses = state.expenses.reduce((acc, e) => acc + Number(e.amount || 0), 0);
+      const netOperatingProfit = grossRevenue - totalGatewayFees - totalCmvSold - totalFixedExpenses;
+      const netMarginPct = grossRevenue > 0 ? ((netOperatingProfit / grossRevenue) * 100).toFixed(1) : "0.0";
+      const avgTicket = state.orders.length > 0 ? grossRevenue / state.orders.length : 0;
+
+      let totalUnitsInStock = 0;
+      let totalStockInventoryValue = 0;
+      let zeroSizesCount = 0;
+
+      state.products.forEach((p) => {
+        const st = getTotalProductStock(p);
+        totalUnitsInStock += st;
+        totalStockInventoryValue += st * p.price;
+        Object.values(p.sizes).forEach((q) => {
+          if (Number(q) === 0) zeroSizesCount++;
+        });
+      });
+
+      const pendingShipCount = state.orders.filter((o) => o.status === "pago" || o.status === "etiqueta").length;
+      document.getElementById("navOrdersBadge").textContent = pendingShipCount;
+      document.getElementById("navStockBadge").textContent = `${totalUnitsInStock} un`;
+      document.getElementById("navCrmBadge").textContent = state.customers.length;
+
+      const gwName = state.settings.gateways[state.settings.activeGateway]?.name.split("(")[0] || "Mercado Pago";
+      document.getElementById("sidebarGatewayLabel").textContent = `Gateway Ativo: ${gwName}`;
+
+      // KPIs
+      document.getElementById("dashboardKpis").innerHTML = `
+        <div class="kpi-card">
+          <span class="kpi-label">RECEITA LÍQUIDA DE VENDAS</span>
+          <span class="kpi-value" style="color:var(--accent);">${formatBRL(grossRevenue)}</span>
+          <span class="kpi-sub">${state.orders.length} pedidos · Ticket Médio ${formatBRL(avgTicket)}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">CUSTO DE PRODUÇÃO (CMV)</span>
+          <span class="kpi-value">${formatBRL(totalCmvSold)}</span>
+          <span class="kpi-sub">Malha + Costura + Silk das vendas</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">TAXAS DE GATEWAY (${gwName.trim()})</span>
+          <span class="kpi-value" style="color:var(--orange);">${formatBRL(totalGatewayFees)}</span>
+          <span class="kpi-sub">Repasse líquido: ${formatBRL(grossRevenue - totalGatewayFees)}</span>
+        </div>
+        <div class="kpi-card highlight">
+          <span class="kpi-label">LUCRO LÍQUIDO REAL (CAIXA)</span>
+          <span class="kpi-value" style="color:var(--green);">${formatBRL(netOperatingProfit)}</span>
+          <span class="kpi-sub">Margem Líquida: <strong style="color:var(--green);">${netMarginPct}%</strong></span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">ESTOQUE ATIVO NA GARAGEM</span>
+          <span class="kpi-value">${totalUnitsInStock} <small style="font-size:1rem;">peças</small></span>
+          <span class="kpi-sub">VGV: ${formatBRL(totalStockInventoryValue)} · ${zeroSizesCount} grades zeradas</span>
+        </div>
+      `;
+
+      // Tabela DRE
+      const contributionMargin = grossRevenue - totalGatewayFees - totalCmvSold;
+      document.getElementById("dreTable").innerHTML = `
+        <tbody>
+          <tr>
+            <td><strong>(=) RECEITA DE VENDAS (SITE + PDV)</strong></td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--accent); font-weight:700;">${formatBRL(grossRevenue)}</td>
+          </tr>
+          <tr>
+            <td style="color:var(--muted);">(-) Descontos Concedidos (PIX 5% / Cupons)</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--muted);">- ${formatBRL(totalDiscounts)}</td>
+          </tr>
+          <tr>
+            <td style="color:var(--orange);">(-) Taxas de Processamento (${gwName.trim()})</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--orange);">- ${formatBRL(totalGatewayFees)}</td>
+          </tr>
+          <tr>
+            <td style="color:var(--orange);">(-) CMV (Custo de Fabricação das Peças Vendidas)</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--orange);">- ${formatBRL(totalCmvSold)}</td>
+          </tr>
+          <tr style="background:rgba(253,198,86,0.06);">
+            <td><strong>(=) MARGEM DE CONTRIBUIÇÃO BRUTA</strong></td>
+            <td style="text-align:right; font-family:var(--font-mono); font-weight:700;">${formatBRL(contributionMargin)}</td>
+          </tr>
+          <tr>
+            <td style="color:var(--red);">(-) Despesas Operacionais & Lotes Lançados</td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--red);">- ${formatBRL(totalFixedExpenses)}</td>
+          </tr>
+          <tr style="background:rgba(92,224,128,0.1); border-top:2px solid var(--green);">
+            <td><strong style="color:var(--green);">(=) RESULTADO LÍQUIDO DO EXERCÍCIO (LUCRO)</strong></td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--green); font-size:1.05rem; font-weight:700;">${formatBRL(netOperatingProfit)} (${netMarginPct}%)</td>
+          </tr>
+        </tbody>
+      `;
+
+      // Curva ABC
+      const sortedAbc = Object.values(productSalesMap).sort((a, b) => b.rev - a.rev);
+      document.getElementById("abcListContainer").innerHTML = sortedAbc
+        .slice(0, 5)
+        .map((item, i) => {
+          const share = grossRevenue > 0 ? Math.min(100, Math.round((item.rev / grossRevenue) * 100)) : 20;
+          const badgeClass = i === 0 ? "CLASSE A · CAMPEÃ" : i < 3 ? "CLASSE A" : "CLASSE B";
+          return `
+            <div style="background:var(--bg); border:1px solid var(--line); padding:0.7rem 0.9rem;">
+              <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:0.35rem;">
+                <strong>${i + 1}. ${item.title} <small style="font-family:var(--font-mono); color:var(--accent);">[${badgeClass}]</small></strong>
+                <span style="font-family:var(--font-mono);">${item.qty} un. · <strong>${formatBRL(item.rev)}</strong></span>
+              </div>
+              <div style="height:5px; background:rgba(255,255,255,0.08);">
+                <div style="height:100%; width:${share}%; background:var(--accent);"></div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      // Últimos pedidos no Dashboard
+      document.getElementById("dashRecentOrders").innerHTML = `
+        <thead>
+          <tr>
+            <th>PEDIDO</th>
+            <th>CANAL</th>
+            <th>CLIENTE / PILOTO</th>
+            <th>PEÇAS & GRADE</th>
+            <th>PAGAMENTO</th>
+            <th>TOTAL</th>
+            <th>LUCRO LÍQ.</th>
+            <th>STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.orders
+            .slice(0, 6)
+            .map(
+              (o) => `
+            <tr>
+              <td style="font-family:var(--font-mono); font-weight:700; color:var(--accent);">#${o.id}</td>
+              <td style="font-family:var(--font-mono); font-size:0.72rem;">${o.channel}</td>
+              <td>
+                <strong>${o.customer.name}</strong>
+                <div style="font-size:0.72rem; color:var(--muted);">${o.customer.city}/${o.customer.uf} · ${o.customer.bike || ""}</div>
+              </td>
+              <td style="font-size:0.78rem;">
+                ${o.items.map((i) => `${i.qty}x ${i.title} <strong style="color:var(--accent);">[${i.size}]</strong>`).join("<br/>")}
+              </td>
+              <td style="font-family:var(--font-mono); font-size:0.74rem;">${o.payment.method} (${o.payment.gateway.toUpperCase()})</td>
+              <td style="font-family:var(--font-mono); font-weight:700;">${formatBRL(o.payment.total)}</td>
+              <td style="font-family:var(--font-mono); color:var(--green); font-weight:700;">+${formatBRL(o.payment.netProfit)}</td>
+              <td><span class="status-badge status-${o.status}">${o.status}</span></td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      `;
+    }
+
+    /* --------------------------------------------------------------------------
+       2. KANBAN DE PEDIDOS, IMPRESSÃO DE ETIQUETA CORREIOS & WHATSAPP
+       -------------------------------------------------------------------------- */
+    const STATUS_FLOW = ["pago", "etiqueta", "enviado", "entregue"];
+    const STATUS_LABELS = {
+      pago: "1. PAGO / SEPARAR PEÇAS",
+      etiqueta: "2. ETIQUETA EMITIDA",
+      enviado: "3. DESPACHADO / EM TRÂNSITO",
+      entregue: "4. ENTREGUE AO PILOTO"
+    };
+
+    function openPrintableShippingLabel(order) {
+      const win = window.open("", "_blank", "width=760,height=860");
+      if (!win) {
+        showToast("Permita pop-ups para imprimir a etiqueta dos Correios/Melhor Envio.");
+        return;
+      }
+      const tracking = order.trackingCode || `SM${Math.floor(100000000 + Math.random() * 900000000)}BR`;
+      const itemsHtml = order.items
+        .map((i) => `<tr><td>${i.qty}x</td><td>${i.title}</td><td><strong>TAMANHO: ${i.size}</strong></td><td>${formatBRL(i.price)}</td></tr>`)
+        .join("");
+
+      win.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8" />
+          <title>Etiqueta de Envio #${order.id} — Santa Máquina</title>
+          <style>
+            body { font-family: 'Courier New', monospace; padding: 24px; color: #000; }
+            .label-box { border: 3px solid #000; padding: 18px; max-width: 520px; margin: 0 auto; }
+            .head { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 12px; }
+            .barcode { font-size: 26px; letter-spacing: 6px; font-weight: bold; text-align: center; padding: 14px 0; border: 2px dashed #000; margin: 12px 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+            td, th { border: 1px solid #000; padding: 6px; text-align: left; }
+            @media print { .no-print { display: none; } }
+          </style>
+        </head>
+        <body>
+          <div class="no-print" style="text-align:center; margin-bottom:16px;">
+            <button onclick="window.print()" style="padding:10px 20px; font-weight:bold; cursor:pointer;">🖨️ IMPRIMIR ETIQUETA + ROMANEIO</button>
+          </div>
+          <div class="label-box">
+            <div class="head">
+              <div>
+                <strong>SANTA MÁQUINA · CUSTOM LIFESTYLE</strong><br/>
+                <small>MELHOR ENVIO / CORREIOS · CONTRATO OFICIAL</small>
+              </div>
+              <div style="text-align:right;">
+                <strong>PEDIDO #${order.id}</strong><br/>
+                <small>${order.payment.shippingMethod}</small>
+              </div>
+            </div>
+            <div>
+              <strong>DESTINATÁRIO:</strong><br/>
+              ${order.customer.name} (CPF: ${order.customer.cpf})<br/>
+              ${order.customer.address}<br/>
+              <strong>CEP: ${order.customer.cep} — ${order.customer.city} / ${order.customer.uf}</strong><br/>
+              WhatsApp: ${order.customer.phone}
+            </div>
+            <div class="barcode">
+              ||| |||| || | |||| ||| ||||<br/>
+              <span style="font-size:16px; letter-spacing:2px;">${tracking}</span>
+            </div>
+            <div style="font-size:12px; border-top:1px solid #000; padding-top:8px;">
+              <strong>REMETENTE:</strong> SANTA MÁQUINA LOJA · Rua Padre Francisco Pita, 600 — Fortaleza/CE
+            </div>
+            <h4 style="margin:14px 0 4px;">ROMANEIO DE SEPARAÇÃO (PICKING LIST):</h4>
+            <table>
+              <thead><tr><th>Qtd</th><th>Peça</th><th>Grade</th><th>Valor</th></tr></thead>
+              <tbody>${itemsHtml}</tbody>
+            </table>
+          </div>
+        </body>
+        </html>
+      `);
+      win.document.close();
+    }
+
+    function renderOrdersModule(state) {
+      // Kanban
+      document.getElementById("ordersKanban").innerHTML = STATUS_FLOW.map((stKey) => {
+        const colOrders = state.orders.filter((o) => o.status === stKey);
+        return `
+          <div class="kanban-col">
+            <div class="kanban-col-head">
+              <span>${STATUS_LABELS[stKey]}</span>
+              <span>(${colOrders.length})</span>
+            </div>
+            ${
+              colOrders.length === 0
+                ? `<div style="color:var(--muted); font-size:0.75rem; padding:1rem 0;">Nenhum pedido nesta etapa.</div>`
+                : colOrders
+                    .map(
+                      (o) => `
+                  <div class="kanban-card">
+                    <div style="display:flex; justify-content:space-between; font-family:var(--font-mono);">
+                      <strong style="color:var(--accent);">#${o.id}</strong>
+                      <span>${formatBRL(o.payment.total)}</span>
+                    </div>
+                    <div><strong>${o.customer.name}</strong> (${o.customer.city}/${o.customer.uf})</div>
+                    <div style="color:var(--muted); font-size:0.74rem;">
+                      ${o.items.map((i) => `${i.qty}x ${i.title} [${i.size}]`).join(", ")}
+                    </div>
+                    <div style="display:flex; gap:0.4rem; margin-top:0.35rem; flex-wrap:wrap;">
+                      <button type="button" class="btn-outline" style="padding:0.3rem 0.55rem; font-size:0.62rem;" data-advance-order="${o.id}">
+                        Avançar Etapa →
+                      </button>
+                      <button type="button" class="btn-outline" style="padding:0.3rem 0.55rem; font-size:0.62rem;" data-print-label="${o.id}">
+                        🖨️ Etiqueta
+                      </button>
+                    </div>
+                  </div>
+                `
+                    )
+                    .join("")
+            }
+          </div>
+        `;
+      }).join("");
+
+      // Tabela completa de expedição
+      document.getElementById("fullOrdersTable").innerHTML = `
+        <thead>
+          <tr>
+            <th>PEDIDO</th>
+            <th>CLIENTE & ENDEREÇO</th>
+            <th>ITENS PARA SEPARAR</th>
+            <th>FRETE</th>
+            <th>RASTREIO CORREIOS</th>
+            <th>STATUS</th>
+            <th>AÇÕES DE EXPEDIÇÃO</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.orders
+            .map((o) => {
+              const waPhone = String(o.customer.phone || "85997428530").replace(/\D/g, "");
+              const waTrackMsg = encodeURIComponent(
+                `Fala ${o.customer.name}! Aqui é da Santa Máquina 🏍️⚡\nSeu pedido *#${o.id}* (${o.items
+                  .map((i) => `${i.qty}x ${i.title} [${i.size}]`)
+                  .join(", ")}) está com status *${o.status.toUpperCase()}*!\n${
+                  o.trackingCode ? `Código de Rastreio: *${o.trackingCode}*` : "Em preparação na nossa oficina em Fortaleza."
+                }`
+              );
+              return `
+                <tr>
+                  <td style="font-family:var(--font-mono); font-weight:700; color:var(--accent);">#${o.id}</td>
+                  <td>
+                    <strong>${o.customer.name}</strong> (${o.customer.cpf})
+                    <div style="font-size:0.73rem; color:var(--muted);">${o.customer.address} — ${o.customer.city}/${o.customer.uf} (CEP: ${o.customer.cep})</div>
+                  </td>
+                  <td style="font-size:0.78rem;">
+                    ${o.items.map((i) => `${i.qty}x ${i.title} <strong style="color:var(--accent);">[${i.size}]</strong>`).join("<br/>")}
+                  </td>
+                  <td style="font-family:var(--font-mono); font-size:0.72rem;">${o.payment.shippingMethod}</td>
+                  <td>
+                    <input type="text" class="erp-input" style="width:145px; font-size:0.68rem;" value="${o.trackingCode || ""}" placeholder="Ex: QE84920BR" data-track-input="${o.id}" />
+                  </td>
+                  <td><span class="status-badge status-${o.status}">${o.status}</span></td>
+                  <td>
+                    <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                      <button type="button" class="btn-outline" style="padding:0.38rem 0.65rem; font-size:0.64rem;" data-print-label="${o.id}">🖨️ Etiqueta</button>
+                      <a href="https://wa.me/55${waPhone}?text=${waTrackMsg}" target="_blank" rel="noopener" class="btn-gold" style="padding:0.38rem 0.65rem; font-size:0.64rem;">📲 WhatsApp</a>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            })
+            .join("")}
+        </tbody>
+      `;
+
+      document.querySelectorAll("[data-advance-order]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const st = loadERPState();
+          const ord = st.orders.find((o) => o.id === btn.dataset.advanceOrder);
+          if (!ord) return;
+          const idx = STATUS_FLOW.indexOf(ord.status);
+          ord.status = STATUS_FLOW[(idx + 1) % STATUS_FLOW.length];
+          if (ord.status === "etiqueta" && !ord.trackingCode) {
+            ord.trackingCode = `QE${Math.floor(100000000 + Math.random() * 899999999)}BR`;
+          }
+          saveERPState(st, "order_status_updated");
+          showToast(`Pedido #${ord.id} movido para: ${ord.status.toUpperCase()}`);
+          renderAll();
+        });
+      });
+
+      document.querySelectorAll("[data-print-label]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const st = loadERPState();
+          const ord = st.orders.find((o) => o.id === btn.dataset.printLabel);
+          if (ord) openPrintableShippingLabel(ord);
+        });
+      });
+
+      document.querySelectorAll("[data-track-input]").forEach((inp) => {
+        inp.addEventListener("change", () => {
+          const st = loadERPState();
+          const ord = st.orders.find((o) => o.id === inp.dataset.trackInput);
+          if (ord) {
+            ord.trackingCode = inp.value.trim().toUpperCase();
+            if (ord.trackingCode && ord.status === "pago") ord.status = "enviado";
+            saveERPState(st, "tracking_updated");
+            showToast(`Rastreio salvo para #${ord.id}!`);
+            renderAll();
+          }
+        });
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       3. ESTOQUE POR GRADE (P AO XG) & EDITOR DE CUSTOS (CMV)
+       -------------------------------------------------------------------------- */
+    function renderInventoryModule(state) {
+      document.getElementById("inventoryTable").innerHTML = `
+        <thead>
+          <tr>
+            <th>PEÇA / SKU</th>
+            <th>PREÇO VENDA (R$)</th>
+            <th>CMV (MALHA+SILK+COSTURA)</th>
+            <th>MARGEM BRUTA</th>
+            <th>GRADE DE ESTOQUE (CLIQUE EM − / + PARA AJUSTAR NA LOJA)</th>
+            <th>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.products
+            .map((p) => {
+              const cmv = getUnitCost(p);
+              const grossProfit = p.price - cmv;
+              const marginPct = ((grossProfit / p.price) * 100).toFixed(1);
+              const totalSt = getTotalProductStock(p);
+
+              const gradeHtml = Object.entries(p.sizes)
+                .map(
+                  ([sz, qty]) => `
+                <div class="grade-cell ${Number(qty) === 0 ? "zero" : ""}">
+                  <strong>${sz}:</strong>
+                  <button type="button" class="mini-step-btn" data-grade-step="-1" data-pid="${p.id}" data-sz="${sz}">−</button>
+                  <span style="min-width:18px; text-align:center;">${qty}</span>
+                  <button type="button" class="mini-step-btn" data-grade-step="1" data-pid="${p.id}" data-sz="${sz}">+</button>
+                </div>
+              `
+                )
+                .join("");
+
+              return `
+                <tr>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:0.65rem;">
+                      <img src="${p.imgBack || p.imgFront}" alt="" style="width:42px; height:42px; object-fit:contain; background:#f4efe6; padding:3px;" />
+                      <div>
+                        <strong>${p.title}</strong>
+                        <div style="font-family:var(--font-mono); font-size:0.65rem; color:var(--muted);">SKU: ${p.skuPrefix}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <input type="number" step="0.1" class="erp-input" style="width:95px;" value="${p.price.toFixed(2)}" data-price-input="${p.id}" />
+                  </td>
+                  <td style="font-family:var(--font-mono); font-size:0.74rem;">
+                    <strong>${formatBRL(cmv)}</strong>
+                    <div style="font-size:0.63rem; color:var(--muted);">
+                      Malha ${formatBRL(p.costs.malha)} · Silk ${formatBRL(p.costs.serigrafia)}
+                    </div>
+                  </td>
+                  <td style="font-family:var(--font-mono);">
+                    <strong style="color:var(--green);">+${formatBRL(grossProfit)}</strong>
+                    <div style="font-size:0.66rem; color:var(--accent);">Margem: ${marginPct}%</div>
+                  </td>
+                  <td>
+                    <div class="grade-pills-editor">${gradeHtml}</div>
+                  </td>
+                  <td style="font-family:var(--font-mono); font-weight:700; font-size:0.95rem; color:${totalSt <= 5 ? "var(--red)" : "var(--ink)"};">
+                    ${totalSt} un.
+                  </td>
+                </tr>
+              `;
+            })
+            .join("")}
+        </tbody>
+      `;
+
+      document.querySelectorAll("[data-grade-step]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const st = loadERPState();
+          const prod = st.products.find((p) => p.id === btn.dataset.pid);
+          if (!prod) return;
+          const sz = btn.dataset.sz;
+          const delta = +btn.dataset.gradeStep;
+          prod.sizes[sz] = Math.max(0, Number(prod.sizes[sz] || 0) + delta);
+          saveERPState(st, "inventory_updated");
+          showToast(`Estoque atualizado: ${prod.title} [${sz}] = ${prod.sizes[sz]} un.`);
+          renderAll();
+        });
+      });
+
+      document.querySelectorAll("[data-price-input]").forEach((inp) => {
+        inp.addEventListener("change", () => {
+          const st = loadERPState();
+          const prod = st.products.find((p) => p.id === inp.dataset.priceInput);
+          const val = parseFloat(inp.value);
+          if (prod && val > 0) {
+            prod.price = +val.toFixed(2);
+            saveERPState(st, "price_updated");
+            showToast(`Preço de ${prod.title} atualizado para ${formatBRL(prod.price)} na loja!`);
+            renderAll();
+          }
+        });
+      });
+    }
+
+    document.getElementById("btnRestockAll").addEventListener("click", () => {
+      const st = loadERPState();
+      st.products.forEach((p) => {
+        Object.keys(p.sizes).forEach((sz) => {
+          p.sizes[sz] = Number(p.sizes[sz] || 0) + 5;
+        });
+      });
+      saveERPState(st, "restock_all");
+      showToast("🔄 +5 unidades adicionadas em todos os tamanhos de todas as peças!");
+      renderAll();
+    });
+
+    /* --------------------------------------------------------------------------
+       4. PDV PRESENCIAL (MODO EVENTO / DGR FORTALEZA)
+       -------------------------------------------------------------------------- */
+    let pdvCart = [];
+
+    function renderPdvModule(state) {
+      document.getElementById("pdvProductsGrid").innerHTML = state.products
+        .map((p) => {
+          const sizesBtns = Object.entries(p.sizes)
+            .map(([sz, qty]) => {
+              const dis = Number(qty) <= 0 ? "disabled style='opacity:0.3;'" : "";
+              return `<button type="button" class="btn-outline" style="padding:0.25rem 0.5rem; font-size:0.65rem;" data-pdv-add="${p.id}" data-pdv-sz="${sz}" ${dis}>+ ${sz} (${qty})</button>`;
+            })
+            .join("");
+
+          return `
+            <div class="pdv-prod-card">
+              <img src="${p.imgBack || p.imgFront}" alt="" />
+              <div>
+                <strong style="font-size:0.9rem;">${p.title}</strong>
+                <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--accent); margin-bottom:0.35rem;">${formatBRL(p.price)}</div>
+                <div style="display:flex; flex-wrap:wrap; gap:0.3rem;">${sizesBtns}</div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      document.querySelectorAll("[data-pdv-add]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const pid = btn.dataset.pdvAdd;
+          const sz = btn.dataset.pdvSz;
+          const existing = pdvCart.find((i) => i.productId === pid && i.size === sz);
+          if (existing) existing.qty += 1;
+          else pdvCart.push({ productId: pid, size: sz, qty: 1 });
+          renderPdvCart(state);
+        });
+      });
+
+      renderPdvCart(state);
+    }
+
+    function renderPdvCart(state) {
+      const listEl = document.getElementById("pdvCartList");
+      const method = document.getElementById("pdvPayMethod").value;
+      if (pdvCart.length === 0) {
+        listEl.innerHTML = `<div style="color:var(--muted); font-size:0.8rem; padding:1rem 0;">Clique nos tamanhos ao lado para adicionar peças à venda presencial.</div>`;
+        document.getElementById("pdvTotalVal").textContent = "R$ 0,00";
+        return;
+      }
+
+      let subtotal = 0;
+      listEl.innerHTML = pdvCart
+        .map((item, idx) => {
+          const p = state.products.find((prod) => prod.id === item.productId);
+          if (!p) return "";
+          const line = p.price * item.qty;
+          subtotal += line;
+          return `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:0.5rem 0.7rem; border:1px solid var(--line); font-family:var(--font-mono); font-size:0.74rem;">
+              <span>${item.qty}x ${p.title} <strong style="color:var(--accent);">[${item.size}]</strong></span>
+              <div>
+                <strong>${formatBRL(line)}</strong>
+                <button type="button" data-pdv-rem="${idx}" style="margin-left:0.5rem; color:var(--red);">✕</button>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      listEl.querySelectorAll("[data-pdv-rem]").forEach((b) => {
+        b.addEventListener("click", () => {
+          pdvCart.splice(+b.dataset.pdvRem, 1);
+          renderPdvCart(loadERPState());
+        });
+      });
+
+      const discount = method === "PIX" ? subtotal * ((state.settings.pixDiscountPercent || 5) / 100) : 0;
+      document.getElementById("pdvTotalVal").textContent = formatBRL(subtotal - discount);
+    }
+
+    document.getElementById("pdvPayMethod").addEventListener("change", () => renderPdvCart(loadERPState()));
+    document.getElementById("btnClearPdv").addEventListener("click", () => {
+      pdvCart = [];
+      renderPdvCart(loadERPState());
+    });
+
+    document.getElementById("btnFinishPdv").addEventListener("click", () => {
+      if (pdvCart.length === 0) {
+        showToast("Adicione pelo menos 1 peça no caixa PDV.");
+        return;
+      }
+      const res = createOrder({
+        customer: {
+          name: document.getElementById("pdvCustName").value.trim() || "Cliente Evento DGR",
+          phone: document.getElementById("pdvCustPhone").value.trim() || "85997428530",
+          bike: document.getElementById("pdvCustBike").value.trim() || "Encontro Fortaleza",
+          city: "Fortaleza",
+          uf: "CE",
+          address: "Venda Presencial PDV / Evento"
+        },
+        paymentMethod: document.getElementById("pdvPayMethod").value,
+        channel: "PDV_EVENTO",
+        customItems: pdvCart
+      });
+
+      if (!res.ok) {
+        showToast(res.message);
+        return;
+      }
+      pdvCart = [];
+      document.getElementById("pdvCustName").value = "";
+      document.getElementById("pdvCustPhone").value = "";
+      document.getElementById("pdvCustBike").value = "";
+      showToast(`⚡ Venda PDV #${res.order.id} registrada e estoque atualizado!`);
+      renderAll();
+    });
+
+    /* --------------------------------------------------------------------------
+       5. FINANCEIRO, ENTRADAS & DESPESAS
+       -------------------------------------------------------------------------- */
+    function renderFinanceModule(state) {
+      document.getElementById("financeIncomesTable").innerHTML = `
+        <thead>
+          <tr>
+            <th>PEDIDO</th>
+            <th>MÉTODO / GATEWAY</th>
+            <th>BRUTO</th>
+            <th>TAXA GATEWAY</th>
+            <th>CMV PEÇAS</th>
+            <th>LUCRO LÍQUIDO</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.orders
+            .map(
+              (o) => `
+            <tr>
+              <td style="font-family:var(--font-mono); color:var(--accent); font-weight:700;">#${o.id}</td>
+              <td style="font-family:var(--font-mono); font-size:0.72rem;">${o.payment.method} · ${o.payment.gateway.toUpperCase()}</td>
+              <td style="font-family:var(--font-mono);">${formatBRL(o.payment.total)}</td>
+              <td style="font-family:var(--font-mono); color:var(--orange);">- ${formatBRL(o.payment.gatewayFee)}</td>
+              <td style="font-family:var(--font-mono); color:var(--muted);">- ${formatBRL(o.payment.totalCmv)}</td>
+              <td style="font-family:var(--font-mono); color:var(--green); font-weight:700;">+${formatBRL(o.payment.netProfit)}</td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      `;
+
+      document.getElementById("expensesTable").innerHTML = `
+        <thead>
+          <tr>
+            <th>DATA</th>
+            <th>CATEGORIA</th>
+            <th>DESCRIÇÃO</th>
+            <th>VALOR</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.expenses
+            .map(
+              (e) => `
+            <tr>
+              <td style="font-family:var(--font-mono); font-size:0.72rem;">${e.date}</td>
+              <td style="font-family:var(--font-mono); font-size:0.72rem; color:var(--accent);">${e.category}</td>
+              <td>${e.description}</td>
+              <td style="font-family:var(--font-mono); color:var(--red); font-weight:700;">- ${formatBRL(e.amount)}</td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      `;
+    }
+
+    document.getElementById("expenseForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const st = loadERPState();
+      st.expenses.unshift({
+        id: `exp-${Date.now()}`,
+        date: new Date().toISOString().slice(0, 10),
+        category: document.getElementById("expCat").value,
+        description: document.getElementById("expDesc").value.trim(),
+        amount: parseFloat(document.getElementById("expAmount").value) || 0
+      });
+      saveERPState(st, "expense_added");
+      document.getElementById("expDesc").value = "";
+      document.getElementById("expAmount").value = "";
+      showToast("Saída registrada no Fluxo de Caixa e DRE!");
+      renderAll();
+    });
+
+    /* --------------------------------------------------------------------------
+       6. CRM CLUBE DE PILOTOS & EXPORTAÇÃO CSV
+       -------------------------------------------------------------------------- */
+    function renderCrmModule(state) {
+      document.getElementById("crmTable").innerHTML = `
+        <thead>
+          <tr>
+            <th>PILOTO / CLIENTE</th>
+            <th>MOTO QUE PILOTA</th>
+            <th>CIDADE / UF</th>
+            <th>TAMANHO PREFERIDO</th>
+            <th>PEDIDOS</th>
+            <th>LTV (TOTAL GASTO)</th>
+            <th>CONTATO DIRETO</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.customers
+            .map((c) => {
+              const phoneClean = String(c.phone || "").replace(/\D/g, "");
+              return `
+                <tr>
+                  <td>
+                    <strong>${c.name}</strong>
+                    <div style="font-size:0.72rem; color:var(--muted);">${c.email || "Sem e-mail"}</div>
+                  </td>
+                  <td style="color:var(--accent); font-family:var(--font-mono); font-size:0.75rem;">🏍️ ${c.bike || "Custom"}</td>
+                  <td>${c.city} / ${c.uf}</td>
+                  <td style="font-family:var(--font-mono); font-weight:700;">${c.preferredSize}</td>
+                  <td style="font-family:var(--font-mono);">${c.ordersCount}</td>
+                  <td style="font-family:var(--font-mono); color:var(--green); font-weight:700;">${formatBRL(c.totalSpent)}</td>
+                  <td>
+                    <a href="https://wa.me/55${phoneClean}?text=${encodeURIComponent(`Fala ${c.name}, tudo certo por aí na estrada? Aqui é da Santa Máquina!`)}" target="_blank" rel="noopener" class="btn-outline" style="padding:0.35rem 0.65rem; font-size:0.65rem;">
+                      📲 Chamar no WhatsApp
+                    </a>
+                  </td>
+                </tr>
+              `;
+            })
+            .join("")}
+        </tbody>
+      `;
+    }
+
+    document.getElementById("btnExportCrmCsv").addEventListener("click", () => {
+      const st = loadERPState();
+      const header = "Nome,WhatsApp,Email,Cidade,UF,Tamanho,Moto,Pedidos,TotalGasto\n";
+      const rows = st.customers
+        .map((c) => `"${c.name}","${c.phone}","${c.email}","${c.city}","${c.uf}","${c.preferredSize}","${c.bike}",${c.ordersCount},${c.totalSpent}`)
+        .join("\n");
+      const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "clube-pilotos-santa-maquina.csv";
+      a.click();
+      showToast("📥 Base de clientes exportada em CSV!");
+    });
+
+    /* --------------------------------------------------------------------------
+       7. CONFIGURAÇÕES DE GATEWAY (MERCADO PAGO VS ASAAS) & CUPONS
+       -------------------------------------------------------------------------- */
+    function renderConfigModule(state) {
+      const gwSelect = document.getElementById("cfgGatewaySelect");
+      const activeGw = state.settings.activeGateway || "mercadopago";
+      gwSelect.value = activeGw;
+      document.getElementById("cfgFreeShip").value = state.settings.freeShippingThreshold;
+      document.getElementById("cfgMotoboy").value = state.settings.fortalezaMotoboyFee;
+      document.getElementById("cfgApiKey").value = state.settings.gateways[activeGw]?.publicKey || "";
+
+      document.getElementById("couponsTable").innerHTML = `
+        <thead>
+          <tr>
+            <th>CÓDIGO</th>
+            <th>DESCONTO</th>
+            <th>USOS</th>
+            <th>STATUS</th>
+            <th>AÇÃO</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.coupons
+            .map(
+              (cp, idx) => `
+            <tr>
+              <td style="font-family:var(--font-mono); font-weight:700; color:var(--accent);">${cp.code}</td>
+              <td style="font-family:var(--font-mono);">${cp.discountPercent}% OFF</td>
+              <td style="font-family:var(--font-mono);">${cp.uses || 0}</td>
+              <td><span class="status-badge ${cp.active ? "status-entregue" : "status-enviado"}">${cp.active ? "ATIVO" : "PAUSADO"}</span></td>
+              <td>
+                <button type="button" class="btn-outline" style="padding:0.28rem 0.55rem; font-size:0.63rem;" data-toggle-coupon="${idx}">
+                  ${cp.active ? "Pausar" : "Ativar"}
+                </button>
+              </td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      `;
+
+      document.querySelectorAll("[data-toggle-coupon]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const st = loadERPState();
+          const c = st.coupons[+btn.dataset.toggleCoupon];
+          if (c) {
+            c.active = !c.active;
+            saveERPState(st, "coupon_updated");
+            showToast(`Cupom ${c.code} ${c.active ? "ativado" : "pausado"} na loja!`);
+            renderAll();
+          }
+        });
+      });
+    }
+
+    document.getElementById("cfgGatewaySelect").addEventListener("change", (e) => {
+      const st = loadERPState();
+      const gw = e.target.value;
+      document.getElementById("cfgApiKey").value = st.settings.gateways[gw]?.publicKey || "";
+    });
+
+    document.getElementById("btnSaveSettings").addEventListener("click", () => {
+      const st = loadERPState();
+      const gw = document.getElementById("cfgGatewaySelect").value;
+      st.settings.activeGateway = gw;
+      st.settings.freeShippingThreshold = parseFloat(document.getElementById("cfgFreeShip").value) || 220;
+      st.settings.fortalezaMotoboyFee = parseFloat(document.getElementById("cfgMotoboy").value) || 12.9;
+      if (st.settings.gateways[gw]) {
+        st.settings.gateways[gw].publicKey = document.getElementById("cfgApiKey").value.trim();
+      }
+      saveERPState(st, "settings_updated");
+      showToast(`💾 Gateway ${st.settings.gateways[gw].name} ativado no checkout da loja!`);
+      renderAll();
+    });
+
+    document.getElementById("couponForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const code = document.getElementById("newCouponCode").value.trim().toUpperCase().replace(/\s+/g, "");
+      const pct = parseInt(document.getElementById("newCouponPct").value, 10);
+      if (!code || !pct) return;
+      const st = loadERPState();
+      st.coupons.unshift({
+        code,
+        discountPercent: pct,
+        active: true,
+        uses: 0,
+        description: `${pct}% OFF Promocional`
+      });
+      saveERPState(st, "coupon_created");
+      document.getElementById("newCouponCode").value = "";
+      document.getElementById("newCouponPct").value = "";
+      showToast(`🎉 Cupom ${code} (${pct}% OFF) criado e já disponível na sacola do site!`);
+      renderAll();
+    });
+
+    document.getElementById("btnResetDemo").addEventListener("click", () => {
+      resetERPStateToDefault();
+      showToast("↺ Dados padrão da Santa Máquina restaurados!");
+      renderAll();
+    });
+
+    function renderAll() {
+      const state = loadERPState();
+      renderDashboard(state);
+      renderOrdersModule(state);
+      renderInventoryModule(state);
+      renderPdvModule(state);
+      renderFinanceModule(state);
+      renderCrmModule(state);
+      renderConfigModule(state);
+    }
+
+    // Atualizar o ERP em tempo real assim que um pedido for feito no index.html
+    subscribeToERPUpdates((ev) => {
+      renderAll();
+      if (ev && ev.type === "new_order_created") {
+        showToast("🔔 NOVO PEDIDO RECEBIDO DO SITE OFICIAL!");
+      }
+    });
+
+    // Controle de Login Administrativo (Proteção contra acesso de clientes)
+    const AUTH_SESSION_KEY = "sm_erp_admin_unlocked";
+    const ADMIN_DEFAULT_PIN = "santa2019";
+    const adminGate = document.getElementById("adminAuthGate");
+    const adminPinInput = document.getElementById("adminPinInput");
+    const adminAuthError = document.getElementById("adminAuthError");
+
+    if (sessionStorage.getItem(AUTH_SESSION_KEY) === "true") {
+      adminGate.classList.add("unlocked");
+    }
+
+    document.getElementById("adminLoginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const typed = (adminPinInput.value || "").trim().toLowerCase();
+      if (typed === ADMIN_DEFAULT_PIN) {
+        sessionStorage.setItem(AUTH_SESSION_KEY, "true");
+        adminGate.classList.add("unlocked");
+        adminAuthError.style.display = "none";
+        adminPinInput.value = "";
+        showToast("🔓 Acesso Administrativo Liberado!");
+      } else {
+        adminAuthError.style.display = "block";
+      }
+    });
+
+    document.getElementById("btnLockErp").addEventListener("click", () => {
+      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      adminGate.classList.remove("unlocked");
+      showToast("🔒 Sessão administrativa bloqueada.");
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>

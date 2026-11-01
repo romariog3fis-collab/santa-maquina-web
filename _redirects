@@ -1,0 +1,14 @@
+# Redirecionamentos 301 para links antigos do Shopify (Instagram, Google e YouTube)
+/products/camiseta-local-marrom   /#showroom   301
+/products/camiseta-oleo-branca    /#showroom   301
+/products/camiseta-piloto-off-white /#showroom 301
+/products/camiseta-logo-preta     /#showroom   301
+/products/bone-trucker-logo-preto /#showroom   301
+/products/camiseta-local-preta    /#showroom   301
+/products/lenco-terral-azul       /#showroom   301
+/products/lenco-terral-off-white  /#showroom   301
+/products/*                       /#showroom   301
+/collections/*                    /#showroom   301
+/collections                      /#showroom   301
+/admin                            /erp.html    302
+

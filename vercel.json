@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/products/camiseta-local-marrom", "destination": "/#showroom", "permanent": true },
+    { "source": "/products/camiseta-oleo-branca", "destination": "/#showroom", "permanent": true },
+    { "source": "/products/camiseta-piloto-off-white", "destination": "/#showroom", "permanent": true },
+    { "source": "/products/camiseta-logo-preta", "destination": "/#showroom", "permanent": true },
+    { "source": "/products/bone-trucker-logo-preto", "destination": "/#showroom", "permanent": true },
+    { "source": "/products/camiseta-local-preta", "destination": "/#showroom", "permanent": true },
+    { "source": "/products/lenco-terral-azul", "destination": "/#showroom", "permanent": true },
+    { "source": "/products/lenco-terral-off-white", "destination": "/#showroom", "permanent": true },
+    { "source": "/products/:slug", "destination": "/#showroom", "permanent": true },
+    { "source": "/collections/:slug*", "destination": "/#showroom", "permanent": true },
+    { "source": "/collections", "destination": "/#showroom", "permanent": true },
+    { "source": "/admin", "destination": "/erp.html", "permanent": false }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,4045 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c0a09" />
+  <title>SANTA MÁQUINA [V2 · React Bits Edition] — Custom Lifestyle & Cultura Biker Local</title>
+  <meta name="description" content="Versão V2 com efeitos interativos inspirados no React Bits: Click Spark, Scroll Velocity, Decrypted Text, True Focus, Spotlight + Glare Cards, Flowing Menu, Image Trail, Magnet e Hyperspeed Tunnel." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Instrument+Sans:ital,wght@0,400..700;1,400..600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js"
+    }
+  }
+  </script>
+
+  <style>
+/* ==========================================================================
+       1. DESIGN TOKENS (:root) — Extraídos via Reversa + Evolução Atmosférica
+       ========================================================================== */
+    :root {
+      --bg: #0c0a09;              /* Asfalto Noturno quente */
+      --bg-alt: #14110f;          /* Sombra de Oficina */
+      --surface: #1b1613;         /* Ferro Fundido / Garagem */
+      --surface-2: #261e19;       /* Couro Sela Escuro */
+      --ink: #f3ede2;             /* Areia das Dunas / Off-White Original */
+      --muted: #a6998a;           /* Poeira da Estrada */
+      --accent: #fdc656;          /* Amarelo Sol / Farol Original (rgb 253 198 86) */
+      --accent-warm: #d9822b;     /* Faísca de Solda / Âmbar */
+      --terracotta: #6b4227;      /* Marrom Local Original (rgb 107 66 39) */
+      --oxblood: #5c1d1d;         /* Bordô Avenida da Saudade */
+      --terral-blue: #14192e;     /* Azul Noturno Lenço Terral */
+      --line: rgba(243, 237, 226, 0.12);
+      --line-strong: rgba(253, 198, 86, 0.35);
+
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ==========================================================================
+       2. RESET & BASE ATMOSFÉRICA
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      selection-background-color: var(--accent);
+      selection-color: var(--bg);
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      overflow-x: hidden;
+      position: relative;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Grão de Filme Cinematográfico + Vinheta de Lente */
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      z-index: 9990;
+      pointer-events: none;
+      opacity: 0.045;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      box-shadow: inset 0 0 18vmin rgba(0, 0, 0, 0.75);
+    }
+
+    /* Barra de Progresso de Odômetro no Topo */
+    .scroll-progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(243, 237, 226, 0.08);
+      z-index: 1000;
+    }
+    .scroll-progress-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--terracotta), var(--accent));
+      transform-origin: 0% 50%;
+      transform: scaleX(0);
+    }
+
+    /* ==========================================================================
+       3. CANVAS 3D (THREE.JS) & HUD DE CONTROLE MECÂNICO
+       ========================================================================== */
+    #scene-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    #scene {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Controles Interativos do Motor 3D (Canto Inferior Direito) */
+    .engine-hud {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 90;
+      background: rgba(20, 17, 15, 0.86);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--line);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .engine-hud:hover {
+      border-color: var(--accent);
+    }
+    .hud-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--accent);
+    }
+    .hud-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse-dot 1.4s infinite ease-in-out;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.35); opacity: 0.55; }
+    }
+    .hud-btn {
+      padding: 0.35rem 0.65rem;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      transition: all 0.25s ease;
+    }
+    .hud-btn:hover, .hud-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       4. NAVEGAÇÃO EDITORIAL ASSIMÉTRICA
+       ========================================================================== */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 1.1rem clamp(1.25rem, 4vw, 3.5rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(12, 10, 9, 0.9) 0%, rgba(12, 10, 9, 0.45) 100%);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .brand-monogram {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line-strong);
+      display: grid;
+      place-items: center;
+      background: rgba(253, 198, 86, 0.05);
+      transition: transform 0.4s var(--ease-out-expo), background 0.3s ease;
+    }
+    .brand-lockup:hover .brand-monogram {
+      transform: rotate(-8deg) scale(1.06);
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .brand-monogram img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+      filter: invert(1) brightness(1.1);
+      transition: filter 0.3s ease;
+    }
+    .brand-lockup:hover .brand-monogram img {
+      filter: invert(0);
+    }
+
+    .brand-meta {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      color: var(--ink);
+    }
+    .brand-coords {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(1rem, 2.5vw, 2.25rem);
+    }
+
+    .nav-link {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      position: relative;
+      padding-block: 0.25rem;
+      transition: color 0.25s ease;
+    }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.35s var(--ease-out-expo);
+    }
+    .nav-link:hover {
+      color: var(--ink);
+    }
+    .nav-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .nav-cta {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 0.65rem 1.2rem;
+      background: var(--accent);
+      color: var(--bg);
+      border: 1px solid var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform 0.25s var(--ease-out-expo), background 0.25s ease, color 0.25s ease;
+    }
+    .nav-cta:hover {
+      background: transparent;
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* ==========================================================================
+       5. UTILITÁRIOS DE LAYOUT ASSIMÉTRICO & TIPOGRAFIA
+       ========================================================================== */
+    main {
+      position: relative;
+      z-index: 5;
+    }
+
+    .container {
+      width: min(1440px, 92vw);
+      margin-inline: auto;
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .eyebrow::before {
+      content: "✳";
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
+    .serif-italic {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+      text-transform: none;
+      letter-spacing: -0.02em;
+    }
+
+    .section-num-bg {
+      font-family: var(--font-display);
+      font-size: clamp(8rem, 22vw, 20rem);
+      line-height: 0.8;
+      color: rgba(243, 237, 226, 0.035);
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+      z-index: -1;
+    }
+
+    .vertical-label {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .ch {
+      display: inline-block;
+    }
+    [data-split] {
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       6. SEÇÃO 1: HERO ASSIMÉTRICO EM CAMADAS + 3D + TELEMETRIA
+       ========================================================================== */
+    .hero {
+      min-height: 105vh;
+      padding-top: 7.5rem;
+      padding-bottom: 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+      align-items: end;
+      margin-top: auto;
+    }
+
+    .hero-title-col {
+      grid-column: 1 / 9;
+      position: relative;
+      z-index: 3;
+    }
+
+    .hero-kicker {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .badge-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid var(--line-strong);
+      background: rgba(107, 66, 39, 0.28);
+      color: var(--ink);
+    }
+
+    .hero-h1 {
+      font-family: var(--font-display);
+      font-size: clamp(4.2rem, 12.5vw, 11.8rem);
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-h1 .line-2 {
+      display: block;
+      padding-left: clamp(0rem, 6vw, 5.5rem);
+    }
+
+    .hero-manifesto-lead {
+      max-width: 36rem;
+      font-size: clamp(1.05rem, 1.35vw, 1.28rem);
+      color: var(--ink);
+      opacity: 0.9;
+      border-left: 2px solid var(--accent);
+      padding-left: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-primary {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 1.1rem 2rem;
+      background: var(--accent);
+      color: var(--bg);
+      border: 1px solid var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: transform 0.3s var(--ease-out-expo), background 0.3s ease, color 0.3s ease;
+    }
+    .btn-primary:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+      transform: translate(4px, -4px);
+      box-shadow: -4px 4px 0 var(--terracotta);
+    }
+
+    .btn-ghost {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 1.1rem 1.75rem;
+      border: 1px solid var(--line);
+      background: rgba(27, 22, 19, 0.65);
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.3s ease;
+    }
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* Card Flutuante de Imagem Real no Hero (Assimetria Direita) */
+    .hero-visual-col {
+      grid-column: 9 / 13;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-photo-frame {
+      position: relative;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      padding: 0.65rem;
+      transform: rotate(1.5deg);
+      transition: transform 0.5s var(--ease-out-expo), border-color 0.3s ease;
+    }
+    .hero-photo-frame:hover {
+      transform: rotate(0deg) scale(1.02);
+      border-color: var(--accent);
+    }
+    .hero-photo-window {
+      overflow: hidden;
+      aspect-ratio: 4 / 4.6;
+      position: relative;
+    }
+    .hero-photo-window img {
+      width: 100%;
+      height: 118%;
+      object-fit: cover;
+      filter: contrast(1.08) sepia(0.12);
+    }
+    .hero-photo-caption {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* Selo Giratório Oficial SVG no Hero */
+    .rotating-seal {
+      position: absolute;
+      top: -3.2rem;
+      left: -3.2rem;
+      width: 112px;
+      height: 112px;
+      background: var(--bg);
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      z-index: 5;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    }
+    .rotating-seal svg.seal-text {
+      width: 100%;
+      height: 100%;
+      animation: spin-slow 18s linear infinite;
+    }
+    .rotating-seal .seal-center {
+      position: absolute;
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: invert(1);
+    }
+    @keyframes spin-slow {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Faixa de Telemetria no Rodapé do Hero */
+    .hero-telemetry {
+      margin-top: 3.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+    .telemetry-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.64rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+    }
+    .telemetry-item strong {
+      color: var(--ink);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+    }
+
+    /* ==========================================================================
+       7. FAIXA MARQUEE CINÉTICA (CULTURA BIKER LOCAL)
+       ========================================================================== */
+    .marquee-strip {
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+      padding-block: 0.95rem;
+      overflow: hidden;
+      display: flex;
+      white-space: nowrap;
+    }
+    .marquee-track {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      animation: marquee-scroll 28s linear infinite;
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .marquee-track span.sep {
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 1rem;
+    }
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ==========================================================================
+       8. SEÇÃO 2: MANIFESTO & ORIGEM (ASSIMETRIA EDITORIAL + PARALLAX)
+       ========================================================================== */
+    .manifesto-section {
+      padding-block: clamp(6rem, 14vh, 11rem);
+      position: relative;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .manifesto-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .manifesto-left {
+      grid-column: 1 / 6;
+      position: relative;
+    }
+
+    .manifesto-stack {
+      position: relative;
+      padding-right: 2rem;
+    }
+
+    .manifesto-main-img {
+      border: 1px solid var(--line);
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      background: var(--surface);
+    }
+    .manifesto-main-img img {
+      width: 100%;
+      height: 120%;
+      object-fit: cover;
+    }
+
+    .manifesto-float-card {
+      position: absolute;
+      bottom: -2.5rem;
+      right: -1rem;
+      width: min(260px, 65%);
+      background: var(--surface-2);
+      border: 1px solid var(--accent);
+      padding: 1rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+    }
+    .manifesto-float-card img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      background: #fff;
+      padding: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .manifesto-float-card p {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--ink);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .manifesto-right {
+      grid-column: 7 / 13;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6.5vw, 6.2rem);
+      line-height: 0.92;
+      text-transform: uppercase;
+      margin-block: 1rem 2rem;
+    }
+
+    .manifesto-quote {
+      font-family: var(--font-serif);
+      font-size: clamp(1.25rem, 2vw, 1.75rem);
+      line-height: 1.4;
+      color: var(--ink);
+      margin-bottom: 1.75rem;
+      font-weight: 400;
+    }
+
+    .manifesto-body {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.75;
+      display: grid;
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+    .manifesto-body strong {
+      color: var(--ink);
+    }
+
+    .pillars-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      padding-top: 1.75rem;
+      gap: 1.25rem;
+    }
+    .pillar-box .num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+    .pillar-box h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+    .pillar-box p {
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* ==========================================================================
+       9. SEÇÃO 3: ZOOM-THROUGH PORTAL ("A ESTRADA ENTRE O SERTÃO E O MAR")
+       ========================================================================== */
+    .dive-section {
+      position: relative;
+      height: 100vh;
+      overflow: clip;
+      display: grid;
+      place-items: center;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dive-backdrop-label {
+      position: absolute;
+      top: 5.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .dive-window {
+      width: 56vw;
+      height: 58vh;
+      border-radius: 28px;
+      overflow: clip;
+      position: relative;
+      border: 1px solid var(--line-strong);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85);
+      will-change: width, height, border-radius;
+    }
+
+    .dive-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.25);
+      filter: brightness(0.72) contrast(1.12);
+      will-change: transform;
+    }
+
+    .dive-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(12, 10, 9, 0.35) 0%, rgba(12, 10, 9, 0.82) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: clamp(1.5rem, 5vw, 4.5rem);
+    }
+
+    .dive-content {
+      max-width: 54rem;
+    }
+    .dive-content h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 7vw, 6.8rem);
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin-block: 0.6rem 1rem;
+    }
+    .dive-content p {
+      font-size: clamp(1rem, 1.4vw, 1.25rem);
+      color: var(--ink);
+      max-width: 40rem;
+      opacity: 0.92;
+    }
+
+    .dive-coords-bar {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(243, 237, 226, 0.2);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    /* ==========================================================================
+       10. SEÇÃO 4: SCROLL WORLD — OS 4 CAPÍTULOS DA HISTÓRIA & ESTAMPAS COM ZOOM
+       ========================================================================== */
+    .chapters-section {
+      padding-block: clamp(6rem, 14vh, 11rem);
+      position: relative;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 50%, var(--bg) 100%);
+    }
+
+    .chapters-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2rem;
+      margin-bottom: 5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Linha de Estrada SVG que conecta os capítulos */
+    .road-timeline {
+      position: relative;
+      display: grid;
+      gap: clamp(5rem, 12vh, 9rem);
+    }
+
+    .road-svg-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      transform: translateX(-50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .chapter-card {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 2rem;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .chapter-card:nth-child(even) .chapter-visual {
+      grid-column: 7 / 13;
+      order: 2;
+    }
+    .chapter-card:nth-child(even) .chapter-text {
+      grid-column: 1 / 6;
+      order: 1;
+    }
+
+    .chapter-visual {
+      grid-column: 1 / 6;
+      position: relative;
+    }
+
+    .chapter-text {
+      grid-column: 7 / 13;
+    }
+
+    /* Lupa de Zoom Interativa nas Estampas Históricas */
+    .art-zoom-stage {
+      position: relative;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      overflow: hidden;
+      aspect-ratio: 1 / 1.08;
+      cursor: zoom-in;
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+    }
+    .art-zoom-stage img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.55s var(--ease-out-expo);
+      transform-origin: var(--zx, 50%) var(--zy, 50%);
+    }
+    .art-zoom-stage:hover img {
+      transform: scale(2.15);
+    }
+    .zoom-hint-badge {
+      position: absolute;
+      bottom: 0.85rem;
+      right: 0.85rem;
+      background: rgba(12, 10, 9, 0.88);
+      border: 1px solid var(--line-strong);
+      padding: 0.35rem 0.7rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .art-zoom-stage:hover .zoom-hint-badge {
+      opacity: 0.2;
+    }
+
+    .km-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.3rem 0.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .chapter-text h3 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 4.5vw, 4.2rem);
+      line-height: 0.94;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .chapter-text p {
+      color: var(--muted);
+      font-size: 1.04rem;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+    .chapter-text p strong {
+      color: var(--ink);
+    }
+
+    .chapter-verse {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.12rem;
+      color: var(--ink);
+      border-left: 2px solid var(--terracotta);
+      padding-left: 1rem;
+      margin-block: 1.25rem;
+    }
+
+    .chapter-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+    }
+    .chapter-tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.65rem;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    /* ==========================================================================
+       11. SEÇÃO 5: SHOWROOM INTERATIVO 3D-TILT & TROCA FRENTE/COSTAS
+       ========================================================================== */
+    .catalog-section {
+      padding-block: clamp(6rem, 14vh, 11rem);
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    .catalog-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .filter-btn {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 0.7rem 1.25rem;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      transition: all 0.25s ease;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Grid Quebrado Assimétrico de Produtos (Nada de 3 cards iguais!) */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.75rem;
+    }
+
+    .product-card {
+      grid-column: span 4;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    /* Destaque assimétrico para os itens principais */
+    .product-card.featured-wide {
+      grid-column: span 6;
+    }
+    .product-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    .product-card-header {
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .product-collection-tag {
+      color: var(--accent);
+    }
+
+    .product-media {
+      position: relative;
+      aspect-ratio: 1 / 1.05;
+      background: radial-gradient(circle at 50% 50%, #f7f4ee 0%, #e5dec9 100%);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      padding: 1.25rem;
+      cursor: zoom-in;
+    }
+    .product-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.55s var(--ease-out-expo), opacity 0.35s ease;
+      transform-origin: var(--px, 50%) var(--py, 50%);
+    }
+    .product-media:hover img {
+      transform: scale(1.85);
+    }
+
+    .flip-view-btn {
+      position: absolute;
+      bottom: 0.75rem;
+      left: 0.75rem;
+      z-index: 4;
+      background: rgba(12, 10, 9, 0.9);
+      color: var(--ink);
+      border: 1px solid var(--line-strong);
+      padding: 0.4rem 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all 0.25s ease;
+    }
+    .flip-view-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+    }
+
+    .zoom-inspect-btn {
+      position: absolute;
+      bottom: 0.75rem;
+      right: 0.75rem;
+      z-index: 4;
+      background: rgba(12, 10, 9, 0.9);
+      color: var(--accent);
+      border: 1px solid var(--line);
+      padding: 0.4rem 0.65rem;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .product-body {
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex-grow: 1;
+    }
+
+    .product-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+    .product-title {
+      font-family: var(--font-display);
+      font-size: 1.85rem;
+      letter-spacing: 0.03em;
+      line-height: 1;
+    }
+    .product-price {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .product-story {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.55;
+      flex-grow: 1;
+    }
+
+    .product-footer {
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .sizes-list {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+    .buy-link {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 0.55rem 1rem;
+      background: var(--ink);
+      color: var(--bg);
+      transition: all 0.25s ease;
+    }
+    .buy-link:hover {
+      background: var(--accent);
+    }
+
+    /* ==========================================================================
+       12. SEÇÃO 6: COMUNIDADE, DGR FORTALEZA & PROVA SOCIAL
+       ========================================================================== */
+    .community-section {
+      padding-block: clamp(6rem, 14vh, 10rem);
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      margin-bottom: 5rem;
+    }
+    .stat-cell {
+      padding: 2.25rem 1.75rem;
+      border-right: 1px solid var(--line);
+    }
+    .stat-cell:last-child {
+      border-right: none;
+    }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 6vw, 5.2rem);
+      line-height: 0.9;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .stat-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .dgr-feature {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 2rem;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: clamp(1.5rem, 4vw, 3.5rem);
+    }
+    .dgr-info {
+      grid-column: 1 / 7;
+    }
+    .dgr-gallery {
+      grid-column: 7 / 13;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .dgr-gallery figure {
+      border: 1px solid var(--line);
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      position: relative;
+    }
+    .dgr-gallery figure img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-out-expo);
+    }
+    .dgr-gallery figure:hover img {
+      transform: scale(1.08);
+    }
+
+    /* ==========================================================================
+       13. SEÇÃO 7: CTA FINAL & FOOTER OFICIAL
+       ========================================================================== */
+    .final-cta {
+      padding-block: clamp(6rem, 16vh, 12rem);
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+    }
+    .final-cta-inner {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 2rem;
+      align-items: end;
+    }
+    .final-cta-title-wrap {
+      grid-column: 1 / 9;
+    }
+    .final-cta-title {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 11vw, 10rem);
+      line-height: 0.88;
+      text-transform: uppercase;
+      margin-top: 1rem;
+    }
+    .final-cta-box {
+      grid-column: 9 / 13;
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .site-footer {
+      padding-block: 3.5rem;
+      background: #080706;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    /* ==========================================================================
+       14. MODAL LIGHTBOX DE INSPECÇÃO DE ARTE (ZOOM PROFUNDO)
+       ========================================================================== */
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9500;
+      background: rgba(12, 10, 9, 0.92);
+      backdrop-filter: blur(14px);
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .lightbox-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .lightbox-card {
+      width: min(1020px, 94vw);
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      overflow: hidden;
+      max-height: 88vh;
+    }
+    .lightbox-img-stage {
+      background: #f5f1e8;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+    .lightbox-img-stage img {
+      max-height: 70vh;
+      width: auto;
+      object-fit: contain;
+      transition: transform 0.25s ease-out;
+    }
+    .lightbox-details {
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+    .lightbox-close {
+      align-self: flex-end;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.45rem 0.9rem;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .lightbox-close:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ==========================================================================
+       15. RESPONSIVIDADE & ACESSIBILIDADE (prefers-reduced-motion)
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .hero-title-col { grid-column: 1 / 13; }
+      .hero-visual-col { grid-column: 1 / 13; max-width: 480px; margin-top: 2rem; }
+      .manifesto-left, .manifesto-right { grid-column: 1 / 13; }
+      .chapter-visual, .chapter-text,
+      .chapter-card:nth-child(even) .chapter-visual,
+      .chapter-card:nth-child(even) .chapter-text {
+        grid-column: 1 / 13;
+        order: unset;
+      }
+      .road-svg-line { display: none; }
+      .product-card, .product-card.featured-wide { grid-column: span 6; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .dgr-info, .dgr-gallery { grid-column: 1 / 13; }
+      .final-cta-title-wrap, .final-cta-box { grid-column: 1 / 13; }
+      .lightbox-card { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .main-nav .nav-link { display: none; }
+      .hero-telemetry { grid-template-columns: repeat(2, 1fr); }
+      .pillars-row { grid-template-columns: 1fr; }
+      .dive-window { width: 88vw; height: 64vh; }
+      .product-card, .product-card.featured-wide { grid-column: span 12; }
+      .stats-row { grid-template-columns: 1fr; }
+      .stat-cell { border-right: none; border-bottom: 1px solid var(--line); }
+      .engine-hud { left: 1rem; right: 1rem; bottom: 0.75rem; justify-content: space-between; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .dive-window {
+        width: 100vw !important;
+        height: 85vh !important;
+        border-radius: 0 !important;
+      }
+    }
+/* ==========================================================================
+       MOTOR DE VENDAS & SELETOR DE TAMANHOS (TEMA ORIGINAL DARK)
+       ========================================================================== */
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .pix-price-hint {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #5ce080;
+      letter-spacing: 0.04em;
+      display: block;
+      margin-top: 0.15rem;
+      font-weight: 600;
+    }
+    .size-selector-wrap {
+      margin-top: 0.35rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--line);
+    }
+    .size-selector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.45rem;
+    }
+    .stock-live-tag {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .size-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.85rem;
+    }
+    .size-pill {
+      min-width: 42px;
+      height: 36px;
+      padding: 0 0.65rem;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: rgba(17, 14, 12, 0.75);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .size-pill:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(253, 198, 86, 0.1);
+    }
+    .size-pill.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      font-weight: 800;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+    .size-pill:disabled {
+      opacity: 0.26;
+      text-decoration: line-through;
+      cursor: not-allowed;
+      border-color: rgba(255, 255, 255, 0.06);
+    }
+    .add-to-cart-btn {
+      width: 100%;
+      height: 44px;
+      padding: 0 1rem;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 4px;
+      border: none;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .add-to-cart-btn:hover:not(:disabled) {
+      background: #ffe082;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(253, 198, 86, 0.35);
+    }
+    .add-to-cart-btn:disabled {
+      background: #25201d;
+      border: 1px solid var(--line);
+      color: #6e6459;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(460px, 100vw);
+      height: 100vh;
+      background: #120f0d;
+      border-left: 1px solid var(--line-strong);
+      color: var(--ink);
+      z-index: 9650;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(102%);
+      transition: transform 0.42s var(--ease-out-expo);
+      box-shadow: -24px 0 80px rgba(0, 0, 0, 0.85);
+    }
+    .cart-drawer.open {
+      transform: translateX(0);
+    }
+    .cart-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #181310;
+      color: var(--ink);
+    }
+    .cart-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--line);
+      background: #181310;
+    }
+    .free-ship-track {
+      height: 6px;
+      background: #25201d;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .free-ship-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .checkout-modal-card {
+      width: min(720px, 94vw);
+      max-height: 92vh;
+      overflow-y: auto;
+      background: #120f0d;
+      color: var(--ink);
+      border: 1px solid var(--line-strong);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.85);
+    }
+  </style>
+
+  <script>
+    // DELEGAÇÃO IMEDIATA (ZERO DEPENDENCY): Garante cliques 100% responsivos em qualquer botão de tamanho, sacola e fechamento
+    (function() {
+      function safeOpenDrawer() {
+        if (typeof window.openCartDrawer === "function") {
+          window.openCartDrawer();
+        } else {
+          var drawer = document.getElementById("cartDrawer");
+          var backdrop = document.getElementById("cartBackdrop");
+          if (drawer) drawer.classList.add("open");
+          if (backdrop) backdrop.classList.add("open");
+        }
+      }
+      function safeCloseDrawer() {
+        if (typeof window.closeCartDrawer === "function") {
+          window.closeCartDrawer();
+        } else {
+          var drawer = document.getElementById("cartDrawer");
+          var backdrop = document.getElementById("cartBackdrop");
+          if (drawer) drawer.classList.remove("open");
+          if (backdrop) backdrop.classList.remove("open");
+        }
+      }
+
+      document.addEventListener("click", function(e) {
+        // 1. Botão Abrir Sacola no Header
+        if (e.target.closest("#openCartBtn")) {
+          e.preventDefault();
+          safeOpenDrawer();
+          return;
+        }
+
+        // 2. Fechar Sacola
+        if (e.target.closest("#closeCartBtn, #cartBackdrop")) {
+          e.preventDefault();
+          safeCloseDrawer();
+          return;
+        }
+
+        // 3. Seletor de Tamanhos nos Cards
+        var sizeBtn = e.target.closest("[data-select-size]");
+        if (sizeBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          var card = sizeBtn.closest(".product-card");
+          if (!card) return;
+          var allPills = card.querySelectorAll("[data-select-size]");
+          allPills.forEach(function(p) { p.classList.remove("active"); });
+          sizeBtn.classList.add("active");
+          var label = card.querySelector(".current-selected-label");
+          var sz = sizeBtn.dataset.selectSize;
+          if (label) label.textContent = sz === "UNICO" ? "Único" : sz;
+          if (card.dataset.productId && window.selectedSizesByCard) {
+            window.selectedSizesByCard[card.dataset.productId] = sz;
+          }
+          return;
+        }
+
+        // 4. Botão Adicionar à Sacola
+        var addBtn = e.target.closest(".add-to-cart-btn, [data-add-card], [data-direct-add]");
+        if (addBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          var card = addBtn.closest(".product-card");
+          var prodId = addBtn.dataset.addCard || (card ? card.dataset.productId : null);
+          var activePill = card ? card.querySelector(".size-pill.active") : null;
+          var chosenSize = (activePill && activePill.dataset.selectSize) ? activePill.dataset.selectSize : "M";
+
+          // Feedback visual imediato no botão
+          var originalHtml = addBtn.innerHTML;
+          addBtn.innerHTML = "Adicionado ✓";
+          addBtn.style.background = "#5ce080";
+          addBtn.style.color = "#12100e";
+          setTimeout(function() {
+            addBtn.innerHTML = originalHtml;
+            addBtn.style.background = "";
+            addBtn.style.color = "";
+          }, 1100);
+
+          if (window.SMCore && prodId) {
+            var res = window.SMCore.addToCart(prodId, chosenSize, 1);
+            if (!res.ok && res.message && window.showToast) {
+              window.showToast(res.message);
+              return;
+            }
+          }
+          if (typeof window.renderCartDrawer === "function") window.renderCartDrawer();
+          safeOpenDrawer();
+          if (typeof window.showToast === "function") window.showToast("Peça adicionada à sacola!");
+        }
+      });
+    })();
+  </script>
+
+</head>
+<body>
+
+  <!-- Grão de Filme -->
+  <div class="film-grain" aria-hidden="true"></div>
+
+  <!-- Barra de Progresso no Topo -->
+  <div class="scroll-progress-bar" aria-hidden="true">
+    <div class="scroll-progress-fill" id="scrollProgress"></div>
+  </div>
+
+  <!-- Imagem / Vídeo em Movimento Oficial de Fundo (Selo Santa Máquina · Pistões Cruzados) -->
+  <div id="scene-wrap" aria-hidden="true">
+    <video id="bgMotionVideo" autoplay muted loop playsinline preload="auto" poster="assets/logo_selo.jpg">
+      <source src="assets/logo_motion.mp4" type="video/mp4" />
+    </video>
+    <div class="bg-motion-vignette"></div>
+  </div>
+
+  <!-- Header Editorial Fixo -->
+  <header class="site-header">
+    <a href="#top" class="brand-lockup" aria-label="Santa Máquina — Início">
+      <div class="brand-monogram" data-magnet>
+        <img src="assets/logo_preto.png" onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/sm_preto.png?v=1779199491';" alt="Monograma SM" />
+      </div>
+      <div>
+        <span class="brand-name">SANTA MÁQUINA</span>
+        <span class="brand-coords" data-decrypt="03°43'S 38°32'W · FORTALEZA, CE">03°43'S 38°32'W · FORTALEZA, CE</span>
+      </div>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegação Principal">
+      <a href="#manifesto" class="nav-link" data-decrypt="01. A Alma">01. A Alma</a>
+      <a href="#estrada" class="nav-link" data-decrypt="02. Sertão ao Mar">02. Sertão ao Mar</a>
+      <a href="#historia" class="nav-link" data-decrypt="03. Símbolos">03. Símbolos</a>
+      <a href="#colecoes-flow" class="nav-link" data-decrypt="04. Coleções">04. Coleções</a>
+      <a href="#showroom" class="nav-link" data-decrypt="05. Garagem">05. Garagem</a>
+      <button type="button" class="nav-cta" id="openCartBtn" data-magnet>
+        🛒 Sacola <span class="cart-count-pill" id="headerCartCount">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- ========================================================================
+         SEÇÃO 1: HERO ASSIMÉTRICO + SHINY TEXT + DECRYPTED TELEMETRY + MAGNET
+         ======================================================================== -->
+    <section class="hero container">
+      <div class="hero-grid">
+        <div class="hero-title-col">
+          <div class="hero-kicker">
+            <span class="eyebrow" data-decrypt="ESTD. 2019 · CULTURA BIKER LOCAL">ESTD. 2019 · CULTURA BIKER LOCAL</span>
+            <span class="badge-pill" data-decrypt="TERRA DA LUZ · CEARÁ · BRASIL">TERRA DA LUZ · CEARÁ · BRASIL</span>
+          </div>
+
+          <h1 class="hero-h1">
+            <span class="shiny-text">SANTA MÁQUINA</span>
+            <span class="line-2">CUSTOM <em class="serif-italic">Lifestyle</em></span>
+          </h1>
+
+          <p class="hero-manifesto-lead" data-reveal>
+            Do ronco do motor, da paixão pelo design e da liberdade que só duas rodas podem oferecer. Somos movidos pelas máquinas clássicas, pela customização e pela arte de viver com intensidade cada quilômetro.
+          </p>
+
+          <div class="hero-actions" data-reveal>
+            <a href="#historia" class="btn-primary" data-magnet>
+              Atravessar a História <span>↓</span>
+            </a>
+            <a href="#showroom" class="btn-ghost" data-magnet>
+              Inspecionar Coleções (8 Peças)
+            </a>
+          </div>
+        </div>
+
+        <!-- Coluna Direita: Fotografia Real + Selo Circular Text Magnético -->
+        <div class="hero-visual-col" data-reveal>
+          <div class="hero-photo-frame">
+            <div class="rotating-seal" data-magnet aria-hidden="true">
+              <svg class="seal-text" viewBox="0 0 120 120">
+                <defs>
+                  <path id="circlePathV2" d="M 60, 60 m -46, 0 a 46,46 0 1,1 92,0 a 46,46 0 1,1 -92,0" />
+                </defs>
+                <text fill="#fdc656" font-family="JetBrains Mono, monospace" font-size="8.7" font-weight="700" letter-spacing="2.3">
+                  <textPath href="#circlePathV2">SANTA MÁQUINA • CUSTOM LIFESTYLE •</textPath>
+                </text>
+              </svg>
+              <img class="seal-center" src="assets/logo_selo.jpg" onerror="this.onerror=null;this.src='assets/logo_preto.png';" alt="Selo Santa Máquina Custom Lifestyle" />
+            </div>
+
+            <div class="hero-photo-window">
+              <img class="parallax-img" src="assets/hero_bg.jpg" onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/WhatsApp_Image_2026-07-21_at_19.54.32.jpg?v=1784674797&width=1600';" alt="Casal pilotando moto Triumph customizada usando camiseta Cultura Biker Local da Santa Máquina" />
+            </div>
+            <div class="hero-photo-caption">
+              <span data-decrypt="TRIUMPH CUSTOM · XILOGRAVURA">TRIUMPH CUSTOM · XILOGRAVURA</span>
+              <span data-decrypt="COMPANHIA PARA SUA ESTRADA">COMPANHIA PARA SUA ESTRADA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetria com Decrypted Text (Passe o mouse para decodificar) -->
+      <div class="hero-telemetry">
+        <div class="telemetry-item">
+          <span>ORIGEM & RAIZ</span>
+          <strong data-decrypt="FORTALEZA — CEARÁ (ESTD. 2019)">FORTALEZA — CEARÁ (ESTD. 2019)</strong>
+        </div>
+        <div class="telemetry-item">
+          <span>INSPIRAÇÃO ESTÉTICA</span>
+          <strong data-decrypt="CALIFÓRNIA · JAPÃO · NORDESTE">CALIFÓRNIA · JAPÃO · NORDESTE</strong>
+        </div>
+        <div class="telemetry-item">
+          <span>MANUFATURA</span>
+          <strong data-decrypt="ALGODÃO PREMIUM 100% CEARENSE">ALGODÃO PREMIUM 100% CEARENSE</strong>
+        </div>
+        <div class="telemetry-item">
+          <span>INTERAÇÃO ATIVA</span>
+          <strong data-decrypt="FUNDO EM MOVIMENTO · 1080P">FUNDO EM MOVIMENTO · 1080P</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         REACT BITS #4: SCROLL VELOCITY DUAL MARQUEE
+         ======================================================================== -->
+    <section class="velocity-section" aria-label="Faixa Cinética Scroll Velocity">
+      <div class="velocity-row" id="velRow1">
+        <div class="velocity-inner">
+          <span>CULTURA BIKER LOCAL</span><span class="sep">✳</span>
+          <span>COMPANHIA PARA SUA ESTRADA</span><span class="sep">✳</span>
+          <span>ENTRE O SERTÃO E O MAR</span><span class="sep">✳</span>
+          <span>1884 · TERRA DA LUZ · CHICO DA MATILDE</span><span class="sep">✳</span>
+          <span>MOTO VÉIA NA RUA · AVENIDA DA SAUDADE</span><span class="sep">✳</span>
+        </div>
+        <div class="velocity-inner" aria-hidden="true">
+          <span>CULTURA BIKER LOCAL</span><span class="sep">✳</span>
+          <span>COMPANHIA PARA SUA ESTRADA</span><span class="sep">✳</span>
+          <span>ENTRE O SERTÃO E O MAR</span><span class="sep">✳</span>
+          <span>1884 · TERRA DA LUZ · CHICO DA MATILDE</span><span class="sep">✳</span>
+          <span>MOTO VÉIA NA RUA · AVENIDA DA SAUDADE</span><span class="sep">✳</span>
+        </div>
+      </div>
+
+      <div class="velocity-row row-2" id="velRow2">
+        <div class="velocity-inner">
+          <span>ESTD. 2019 · FORTALEZA CEARÁ</span><span>//</span>
+          <span>CLÁSSICAS & CUSTOMIZADAS BRASIL</span><span>//</span>
+          <span>ALGODÃO PREMIUM CEARENSE</span><span>//</span>
+          <span>DGR FORTALEZA</span><span>//</span>
+          <span>VAI DE SANTA MÁQUINA</span><span>//</span>
+        </div>
+        <div class="velocity-inner" aria-hidden="true">
+          <span>ESTD. 2019 · FORTALEZA CEARÁ</span><span>//</span>
+          <span>CLÁSSICAS & CUSTOMIZADAS BRASIL</span><span>//</span>
+          <span>ALGODÃO PREMIUM CEARENSE</span><span>//</span>
+          <span>DGR FORTALEZA</span><span>//</span>
+          <span>VAI DE SANTA MÁQUINA</span><span>//</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SEÇÃO 2: MANIFESTO + REACT BITS #5: TRUE FOCUS (Mira nos Pilares)
+         ======================================================================== -->
+    <section class="manifesto-section container" id="manifesto">
+      <div class="manifesto-grid">
+        <div class="manifesto-left" data-reveal>
+          <div class="manifesto-stack">
+            <div class="manifesto-main-img">
+              <img class="parallax-img" src="assets/netim_lifestyle.jpg" onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/netim.jpg?v=1779198487&width=1200';" alt="Piloto com Camiseta Logo Preta Santa Máquina apoiado em Triumph Scrambler" />
+            </div>
+            <div class="manifesto-float-card" data-float>
+              <img src="assets/bone_frente.png" onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/bonefrenteok.png?v=1779205450&width=1000';" alt="Boné Trucker Logo Preto Santa Máquina" />
+              <p>Selo Oficial · Fecho Snapback para Alça & Tela Pós-Capacete</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="manifesto-right">
+          <span class="eyebrow" data-decrypt="01 · QUEM SOMOS & NOSSO ESTILO">01 · QUEM SOMOS & NOSSO ESTILO</span>
+          <h2 class="section-title" data-reveal>
+            O Trabalho das Mãos, o Ronco do Motor & o <em class="serif-italic">Sol do Nordeste</em>.
+          </h2>
+
+          <blockquote class="manifesto-quote" data-reveal>
+            “Inspirados pela cena biker californiana e japonesa, mas enraizados em Fortaleza, misturamos tradição e identidade local para construir algo genuinamente nosso.”
+          </blockquote>
+
+          <div class="manifesto-body" data-reveal>
+            <p>
+              Acreditamos no <strong>valor das coisas bem feitas</strong>: no trabalho artesanal das mãos na oficina, no cuidado com os detalhes, na história que cada máquina clássica carrega e na identidade única que cada piloto constrói ao longo da vida.
+            </p>
+            <p>
+              Mais do que vestuário, criamos peças que fazem parte da jornada — roupas e acessórios que representam quem vive a estrada, o encontro, <strong>o café depois da viagem</strong>, o vento quente do Ceará e a alegria de compartilhar a cultura custom do nosso jeito.
+            </p>
+          </div>
+
+          <!-- REACT BITS: TRUE FOCUS (Alterna o foco automaticamente ou ao passar o mouse) -->
+          <div class="true-focus-wrap" id="trueFocusContainer">
+            <div class="true-focus-frame" id="trueFocusFrame" aria-hidden="true">
+              <span class="focus-corner tl"></span>
+              <span class="focus-corner tr"></span>
+              <span class="focus-corner bl"></span>
+              <span class="focus-corner br"></span>
+            </div>
+
+            <div class="focus-pillar is-focused" data-focus-item="0">
+              <span class="num">[PILAR 01 · TRUE FOCUS]</span>
+              <h3>OFICINA & FERRO</h3>
+              <p>Estética de garagem, motores arrefecidos a ar, ferramentas, graxa e respeito pelas motos clássicas que seguem vivas na rua.</p>
+            </div>
+            <div class="focus-pillar" data-focus-item="1">
+              <span class="num">[PILAR 02 · TRUE FOCUS]</span>
+              <h3>ALMA CEARENSE</h3>
+              <p>Algodão premium de alta gramatura produzido com fornecedores locais do Ceará: tecido, costura, arte e alma 100% da nossa terra.</p>
+            </div>
+            <div class="focus-pillar" data-focus-item="2">
+              <span class="num">[PILAR 03 · TRUE FOCUS]</span>
+              <h3>DESIGN DE PILOTO</h3>
+              <p>Modelagem regular clássica para encarar o vento, bonés pensados para o pós-capacete e bandanas versáteis para todo rolé.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SEÇÃO 3: ZOOM-THROUGH PORTAL ("A ESTRADA ENTRE O SERTÃO E O MAR")
+         ======================================================================== -->
+    <section class="dive-section" id="estrada">
+      <div class="dive-backdrop-label">
+        <span class="eyebrow">02 · EXPERIÊNCIA DE IMERSÃO (ROLE PARA MERGULHAR NA ESTRADA)</span>
+      </div>
+
+      <div class="dive-window" id="diveWindow">
+        <img class="dive-img" id="diveImg" src="assets/local_lifestyle.jpg" onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/camiseta_local_1.jpg?v=1780782021&width=1600';" alt="Piloto em Royal Enfield na estrada entre o sertão e as dunas do mar no Ceará" />
+        <div class="dive-overlay">
+          <div class="dive-content">
+            <span class="badge-pill">COLEÇÃO LOCAL · CEARÁ</span>
+            <h2>A Estrada Entre o <em class="serif-italic">Sertão e o Mar</em> é Linda.</h2>
+            <p>
+              Peças que contam sobre quem somos e de onde viemos. Das dunas brancas ao asfalto quente do sertão, cada estampa da Santa Máquina carrega um manifesto de liberdade, resistência e orgulho de ser Local.
+            </p>
+            <div class="dive-coords-bar">
+              <span>⚡ VAI DE SANTA MÁQUINA</span>
+              <span>📍 ROTA CE-040 / CE-085</span>
+              <span>🏍️ ROYAL ENFIELD & TRIUMPH CLASSICS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SEÇÃO 4: OS 4 CAPÍTULOS DA HISTÓRIA & ICONOGRAFIA (COM LUPA DE ZOOM)
+         ======================================================================== -->
+    <section class="chapters-section" id="historia">
+      <div class="container">
+        <div class="chapters-header">
+          <div>
+            <span class="eyebrow">03 · ARQUEOLOGIA CULTURAL DA MARCA (PASSE O MOUSE NAS ARTES PARA DAR ZOOM)</span>
+            <h2 class="section-title" style="margin-bottom: 0;">
+              Quatro Símbolos.<br />Uma <em class="serif-italic">Mesma Estrada</em>.
+            </h2>
+          </div>
+          <p style="max-width: 28rem; color: var(--muted); font-size: 0.98rem;">
+            Extraímos cada detalhe das estampas e manifestos oficiais da Santa Máquina. Aproxime o cursor sobre as peças abaixo para usar a <strong>Lupa de Inspeção</strong>.
+          </p>
+        </div>
+
+        <div class="road-timeline">
+          <svg class="road-svg-line" viewBox="0 0 4 1000" preserveAspectRatio="none" aria-hidden="true">
+            <line x1="2" y1="0" x2="2" y2="1000" stroke="rgba(244,238,227,0.12)" stroke-width="2" stroke-dasharray="8 8" />
+            <line id="roadProgressLine" x1="2" y1="0" x2="2" y2="1000" stroke="#fdc656" stroke-width="3" />
+          </svg>
+
+          <!-- CAPÍTULO 1: 1884 TERRA DA LUZ -->
+          <article class="chapter-card">
+            <div class="chapter-visual">
+              <div class="art-zoom-stage" data-zoom-container>
+                <img src="assets/local_marrom_costas.png" onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/LOCALCOSTA1.png?v=1779113691&width=1000';" alt="Estampa Costas Camiseta Local Marrom: 1884 Terra da Luz Chico da Matilde" />
+                <span class="zoom-hint-badge">🔍 Passe o mouse para Zoom 2x</span>
+              </div>
+            </div>
+            <div class="chapter-text" data-reveal>
+              <span class="km-badge" data-decrypt="CAPÍTULO 01 · MARCO HISTÓRICO 1884">CAPÍTULO 01 · MARCO HISTÓRICO 1884</span>
+              <h3>Terra da Luz & o Grito de <em class="serif-italic">Chico da Matilde</em></h3>
+              <p>
+                Mais do que uma camiseta, a linha <strong>LOCAL (1884)</strong> é um grito de liberdade estampado no peito e nas costas. Em 1881, <strong>Francisco José do Nascimento — o Chico da Matilde, nosso eterno Dragão do Mar —</strong> liderou os jangadeiros em um movimento histórico de resistência popular que fechou o porto de Fortaleza contra o tráfico negreiro.
+              </p>
+              <p>
+                O feito foi tão grandioso que tornou o Ceará a <strong>primeira província do Brasil a abolir a escravidão, em 1884</strong>, passando a ser conhecida para sempre como a <strong>TERRA DA LUZ</strong>.
+              </p>
+              <div class="chapter-tags">
+                <span class="chapter-tag">1881 · Greve dos Jangadeiros</span>
+                <span class="chapter-tag">1884 · Abolição no Ceará</span>
+                <span class="chapter-tag">Dragão do Mar</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- CAPÍTULO 2: AVENIDA DA SAUDADE & MOTO VÉIA NA RUA -->
+          <article class="chapter-card">
+            <div class="chapter-visual">
+              <div class="art-zoom-stage" data-zoom-container style="background: #f6f3ec;">
+                <img src="assets/oleo_branca_costas.png" onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/CAMISETAOLEOBRCOSTAS.png?v=1791674193&width=1000';" alt="Estampa Camiseta Óleo Branca: Cultura Biker Local ESTD 2019" />
+                <span class="zoom-hint-badge">🔍 Passe o mouse para Zoom 2x</span>
+              </div>
+            </div>
+            <div class="chapter-text" data-reveal>
+              <span class="km-badge" data-decrypt="CAPÍTULO 02 · ESTD. 2019 · AV. DA SAUDADE">CAPÍTULO 02 · ESTD. 2019 · AV. DA SAUDADE</span>
+              <h3>“Moto Véia na Rua” & a <em class="serif-italic">Cultura de Oficina</em></h3>
+              <p>
+                Nascida em <strong>2019</strong> em Fortaleza, a Santa Máquina celebra o humor, o suor e a camaradagem de quem mantém as máquinas clássicas rodando. Na estampa da <strong>Camiseta Óleo Branca</strong>, o mascote da garrafa de óleo empunha uma chave de boca e a bandeira com o monograma <code>SM</code>.
+              </p>
+              <blockquote class="chapter-verse">
+                “Cultura Biker Local — Moto véia na rua · Avenida da Saudade · Fortaleza · ESTD. 2019”
+              </blockquote>
+              <div class="chapter-tags">
+                <span class="chapter-tag">ESTD. 2019</span>
+                <span class="chapter-tag">Avenida da Saudade</span>
+                <span class="chapter-tag">Chave de Boca & Óleo</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- CAPÍTULO 3: LENÇO TERRAL -->
+          <article class="chapter-card">
+            <div class="chapter-visual">
+              <div class="art-zoom-stage" data-zoom-container style="background: #14192e;">
+                <img src="assets/lenco_azul.png" onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/LENCOTERRALAZULP.png?v=1779202988&width=1000';" alt="Lenço Terral Azul" />
+                <span class="zoom-hint-badge">🔍 Inspecione os Versos nas Bordas</span>
+              </div>
+            </div>
+            <div class="chapter-text" data-reveal>
+              <span class="km-badge" data-decrypt="CAPÍTULO 03 · GEOGRAFIA POÉTICA · TERRAL">CAPÍTULO 03 · GEOGRAFIA POÉTICA · TERRAL</span>
+              <h3>Os 4 Pontos Cardeais do <em class="serif-italic">Terral Cearense</em></h3>
+              <p>
+                O <strong>Lenço Terral</strong> sintetiza a cosmologia visual da Santa Máquina. Ao redor do monograma <code>SM</code>, quatro gravuras marcam os pontos cardeais da estrada nordestina: o <strong>Mandacaru</strong>, o <strong>Crânio Bovino</strong>, o <strong>Peixe</strong> e o <strong>Sol Nascendo nas Ondas</strong>.
+              </p>
+              <blockquote class="chapter-verse">
+                “Eu venho das dunas brancas, da onde eu queria ficar / Meu Céu é pleno de paz, sem chaminés ou fumaça / Tenho o Sol e areia, sou da América, Sul da América / Sou a nata do lixo, sou do luxo da aldeia, sou do Ceará.”
+              </blockquote>
+            </div>
+          </article>
+
+          <!-- CAPÍTULO 4: ESPÍRITO PILOTO -->
+          <article class="chapter-card">
+            <div class="chapter-visual">
+              <div class="art-zoom-stage" data-zoom-container style="background: #f0ece1;">
+                <img src="assets/piloto_off_costas.png" onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/camisetapilotooffcostas.png?v=1780782887&width=1000';" alt="Estampa Camiseta Piloto Off-white" />
+                <span class="zoom-hint-badge">🔍 Passe o mouse para Zoom 2x</span>
+              </div>
+            </div>
+            <div class="chapter-text" data-reveal>
+              <span class="km-badge" data-decrypt="CAPÍTULO 04 · COLEÇÃO CLÁSSICOS · PILOTO">CAPÍTULO 04 · COLEÇÃO CLÁSSICOS · PILOTO</span>
+              <h3>A Arte de Viver Bem Pilotando uma <em class="serif-italic">Bela Máquina</em></h3>
+              <p>
+                Na <strong>Coleção Clássicos</strong>, o espírito das pistas antigas e das estradas abertas ganha forma na estampa <strong>Piloto — Clássicas & Customizadas Brasil</strong>. A ave de rapina envergando um capacete aberto vintage com o selo <code>SM</code> e as bandeiras quadriculadas traduz a essência de quem sente a liberdade em cada curva.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         REACT BITS #6: FLOWING MENU (Menu Fluido Interativo de Coleções)
+         ======================================================================== -->
+    <section class="flowing-menu-section" id="colecoes-flow" aria-label="Explorar Coleções com Flowing Menu">
+      <div class="flowing-menu-header">
+        <span class="eyebrow">04 · REACT BITS FLOWING MENU (PASSE O MOUSE NAS FAIXAS)</span>
+        <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted);">CLIQUE PARA FILTRAR O SHOWROOM ABAIXO ↓</span>
+      </div>
+
+      <a href="#showroom" class="flowing-item" data-flow-filter="local">
+        <div class="flowing-item-label">
+          <span>01 / COLEÇÃO LOCAL — SERTÃO AO MAR</span>
+          <span class="flowing-item-meta">5 PEÇAS AUTORAIS →</span>
+        </div>
+        <div class="flowing-marquee-overlay" aria-hidden="true">
+          <div class="flowing-marquee-track">
+            <span>TERRA DA LUZ 1884</span>
+            <img class="flowing-thumb" src="assets/local_marrom_costas.png" alt="" />
+            <span>CHICO DA MATILDE</span>
+            <img class="flowing-thumb" src="assets/oleo_branca_costas.png" alt="" />
+            <span>LENÇO TERRAL</span>
+            <img class="flowing-thumb" src="assets/lenco_azul.png" alt="" />
+            <span>TERRA DA LUZ 1884</span>
+            <img class="flowing-thumb" src="assets/local_preta_costas.png" alt="" />
+            <span>CHICO DA MATILDE</span>
+            <img class="flowing-thumb" src="assets/local_lifestyle.jpg" alt="" />
+          </div>
+        </div>
+      </a>
+
+      <a href="#showroom" class="flowing-item" data-flow-filter="classicos">
+        <div class="flowing-item-label">
+          <span>02 / COLEÇÃO CLÁSSICOS — AS PRIMEIRAS</span>
+          <span class="flowing-item-meta">3 PEÇAS ÍCONES →</span>
+        </div>
+        <div class="flowing-marquee-overlay" aria-hidden="true">
+          <div class="flowing-marquee-track">
+            <span>CUSTOM LIFESTYLE</span>
+            <img class="flowing-thumb" src="assets/logo_preta_costas.png" alt="" />
+            <span>ESPÍRITO PILOTO</span>
+            <img class="flowing-thumb" src="assets/piloto_off_costas.png" alt="" />
+            <span>TRUCKER BIKER CAP</span>
+            <img class="flowing-thumb" src="assets/bone_frente.png" alt="" />
+            <span>CUSTOM LIFESTYLE</span>
+            <img class="flowing-thumb" src="assets/netim_lifestyle.jpg" alt="" />
+          </div>
+        </div>
+      </a>
+
+      <a href="#comunidade" class="flowing-item" data-flow-filter="all">
+        <div class="flowing-item-label">
+          <span>03 / DGR FORTALEZA & SANTA MÁQUINA POR AÍ</span>
+          <span class="flowing-item-meta">COMUNIDADE NA ESTRADA →</span>
+        </div>
+        <div class="flowing-marquee-overlay" aria-hidden="true">
+          <div class="flowing-marquee-track">
+            <span>DISTINGUISHED GENTLEMAN'S RIDE</span>
+            <img class="flowing-thumb" src="assets/hero_bg.jpg" alt="" />
+            <span>CAFÉ DEPOIS DA VIAGEM</span>
+            <img class="flowing-thumb" src="assets/netim_lifestyle.jpg" alt="" />
+            <span>MOTO VÉIA NA RUA</span>
+            <img class="flowing-thumb" src="assets/local_lifestyle.jpg" alt="" />
+            <span>FORTALEZA · CEARÁ</span>
+            <img class="flowing-thumb" src="assets/logo_preto.png" alt="" />
+          </div>
+        </div>
+      </a>
+    </section>
+
+    <!-- ========================================================================
+         SEÇÃO 5: SHOWROOM INTERATIVO (SPOTLIGHT CARD + GLARE HOVER + 3D TILT)
+         ======================================================================== -->
+    <section class="catalog-section container" id="showroom">
+      <div class="catalog-top">
+        <div>
+          <span class="eyebrow">05 · SPOTLIGHT + GLARE + TILTED CARDS (8 PEÇAS OFICIAIS)</span>
+          <h2 class="section-title" style="margin-bottom: 0;">
+            As Peças da <em class="serif-italic">Nossa Jornada</em>.
+          </h2>
+        </div>
+
+        <div class="filter-bar" role="tablist" aria-label="Filtrar por coleção">
+          <button type="button" class="filter-btn active" data-filter="all" data-magnet>Todas as Peças (8)</button>
+          <button type="button" class="filter-btn" data-filter="local" data-magnet>Coleção Local (5)</button>
+          <button type="button" class="filter-btn" data-filter="classicos" data-magnet>Coleção Clássicos (3)</button>
+        </div>
+      </div>
+
+      <div class="catalog-grid" id="catalogGrid">
+
+        <!-- 1. CAMISETA LOCAL MARROM -->
+        <article class="product-card featured-wide" data-category="local" data-product-id="camiseta-local-marrom">
+          <div class="product-card-header">
+            <span class="product-collection-tag">✦ COLEÇÃO LOCAL · 1884</span>
+            <span>ALGODÃO PREMIUM CEARENSE</span>
+          </div>
+          <div class="product-media" data-product-zoom>
+            <img
+              src="assets/local_marrom_costas.png"
+              data-front="assets/local_marrom_frente.png"
+              data-back="assets/local_marrom_costas.png"
+              data-showing="back"
+              onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/LOCALCOSTA1.png?v=1779113691&width=1000';"
+              alt="Camiseta Local Marrom"
+            />
+            <button type="button" class="flip-view-btn" data-flip-btn>↻ Frente / Costas</button>
+            <button type="button" class="zoom-inspect-btn" data-open-lightbox="0">🔍 Ampliar</button>
+          </div>
+          <div class="product-body">
+            <div class="product-title-row">
+              <h3 class="product-title">Camiseta Local Marrom</h3>
+              <div class="product-price-wrap">
+                <span class="product-price">R$ 89,90</span>
+                <span class="pix-price-hint">R$ 85,41 no PIX (5% OFF) · ou 3x R$ 29,97</span>
+              </div>
+            </div>
+            <p class="product-story">
+              Homenagem a Chico da Matilde (Dragão do Mar) e ao marco de 1884. Malha penteada pesada 100% algodão, costuras reforçadas e arte cearense.
+            </p>
+            <div class="product-footer">
+              <div class="size-selector-wrap">
+                <div class="size-selector-header">
+                  <span>TAMANHO: <strong class="current-selected-label">M</strong></span>
+                  <span class="stock-live-tag">Disponível</span>
+                </div>
+                <div class="size-pills">
+                  <button type="button" class="size-pill" data-select-size="P">P</button>
+                  <button type="button" class="size-pill active" data-select-size="M">M</button>
+                  <button type="button" class="size-pill" data-select-size="G">G</button>
+                  <button type="button" class="size-pill" data-select-size="GG">GG</button>
+                  <button type="button" class="size-pill" data-select-size="XG">XG</button>
+                </div>
+                <button type="button" class="add-to-cart-btn" data-add-card="camiseta-local-marrom">
+                  Adicionar à Sacola
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2. CAMISETA ÓLEO BRANCA -->
+        <article class="product-card featured-wide" data-category="local" data-product-id="camiseta-oleo-branca">
+          <div class="product-card-header">
+            <span class="product-collection-tag">✦ COLEÇÃO LOCAL · ESTD. 2019</span>
+            <span>AV. DA SAUDADE · FORTALEZA</span>
+          </div>
+          <div class="product-media" data-product-zoom>
+            <img
+              src="assets/oleo_branca_costas.png"
+              data-front="assets/oleo_branca_frente.png"
+              data-back="assets/oleo_branca_costas.png"
+              data-showing="back"
+              onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/CAMISETAOLEOBRCOSTAS.png?v=1791674193&width=1000';"
+              alt="Camiseta Óleo Branca"
+            />
+            <button type="button" class="flip-view-btn" data-flip-btn>↻ Frente / Costas</button>
+            <button type="button" class="zoom-inspect-btn" data-open-lightbox="1">🔍 Ampliar</button>
+          </div>
+          <div class="product-body">
+            <div class="product-title-row">
+              <h3 class="product-title">Camiseta Óleo Branca</h3>
+              <div class="product-price-wrap">
+                <span class="product-price">R$ 89,90</span>
+                <span class="pix-price-hint">R$ 85,41 no PIX (5% OFF) · ou 3x R$ 29,97</span>
+              </div>
+            </div>
+            <p class="product-story">
+              Cultura Biker Local: "Moto véia na rua - Avenida da Saudade, Fortaleza". Modelagem clássica encorpada e toque macio de alta durabilidade.
+            </p>
+            <div class="product-footer">
+              <div class="size-selector-wrap">
+                <div class="size-selector-header">
+                  <span>TAMANHO: <strong class="current-selected-label">M</strong></span>
+                  <span class="stock-live-tag">Disponível</span>
+                </div>
+                <div class="size-pills">
+                  <button type="button" class="size-pill" data-select-size="P">P</button>
+                  <button type="button" class="size-pill active" data-select-size="M">M</button>
+                  <button type="button" class="size-pill" data-select-size="G">G</button>
+                  <button type="button" class="size-pill" data-select-size="GG">GG</button>
+                  <button type="button" class="size-pill" data-select-size="XG">XG</button>
+                </div>
+                <button type="button" class="add-to-cart-btn" data-add-card="camiseta-oleo-branca">
+                  Adicionar à Sacola
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3. CAMISETA PILOTO OFF-WHITE -->
+        <article class="product-card" data-category="classicos" data-product-id="camiseta-piloto-off-white">
+          <div class="product-card-header">
+            <span class="product-collection-tag">✦ COLEÇÃO CLÁSSICOS</span>
+            <span>CLÁSSICAS & CUSTOMIZADAS</span>
+          </div>
+          <div class="product-media" data-product-zoom>
+            <img
+              src="assets/piloto_off_costas.png"
+              data-front="assets/piloto_off_frente.png"
+              data-back="assets/piloto_off_costas.png"
+              data-showing="back"
+              onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/camisetapilotooffcostas.png?v=1780782887&width=1000';"
+              alt="Camiseta Piloto Off-white"
+            />
+            <button type="button" class="flip-view-btn" data-flip-btn>↻ Frente / Costas</button>
+            <button type="button" class="zoom-inspect-btn" data-open-lightbox="2">🔍 Ampliar</button>
+          </div>
+          <div class="product-body">
+            <div class="product-title-row">
+              <h3 class="product-title">Camiseta Piloto Off-White</h3>
+              <div class="product-price-wrap">
+                <span class="product-price">R$ 89,90</span>
+                <span class="pix-price-hint">R$ 85,41 no PIX (5% OFF) · ou 3x R$ 29,97</span>
+              </div>
+            </div>
+            <p class="product-story">
+              A expressão de quem vive intensamente a paixão pelas motos clássicas e customizadas. Cor off-white vintage, gola canelada e estampa silk de alta definição.
+            </p>
+            <div class="product-footer">
+              <div class="size-selector-wrap">
+                <div class="size-selector-header">
+                  <span>TAMANHO: <strong class="current-selected-label">M</strong></span>
+                  <span class="stock-live-tag">Disponível</span>
+                </div>
+                <div class="size-pills">
+                  <button type="button" class="size-pill" data-select-size="P">P</button>
+                  <button type="button" class="size-pill active" data-select-size="M">M</button>
+                  <button type="button" class="size-pill" data-select-size="G">G</button>
+                  <button type="button" class="size-pill" data-select-size="GG">GG</button>
+                  <button type="button" class="size-pill" data-select-size="XG">XG</button>
+                </div>
+                <button type="button" class="add-to-cart-btn" data-add-card="camiseta-piloto-off-white">
+                  Adicionar à Sacola
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4. CAMISETA LOGO PRETA -->
+        <article class="product-card" data-category="classicos" data-product-id="camiseta-logo-preta">
+          <div class="product-card-header">
+            <span class="product-collection-tag">✦ COLEÇÃO CLÁSSICOS</span>
+            <span>A PRIMEIRA · TRADICIONAL</span>
+          </div>
+          <div class="product-media" data-product-zoom>
+            <img
+              src="assets/logo_preta_costas.png"
+              data-front="assets/logo_preta_frente.png"
+              data-back="assets/logo_preta_costas.png"
+              data-showing="back"
+              onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/CAMISETA_SM_PT_COSTAS.png?v=1791677644&width=1000';"
+              alt="Camiseta Logo Preta"
+            />
+            <button type="button" class="flip-view-btn" data-flip-btn>↻ Frente / Costas</button>
+            <button type="button" class="zoom-inspect-btn" data-open-lightbox="3">🔍 Ampliar</button>
+          </div>
+          <div class="product-body">
+            <div class="product-title-row">
+              <h3 class="product-title">Camiseta Logo Preta</h3>
+              <div class="product-price-wrap">
+                <span class="product-price">R$ 89,90</span>
+                <span class="pix-price-hint">R$ 85,41 no PIX (5% OFF) · ou 3x R$ 29,97</span>
+              </div>
+            </div>
+            <p class="product-story">
+              A clássica original, desde o primeiro dia. Selo circular oficial Santa Máquina Custom Lifestyle em silk screen contrastante sobre algodão preto reativo.
+            </p>
+            <div class="product-footer">
+              <div class="size-selector-wrap">
+                <div class="size-selector-header">
+                  <span>TAMANHO: <strong class="current-selected-label">M</strong></span>
+                  <span class="stock-live-tag">Disponível</span>
+                </div>
+                <div class="size-pills">
+                  <button type="button" class="size-pill" data-select-size="P">P</button>
+                  <button type="button" class="size-pill active" data-select-size="M">M</button>
+                  <button type="button" class="size-pill" data-select-size="G">G</button>
+                  <button type="button" class="size-pill" data-select-size="GG">GG</button>
+                  <button type="button" class="size-pill" data-select-size="XG">XG</button>
+                </div>
+                <button type="button" class="add-to-cart-btn" data-add-card="camiseta-logo-preta">
+                  Adicionar à Sacola
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5. BONÉ TRUCKER LOGO PRETO -->
+        <article class="product-card" data-category="classicos" data-product-id="bone-trucker-logo-preto">
+          <div class="product-card-header">
+            <span class="product-collection-tag">✦ COLEÇÃO CLÁSSICOS</span>
+            <span>DESIGN FUNCIONAL BIKER</span>
+          </div>
+          <div class="product-media" data-product-zoom>
+            <img
+              src="assets/bone_frente.png"
+              data-front="assets/bone_frente.png"
+              data-back="assets/bone_lateral.png"
+              data-showing="front"
+              onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/bonefrenteok.png?v=1779205450&width=1000';"
+              alt="Boné Trucker Logo Preto"
+            />
+            <button type="button" class="flip-view-btn" data-flip-btn>↻ Frente / Lateral</button>
+            <button type="button" class="zoom-inspect-btn" data-open-lightbox="4">🔍 Ampliar</button>
+          </div>
+          <div class="product-body">
+            <div class="product-title-row">
+              <h3 class="product-title">Boné Trucker Logo Preto</h3>
+              <div class="product-price-wrap">
+                <span class="product-price">R$ 79,90</span>
+                <span class="pix-price-hint">R$ 75,91 no PIX (5% OFF) · ou 3x R$ 26,63</span>
+              </div>
+            </div>
+            <p class="product-story">
+              Pensado para quem pilota: tela traseira respirável para refrescar após tirar o capacete e fecho snapback regulável para prender na calça ou moto.
+            </p>
+            <div class="product-footer">
+              <div class="size-selector-wrap">
+                <div class="size-selector-header">
+                  <span>TAMANHO: <strong class="current-selected-label">Único</strong></span>
+                  <span class="stock-live-tag">Disponível</span>
+                </div>
+                <div class="size-pills">
+                  <button type="button" class="size-pill active" data-select-size="UNICO" style="flex:1;">TAMANHO ÚNICO (SNAPBACK)</button>
+                </div>
+                <button type="button" class="add-to-cart-btn" data-add-card="bone-trucker-logo-preto">
+                  Adicionar à Sacola
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 6. CAMISETA LOCAL PRETA -->
+        <article class="product-card" data-category="local" data-product-id="camiseta-local-preta">
+          <div class="product-card-header">
+            <span class="product-collection-tag">✦ COLEÇÃO LOCAL</span>
+            <span>1884 · TERRA DA LUZ</span>
+          </div>
+          <div class="product-media" data-product-zoom>
+            <img
+              src="assets/local_preta_costas.png"
+              data-front="assets/local_preta_frente.png"
+              data-back="assets/local_preta_costas.png"
+              data-showing="back"
+              onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/CAMISETA_LOCAL_PT_COSTAS_OK.png?v=1791677340&width=1000';"
+              alt="Camiseta Local Preta"
+            />
+            <button type="button" class="flip-view-btn" data-flip-btn>↻ Frente / Costas</button>
+            <button type="button" class="zoom-inspect-btn" data-open-lightbox="5">🔍 Ampliar</button>
+          </div>
+          <div class="product-body">
+            <div class="product-title-row">
+              <h3 class="product-title">Camiseta Local Preta</h3>
+              <div class="product-price-wrap">
+                <span class="product-price">R$ 89,90</span>
+                <span class="pix-price-hint">R$ 85,41 no PIX (5% OFF) · ou 3x R$ 29,97</span>
+              </div>
+            </div>
+            <p class="product-story">
+              A edição preta asfalto da homenagem a Chico da Matilde e à abolição pioneira de 1884 no Ceará. Algodão penteado de alta gramatura e modelagem regular.
+            </p>
+            <div class="product-footer">
+              <div class="size-selector-wrap">
+                <div class="size-selector-header">
+                  <span>TAMANHO: <strong class="current-selected-label">M</strong></span>
+                  <span class="stock-live-tag">Disponível</span>
+                </div>
+                <div class="size-pills">
+                  <button type="button" class="size-pill" data-select-size="P">P</button>
+                  <button type="button" class="size-pill active" data-select-size="M">M</button>
+                  <button type="button" class="size-pill" data-select-size="G">G</button>
+                  <button type="button" class="size-pill" data-select-size="GG">GG</button>
+                  <button type="button" class="size-pill" data-select-size="XG">XG</button>
+                </div>
+                <button type="button" class="add-to-cart-btn" data-add-card="camiseta-local-preta">
+                  Adicionar à Sacola
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 7. LENÇO TERRAL AZUL -->
+        <article class="product-card" data-category="local" data-product-id="lenco-terral-azul">
+          <div class="product-card-header">
+            <span class="product-collection-tag">✦ COLEÇÃO LOCAL</span>
+            <span>ACESSÓRIO DE ESTRADA</span>
+          </div>
+          <div class="product-media" data-product-zoom>
+            <img
+              src="assets/lenco_azul.png"
+              onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/LENCOTERRALAZULP.png?v=1779202988&width=1000';"
+              alt="Lenço Terral Azul"
+            />
+            <button type="button" class="zoom-inspect-btn" data-open-lightbox="6">🔍 Ampliar</button>
+          </div>
+          <div class="product-body">
+            <div class="product-title-row">
+              <h3 class="product-title">Lenço Terral Azul</h3>
+              <div class="product-price-wrap">
+                <span class="product-price">R$ 54,90</span>
+                <span class="pix-price-hint">R$ 52,16 no PIX (5% OFF) · ou 2x R$ 27,45</span>
+              </div>
+            </div>
+            <p class="product-story">
+              Bandana biker cearense: cacto, crânio, sol no mar e versos das dunas. Peça versátil para pescoço, cabeça ou amarrada na máquina.
+            </p>
+            <div class="product-footer">
+              <div class="size-selector-wrap">
+                <div class="size-selector-header">
+                  <span>TAMANHO: <strong class="current-selected-label">Único</strong></span>
+                  <span class="stock-live-tag">Disponível</span>
+                </div>
+                <div class="size-pills">
+                  <button type="button" class="size-pill active" data-select-size="UNICO" style="flex:1;">BANDANA VERSÁTIL (ÚNICO)</button>
+                </div>
+                <button type="button" class="add-to-cart-btn" data-add-card="lenco-terral-azul">
+                  Adicionar à Sacola
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 8. LENÇO TERRAL OFF-WHITE -->
+        <article class="product-card" data-category="local" data-product-id="lenco-terral-off">
+          <div class="product-card-header">
+            <span class="product-collection-tag">✦ COLEÇÃO LOCAL</span>
+            <span>ACESSÓRIO DE ESTRADA</span>
+          </div>
+          <div class="product-media" data-product-zoom>
+            <img
+              src="assets/lenco_off.png"
+              onerror="this.onerror=null;this.src='https://www.santamaquinaloja.com.br/cdn/shop/files/LENCOTERRALOFFP.png?v=1779203294&width=1000';"
+              alt="Lenço Terral Off-white"
+            />
+            <button type="button" class="zoom-inspect-btn" data-open-lightbox="7">🔍 Ampliar</button>
+          </div>
+          <div class="product-body">
+            <div class="product-title-row">
+              <h3 class="product-title">Lenço Terral Off-White</h3>
+              <div class="product-price-wrap">
+                <span class="product-price">R$ 54,90</span>
+                <span class="pix-price-hint">R$ 52,16 no PIX (5% OFF) · ou 2x R$ 27,45</span>
+              </div>
+            </div>
+            <p class="product-story">
+              Edição Off-White Areia das Dunas do nosso Lenço Terral. Tecido leve e respirável para proteger do vento e da poeira na estrada.
+            </p>
+            <div class="product-footer">
+              <div class="size-selector-wrap">
+                <div class="size-selector-header">
+                  <span>TAMANHO: <strong class="current-selected-label">Único</strong></span>
+                  <span class="stock-live-tag">Disponível</span>
+                </div>
+                <div class="size-pills">
+                  <button type="button" class="size-pill active" data-select-size="UNICO" style="flex:1;">BANDANA VERSÁTIL (ÚNICO)</button>
+                </div>
+                <button type="button" class="add-to-cart-btn" data-add-card="lenco-terral-off">
+                  Adicionar à Sacola
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+    <!-- ========================================================================
+         SEÇÃO 7: REACT BITS #9 & #10: HYPERSPEED TUNNEL + TEXT PRESSURE CTA
+         ======================================================================== -->
+    <section class="final-cta" id="ctaHyperspeed">
+      <!-- Túnel de Luz de Estrada Noturna (Hyperspeed) -->
+      <canvas id="hyperspeedCanvas" title="Clique e segure para acelerar na estrada (Hyperspeed)"></canvas>
+
+      <div class="container final-cta-inner">
+        <div class="final-cta-title-wrap">
+          <span class="eyebrow">07 · HYPERSPEED HIGHWAY + TEXT PRESSURE (CLIQUE E SEGURE PARA ACELERAR)</span>
+          <h2 class="pressure-title" id="pressureHeading">
+            VAI DE SANTA MÁQUINA
+          </h2>
+        </div>
+
+        <div class="final-cta-box">
+          <p style="font-size: 1.02rem; color: var(--ink);">
+            Vista a história da nossa terra e leve a cultura biker local para a sua estrada. Escolha seu tamanho, pague com PIX (5% OFF) ou Cartão e receba em todo o Brasil.
+          </p>
+          <a href="#showroom" class="btn-primary" data-magnet style="justify-content: center; width: 100%;">
+            Escolher Minhas Peças Agora <span>↑</span>
+          </a>
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); display: grid; gap: 0.35rem; padding-top: 0.5rem; border-top: 1px solid var(--line);">
+            <span>📍 RUA PADRE FRANCISCO PITA, 600 — FORTALEZA, CE</span>
+            <span>📞 WHATSAPP: <a href="https://wa.me/5585997428530" target="_blank" rel="noopener" style="color: var(--accent);">+55 (85) 99742-8530</a></span>
+            <span>✉️ SANTAMAQUINASM@GMAIL.COM</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <strong>SANTA MÁQUINA — CUSTOM LIFESTYLE</strong> · ESTD. 2019 · FORTALEZA, CE
+      </div>
+      <div class="footer-links">
+        <a href="#showroom" data-flow-filter="local">Coleção Local</a>
+        <a href="#showroom" data-flow-filter="classicos">Coleção Clássicos</a>
+        <a href="erp.html" style="color: var(--accent); font-weight: 700;">⚙️ Sistema ERP (Backoffice)</a>
+        <a href="https://instagram.com/santamaquina" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@SantaMaquina" target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lightbox Modal com Compra Direta e Seletor de Tamanho -->
+  <div class="lightbox-modal" id="lightboxModal" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
+    <div class="lightbox-card">
+      <div class="lightbox-img-stage" id="lightboxStage">
+        <img id="lightboxImg" src="assets/local_marrom_costas.png" alt="" />
+      </div>
+      <div class="lightbox-details">
+        <button type="button" class="lightbox-close" id="lightboxClose">✕ FECHAR [ESC]</button>
+        <div>
+          <span class="eyebrow" id="lightboxCol">COLEÇÃO LOCAL</span>
+          <h3 id="lightboxTitle" style="font-family: var(--font-display); font-size: 2.8rem; line-height: 0.95; margin-block: 0.5rem 0.6rem;">Camiseta Local Marrom</h3>
+          <p id="lightboxPrice" style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--accent); font-weight: 700; margin-bottom: 0.25rem;">R$ 89,90</p>
+          <span id="lightboxPixHint" class="pix-price-hint" style="margin-bottom: 1rem;">R$ 85,41 no PIX (5% OFF)</span>
+          <p id="lightboxDesc" style="color: var(--muted); line-height: 1.65; font-size: 0.95rem; margin-bottom: 1.25rem;"></p>
+
+          <div class="size-selector-wrap" style="margin-bottom: 1rem;">
+            <div class="size-selector-header">
+              <span>SELECIONE O TAMANHO:</span>
+              <span class="stock-live-tag" id="lightboxStockHint">Estoque Sincronizado ERP</span>
+            </div>
+            <div class="size-pills" id="lightboxSizePills"></div>
+          </div>
+        </div>
+        <button type="button" id="lightboxAddBtn" class="btn-primary" style="justify-content: center; width: 100%;">
+          + Adicionar à Sacola <span>→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       SACOLA LATERAL (SLIDE-OVER DRAWER CART)
+       ========================================================================== -->
+  <div class="cart-backdrop" id="cartBackdrop"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Sacola de Compras">
+    <div class="cart-header">
+      <div>
+        <span class="eyebrow" style="font-size: 0.62rem;">CHECKOUT DIRETO · SANTA MÁQUINA</span>
+        <h3>SUA SACOLA <span id="drawerCountLabel" style="color: var(--accent);">(0)</span></h3>
+      </div>
+      <button type="button" class="lightbox-close" id="closeCartBtn">✕ FECHAR</button>
+    </div>
+
+    <div class="free-ship-bar-wrap">
+      <div id="freeShipText">Faltam <strong>R$ 220,00</strong> para ganhar <strong>FRETE GRÁTIS</strong>!</div>
+      <div class="free-ship-track">
+        <div class="free-ship-fill" id="freeShipFill"></div>
+      </div>
+    </div>
+
+    <div class="cart-body" id="cartItemsContainer"></div>
+
+    <!-- Upsell 1-Clique na Sacola -->
+    <div style="padding: 0 1.5rem 0.75rem;" id="cartUpsellWrap">
+      <div class="cart-upsell-box">
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.62rem; color: var(--accent); display: block;">⚡ LEVE TAMBÉM PARA A ESTRADA</span>
+          <strong style="font-size: 0.85rem;">Lenço Terral Azul (Bandana) — R$ 54,90</strong>
+        </div>
+        <button type="button" class="sm-btn-small" id="btnUpsellLenco">+ Adicionar</button>
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <!-- Cupom + CEP -->
+      <div class="cart-input-row">
+        <input type="text" id="couponInput" class="sm-input" placeholder="CUPOM (ex: TERRADALUZ10)" />
+        <button type="button" class="sm-btn-small" id="applyCouponBtn">Aplicar</button>
+      </div>
+
+      <div class="cart-input-row">
+        <input type="text" id="cepCartInput" class="sm-input" placeholder="CEP de Entrega (ex: 60175-047)" maxlength="9" />
+        <button type="button" class="sm-btn-small" id="calcShippingBtn">Calcular Frete</button>
+      </div>
+
+      <div id="shippingOptionsCart" style="display: grid; gap: 0.3rem; font-family: var(--font-mono); font-size: 0.68rem;"></div>
+
+      <div class="cart-summary-lines">
+        <div class="summary-line">
+          <span>Subtotal:</span>
+          <span id="cartSubtotalVal">R$ 0,00</span>
+        </div>
+        <div class="summary-line" id="cartDiscountRow" style="color: #5ce080; display: none;">
+          <span id="cartDiscountLabel">Desconto (PIX 5% + Cupom):</span>
+          <span id="cartDiscountVal">- R$ 0,00</span>
+        </div>
+        <div class="summary-line">
+          <span>Entrega:</span>
+          <span id="cartShippingVal">A calcular</span>
+        </div>
+        <div class="summary-line total">
+          <span>Total no PIX (5% OFF):</span>
+          <span id="cartTotalVal" style="color: var(--accent);">R$ 0,00</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn-primary" id="proceedCheckoutBtn" style="justify-content: center; width: 100%; padding: 0.95rem;">
+        Finalizar Pedido Seguro <span>→</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       MODAL DE CHECKOUT TRANSPARENTE (PIX INSTANTÂNEO + CARTÃO TOKENIZADO)
+       ========================================================================== -->
+  <div class="checkout-modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+    <div class="checkout-card">
+      <div class="checkout-col-form" id="checkoutFormSection">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.1rem;">
+          <div>
+            <span class="eyebrow" id="activeGatewayBadge">CHECKOUT SEGURO · TOKENIZADO</span>
+            <h3 id="checkoutTitle" style="font-family: var(--font-display); font-size: 2.2rem; line-height: 1;">FINALIZAR COMPRA</h3>
+          </div>
+          <button type="button" class="lightbox-close" id="closeCheckoutBtn">✕ VOLTAR</button>
+        </div>
+
+        <form id="checkoutForm" onsubmit="return false;">
+          <div class="form-grid-2">
+            <div>
+              <label class="field-label" for="chkName">Nome Completo *</label>
+              <input type="text" id="chkName" class="sm-input" required placeholder="Seu nome completo" />
+            </div>
+            <div>
+              <label class="field-label" for="chkCpf">CPF (Para NF-e e Correios) *</label>
+              <input type="text" id="chkCpf" class="sm-input" required placeholder="000.000.000-00" maxlength="14" />
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div>
+              <label class="field-label" for="chkPhone">WhatsApp (Para Rastreio) *</label>
+              <input type="tel" id="chkPhone" class="sm-input" required placeholder="(85) 99999-9999" />
+            </div>
+            <div>
+              <label class="field-label" for="chkEmail">E-mail *</label>
+              <input type="email" id="chkEmail" class="sm-input" required placeholder="voce@email.com" />
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div>
+              <label class="field-label" for="chkCep">CEP de Entrega *</label>
+              <input type="text" id="chkCep" class="sm-input" required placeholder="60175-047" maxlength="9" />
+            </div>
+            <div>
+              <label class="field-label" for="chkBike">Qual sua Moto? (Clube SM)</label>
+              <input type="text" id="chkBike" class="sm-input" placeholder="Ex: Royal Enfield / Triumph / Custom" />
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div>
+              <label class="field-label" for="chkAddress">Endereço Completo + Nº *</label>
+              <input type="text" id="chkAddress" class="sm-input" required placeholder="Rua, Número, Bairro, Complemento" />
+            </div>
+            <div>
+              <label class="field-label" for="chkCityUf">Cidade / UF *</label>
+              <input type="text" id="chkCityUf" class="sm-input" required placeholder="Fortaleza / CE" />
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem;">
+            <span class="field-label">FORMA DE PAGAMENTO</span>
+            <div class="pay-tabs">
+              <button type="button" class="pay-tab active" data-pay-method="PIX">
+                ⚡ PIX INSTANTÂNEO<br />
+                <small style="color: #5ce080;">5% OFF + Aprovação Imediata</small>
+              </button>
+              <button type="button" class="pay-tab" data-pay-method="CARTAO">
+                💳 CARTÃO DE CRÉDITO<br />
+                <small style="color: var(--muted);">Em até 6x sem juros</small>
+              </button>
+            </div>
+          </div>
+
+          <!-- Painel PIX -->
+          <div id="pixPayPanel" class="pix-qr-box">
+            <svg viewBox="0 0 100 100" style="width: 104px; height: 104px; background: #fff; padding: 6px;">
+              <rect x="6" y="6" width="26" height="26" fill="#0b0908" />
+              <rect x="11" y="11" width="16" height="16" fill="#fff" />
+              <rect x="15" y="15" width="8" height="8" fill="#0b0908" />
+              <rect x="68" y="6" width="26" height="26" fill="#0b0908" />
+              <rect x="73" y="11" width="16" height="16" fill="#fff" />
+              <rect x="77" y="15" width="8" height="8" fill="#0b0908" />
+              <rect x="6" y="68" width="26" height="26" fill="#0b0908" />
+              <rect x="11" y="73" width="16" height="16" fill="#fff" />
+              <rect x="15" y="77" width="8" height="8" fill="#0b0908" />
+              <rect x="40" y="12" width="8" height="8" fill="#0b0908" />
+              <rect x="52" y="20" width="8" height="16" fill="#0b0908" />
+              <rect x="38" y="42" width="24" height="8" fill="#0b0908" />
+              <rect x="14" y="42" width="16" height="8" fill="#0b0908" />
+              <rect x="68" y="44" width="18" height="8" fill="#0b0908" />
+              <rect x="42" y="64" width="14" height="14" fill="#0b0908" />
+              <rect x="64" y="68" width="24" height="10" fill="#0b0908" />
+              <rect x="74" y="82" width="18" height="12" fill="#0b0908" />
+            </svg>
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); margin-bottom: 0.35rem;">
+                QR CODE PIX OFICIAL GERADO
+              </div>
+              <input type="text" id="pixCopyCode" class="sm-input" readonly value="00020126580014BR.GOV.BCB.PIX0136santamaquinasm@gmail.com5204000053039865802BR5913SANTA MAQUINA6009FORTALEZA62070503***6304ABCD" style="font-size: 0.64rem; margin-bottom: 0.4rem;" />
+              <button type="button" class="sm-btn-small" id="btnCopyPix">📋 Copiar Código PIX</button>
+            </div>
+          </div>
+
+          <!-- Painel Cartão Tokenizado -->
+          <div id="cardPayPanel" style="display: none; margin-top: 0.6rem;">
+            <div class="form-grid-2">
+              <div>
+                <label class="field-label">Número do Cartão (Tokenizado)</label>
+                <input type="text" id="chkCardNum" class="sm-input" placeholder="4532 •••• •••• 8842" maxlength="19" />
+              </div>
+              <div>
+                <label class="field-label">Parcelamento</label>
+                <select id="chkInstallments" class="sm-input">
+                  <option value="1">1x sem juros</option>
+                  <option value="2">2x sem juros</option>
+                  <option value="3">3x sem juros</option>
+                  <option value="4">4x sem juros</option>
+                  <option value="6">6x sem juros</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-grid-2">
+              <div>
+                <label class="field-label">Validade (MM/AA)</label>
+                <input type="text" id="chkCardExp" class="sm-input" placeholder="08/29" maxlength="5" />
+              </div>
+              <div>
+                <label class="field-label">CVV (Não salvo no banco)</label>
+                <input type="password" id="chkCardCvv" class="sm-input" placeholder="•••" maxlength="4" />
+              </div>
+            </div>
+          </div>
+
+          <div class="security-seal">
+            🔒 <span><strong>PROTEÇÃO LGPD & PCI-DSS:</strong> Seus dados de pagamento são criptografados de ponta a ponta por token direto com a instituição financeira. Nenhum dado sensível do cartão fica armazenado na loja.</span>
+          </div>
+
+          <button type="submit" class="btn-primary" id="confirmOrderBtn" style="width: 100%; justify-content: center; margin-top: 1rem;">
+            Confirmar Pagamento & Gerar Pedido <span>✓</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Coluna Direita: Resumo do Pedido / Tela de Sucesso -->
+      <div class="checkout-col-summary">
+        <div id="checkoutSummaryBox">
+          <span class="eyebrow" style="font-size: 0.65rem;">RESUMO DO SEU PEDIDO</span>
+          <div id="chkItemsList" style="margin-block: 1rem; display: grid; gap: 0.6rem; max-height: 260px; overflow-y: auto;"></div>
+          <div class="cart-summary-lines" id="chkTotalsBox"></div>
+        </div>
+
+        <div id="orderSuccessBox" style="display: none; border: 1px solid #5ce080; background: rgba(92, 224, 128, 0.08); padding: 1.25rem; margin-top: 1rem;">
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #5ce080; font-weight: 700;">✅ PEDIDO CONFIRMADO COM SUCESSO!</span>
+          <h4 id="successOrderId" style="font-family: var(--font-display); font-size: 2rem; color: var(--accent); margin-block: 0.3rem;">#SM-2026-1044</h4>
+          <p style="font-size: 0.85rem; color: var(--ink); margin-bottom: 1rem;">
+            Sua peça já foi reservada em nossa oficina e está em separação para envio em até 24h! Você receberá o código de rastreio no seu WhatsApp.
+          </p>
+          <div style="display: grid; gap: 0.5rem;">
+            <a id="successWhatsappBtn" href="#" target="_blank" rel="noopener" class="btn-primary" style="justify-content: center; padding: 0.75rem;">
+              📲 Receber Comprovante e Rastreio no WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de Notificação -->
+  <div class="sm-toast" id="smToast" role="status" aria-live="polite">Peça adicionada à sacola!</div>
+  <!-- ==========================================================================
+       SCRIPTS: MOTOR E-COMMERCE & ERP (INICIALIZAÇÃO PRIORITÁRIA IMEDIATA)
+       ========================================================================== -->
+  <script src="santa-maquina-core.js"></script>
+
+  <!-- ==========================================================================
+       SCRIPTS: GSAP + SCROLLTRIGGER (LOCAL COM FALLBACK CDN)
+       ========================================================================== -->
+  <script src="assets/gsap.min.js"></script>
+  <script src="assets/ScrollTrigger.min.js"></script>
+  <script>
+    if (typeof gsap === "undefined") {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>');
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>');
+    }
+  </script>
+
+  <script>
+    if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
+      try { gsap.registerPlugin(ScrollTrigger); } catch(e) {}
+    }
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* --------------------------------------------------------------------------
+       REACT BITS #1: DECRYPTED TEXT (Embaralhamento Mecânico / Odômetro)
+       -------------------------------------------------------------------------- */
+    const CIPHER_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#✳/°•⚡";
+
+    function decryptElement(el) {
+      if (prefersReducedMotion || el.dataset.decrypting === "true") return;
+      const original = el.dataset.decrypt || el.textContent;
+      el.dataset.decrypt = original;
+      el.dataset.decrypting = "true";
+
+      let iteration = 0;
+      const total = original.length;
+      const interval = setInterval(() => {
+        el.textContent = original
+          .split("")
+          .map((char, idx) => {
+            if (char === " ") return " ";
+            if (idx < iteration) return original[idx];
+            return CIPHER_CHARS[Math.floor(Math.random() * CIPHER_CHARS.length)];
+          })
+          .join("");
+
+        iteration += Math.max(0.6, total / 18);
+        if (iteration >= total) {
+          el.textContent = original;
+          el.dataset.decrypting = "false";
+          clearInterval(interval);
+        }
+      }, 28);
+    }
+
+    document.querySelectorAll("[data-decrypt]").forEach((el) => {
+      el.addEventListener("pointerenter", () => decryptElement(el));
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 92%",
+        once: true,
+        onEnter: () => decryptElement(el)
+      });
+    });
+
+    /* --------------------------------------------------------------------------
+       REACT BITS #3: MAGNET (Atração Magnética com Retorno Elástico)
+       -------------------------------------------------------------------------- */
+    document.querySelectorAll("[data-magnet]").forEach((el) => {
+      el.addEventListener("pointermove", (e) => {
+        if (prefersReducedMotion || window.innerWidth < 768) return;
+        const rect = el.getBoundingClientRect();
+        const dx = e.clientX - (rect.left + rect.width / 2);
+        const dy = e.clientY - (rect.top + rect.height / 2);
+        el.style.transform = `translate(${dx * 0.28}px, ${dy * 0.28}px)`;
+      });
+      el.addEventListener("pointerleave", () => {
+        el.style.transform = "translate(0px, 0px)";
+      });
+    });
+
+    /* --------------------------------------------------------------------------
+       REACT BITS #4: SCROLL VELOCITY DUAL MARQUEE
+       -------------------------------------------------------------------------- */
+    const velRow1 = document.getElementById("velRow1");
+    const velRow2 = document.getElementById("velRow2");
+    let pos1 = 0;
+    let pos2 = -25;
+    let lastScrollY = window.scrollY;
+    let scrollVel = 0;
+    let dir = 1;
+
+    window.addEventListener("scroll", () => {
+      const delta = window.scrollY - lastScrollY;
+      lastScrollY = window.scrollY;
+      scrollVel = Math.min(Math.max(delta * 0.15, -18), 18);
+      if (delta !== 0) dir = delta > 0 ? 1 : -1;
+    }, { passive: true });
+
+    function tickVelocityMarquee() {
+      scrollVel *= 0.9;
+      const speed = (0.045 + Math.abs(scrollVel) * 0.04) * dir;
+      pos1 -= speed;
+      pos2 += speed * 0.85;
+
+      if (pos1 <= -50) pos1 = 0;
+      if (pos1 > 0) pos1 = -50;
+      if (pos2 >= 0) pos2 = -50;
+      if (pos2 < -50) pos2 = 0;
+
+      const skew = Math.min(Math.max(scrollVel * 0.65, -10), 10);
+      if (velRow1 && velRow2 && !prefersReducedMotion) {
+        velRow1.style.transform = `translate3d(${pos1}%, 0, 0) skewX(${-skew}deg)`;
+        velRow2.style.transform = `translate3d(${pos2}%, 0, 0) skewX(${skew}deg)`;
+      }
+      requestAnimationFrame(tickVelocityMarquee);
+    }
+    requestAnimationFrame(tickVelocityMarquee);
+
+    /* --------------------------------------------------------------------------
+       REACT BITS #5: TRUE FOCUS (Mira Automática + Hover nos 3 Pilares)
+       -------------------------------------------------------------------------- */
+    const focusContainer = document.getElementById("trueFocusContainer");
+    const focusFrame = document.getElementById("trueFocusFrame");
+    const focusItems = [...document.querySelectorAll("[data-focus-item]")];
+    let activeFocusIdx = 0;
+    let focusPaused = false;
+
+    function updateTrueFocus(idx) {
+      activeFocusIdx = idx;
+      focusItems.forEach((item, i) => {
+        item.classList.toggle("is-focused", i === idx);
+      });
+      const target = focusItems[idx];
+      if (target && focusFrame && focusContainer) {
+        const cRect = focusContainer.getBoundingClientRect();
+        const tRect = target.getBoundingClientRect();
+        const x = tRect.left - cRect.left;
+        const y = tRect.top - cRect.top;
+        focusFrame.style.width = `${tRect.width}px`;
+        focusFrame.style.height = `${tRect.height}px`;
+        focusFrame.style.transform = `translate(${x}px, ${y}px)`;
+      }
+    }
+
+    focusItems.forEach((item, idx) => {
+      item.addEventListener("pointerenter", () => {
+        focusPaused = true;
+        updateTrueFocus(idx);
+      });
+      item.addEventListener("pointerleave", () => {
+        focusPaused = false;
+      });
+    });
+
+    setInterval(() => {
+      if (!focusPaused && !prefersReducedMotion) {
+        updateTrueFocus((activeFocusIdx + 1) % focusItems.length);
+      }
+    }, 2800);
+
+    window.addEventListener("resize", () => updateTrueFocus(activeFocusIdx));
+    setTimeout(() => updateTrueFocus(0), 200);
+
+    /* --------------------------------------------------------------------------
+       REACT BITS #6 & #7: FLOWING MENU + SPOTLIGHT CARD + GLARE + 3D TILT
+       -------------------------------------------------------------------------- */
+    const filterBtns = document.querySelectorAll(".filter-btn");
+    const productCards = document.querySelectorAll(".product-card");
+
+    function applyCategoryFilter(filter) {
+      filterBtns.forEach((b) => b.classList.toggle("active", b.dataset.filter === filter));
+      productCards.forEach((card) => {
+        const match = filter === "all" || card.dataset.category === filter;
+        card.style.display = match ? "flex" : "none";
+      });
+      ScrollTrigger.refresh();
+    }
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => applyCategoryFilter(btn.dataset.filter));
+    });
+
+    document.querySelectorAll("[data-flow-filter]").forEach((flowLink) => {
+      flowLink.addEventListener("click", () => {
+        const filter = flowLink.dataset.flowFilter;
+        if (filter) applyCategoryFilter(filter);
+      });
+    });
+
+    // Spotlight + 3D Tilt nos Cards de Produto
+    productCards.forEach((card) => {
+      card.addEventListener("pointermove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty("--spot-x", `${x}px`);
+        card.style.setProperty("--spot-y", `${y}px`);
+
+        if (!prefersReducedMotion && window.innerWidth >= 768) {
+          const nx = x / rect.width - 0.5;
+          const ny = y / rect.height - 0.5;
+          card.style.transform = `perspective(950px) rotateY(${nx * 7}deg) rotateX(${-ny * 7}deg) translateY(-5px)`;
+        }
+      });
+      card.addEventListener("pointerleave", () => {
+        card.style.transform = "";
+      });
+    });
+
+    /* --------------------------------------------------------------------------
+       REACT BITS #8: IMAGE TRAIL (Rastro de Fotos no Palco DGR / Comunidade)
+       -------------------------------------------------------------------------- */
+    const trailStage = document.getElementById("imageTrailStage");
+    const trailSources = [
+      "assets/hero_bg.jpg",
+      "assets/local_lifestyle.jpg",
+      "assets/netim_lifestyle.jpg",
+      "assets/local_marrom_costas.png",
+      "assets/oleo_branca_costas.png",
+      "assets/piloto_off_costas.png",
+      "assets/lenco_azul.png",
+      "assets/bone_frente.png"
+    ];
+    let lastTrailX = 0;
+    let lastTrailY = 0;
+    let trailIndex = 0;
+
+    if (trailStage) {
+      trailStage.addEventListener("pointermove", (e) => {
+        if (prefersReducedMotion || window.innerWidth < 768) return;
+        const rect = trailStage.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (Math.hypot(x - lastTrailX, y - lastTrailY) > 95) {
+          lastTrailX = x;
+          lastTrailY = y;
+
+          const img = document.createElement("img");
+          img.className = "trail-spawn-img";
+          img.src = trailSources[trailIndex % trailSources.length];
+          trailIndex++;
+          img.style.left = `${x}px`;
+          img.style.top = `${y}px`;
+          trailStage.appendChild(img);
+
+          const rot = (Math.random() - 0.5) * 22;
+          gsap.fromTo(
+            img,
+            { opacity: 0.95, scale: 0.4, rotation: rot - 8 },
+            {
+              opacity: 1,
+              scale: 1,
+              rotation: rot,
+              duration: 0.35,
+              ease: "back.out(1.6)",
+              onComplete: () => {
+                gsap.to(img, {
+                  opacity: 0,
+                  y: 35,
+                  scale: 0.75,
+                  duration: 0.55,
+                  delay: 0.2,
+                  ease: "power2.in",
+                  onComplete: () => img.remove()
+                });
+              }
+            }
+          );
+        }
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       REACT BITS #9: TEXT PRESSURE / VARIABLE PROXIMITY (No Título Final)
+       -------------------------------------------------------------------------- */
+    const pressureHeading = document.getElementById("pressureHeading");
+    if (pressureHeading) {
+      const text = pressureHeading.textContent.trim();
+      pressureHeading.innerHTML = text
+        .split("")
+        .map((ch) => (ch === " " ? "&nbsp;" : `<span class="pressure-char">${ch}</span>`))
+        .join("");
+
+      const chars = [...pressureHeading.querySelectorAll(".pressure-char")];
+      window.addEventListener("pointermove", (e) => {
+        if (prefersReducedMotion || window.innerWidth < 768) return;
+        chars.forEach((ch) => {
+          const r = ch.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+          const maxDist = 240;
+          if (dist < maxDist) {
+            const factor = 1 - dist / maxDist;
+            const scaleY = 1 + factor * 0.32;
+            const scaleX = 1 + factor * 0.12;
+            ch.style.transform = `scale(${scaleX.toFixed(2)}, ${scaleY.toFixed(2)}) translateY(${-factor * 8}px)`;
+            ch.style.color = factor > 0.45 ? "#fdc656" : "#f4eee3";
+          } else {
+            ch.style.transform = "scale(1, 1) translateY(0)";
+            ch.style.color = "";
+          }
+        });
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       REACT BITS #10: HYPERSPEED NIGHT HIGHWAY TUNNEL (Feixes de Luz de Estrada)
+       -------------------------------------------------------------------------- */
+    const hsCanvas = document.getElementById("hyperspeedCanvas");
+    const hsCtx = hsCanvas.getContext("2d");
+    const streaks = [];
+    let hsBoost = 1;
+
+    function resizeHs() {
+      hsCanvas.width = hsCanvas.parentElement.offsetWidth;
+      hsCanvas.height = hsCanvas.parentElement.offsetHeight;
+    }
+    resizeHs();
+    window.addEventListener("resize", resizeHs);
+
+    for (let i = 0; i < 95; i++) {
+      streaks.push({
+        x: (Math.random() - 0.5) * 1600,
+        y: (Math.random() - 0.5) * 900,
+        z: Math.random() * 1000 + 50,
+        color: Math.random() > 0.35 ? "#fdc656" : "#ff3b1f"
+      });
+    }
+
+    hsCanvas.addEventListener("pointerdown", () => { hsBoost = 4.2; });
+    window.addEventListener("pointerup", () => { hsBoost = 1; });
+
+    function renderHyperspeed() {
+      const w = hsCanvas.width;
+      const h = hsCanvas.height;
+      hsCtx.fillStyle = "rgba(11, 9, 8, 0.28)";
+      hsCtx.fillRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2;
+      const speed = (prefersReducedMotion ? 1.5 : 14) * hsBoost;
+
+      for (const s of streaks) {
+        const prevZ = s.z;
+        s.z -= speed;
+        if (s.z <= 10) {
+          s.z = 1000;
+          s.x = (Math.random() - 0.5) * 1600;
+          s.y = (Math.random() - 0.5) * 900;
+          continue;
+        }
+
+        const sx = cx + (s.x / s.z) * 420;
+        const sy = cy + (s.y / s.z) * 420;
+        const px = cx + (s.x / prevZ) * 420;
+        const py = cy + (s.y / prevZ) * 420;
+
+        hsCtx.strokeStyle = s.color;
+        hsCtx.lineWidth = Math.max(1, (1 - s.z / 1000) * 3.8);
+        hsCtx.beginPath();
+        hsCtx.moveTo(px, py);
+        hsCtx.lineTo(sx, sy);
+        hsCtx.stroke();
+      }
+      requestAnimationFrame(renderHyperspeed);
+    }
+    requestAnimationFrame(renderHyperspeed);
+
+    /* --------------------------------------------------------------------------
+       CONTROLE INTERATIVO DA IMAGEM/VÍDEO EM MOVIMENTO DE FUNDO (LOGO OFICIAL)
+       -------------------------------------------------------------------------- */
+    const bgVideo = document.getElementById("bgMotionVideo");
+    let pointerX = 0;
+    let pointerY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let scrollScale = 1.04;
+
+    if (bgVideo) {
+      bgVideo.play().catch(() => {});
+    }
+
+    window.addEventListener("pointermove", (e) => {
+      if (prefersReducedMotion) return;
+      pointerX = (e.clientX / window.innerWidth - 0.5) * 28;
+      pointerY = (e.clientY / window.innerHeight - 0.5) * 18;
+    });
+
+    function tickBgMotion() {
+      if (!prefersReducedMotion && bgVideo) {
+        currentX += (pointerX - currentX) * 0.06;
+        currentY += (pointerY - currentY) * 0.06;
+        const rotY = (currentX / 28) * 5;
+        const rotX = -(currentY / 18) * 4;
+        bgVideo.style.transform = `translate3d(${-currentX}px, ${-currentY}px, 0) scale(${scrollScale.toFixed(3)}) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;
+      }
+      requestAnimationFrame(tickBgMotion);
+    }
+    requestAnimationFrame(tickBgMotion);
+
+    /* --------------------------------------------------------------------------
+       SCROLL ANIMATIONS (GSAP + SCROLLTRIGGER) & LIGHTBOX
+       -------------------------------------------------------------------------- */
+    gsap.to("#scrollProgress", {
+      scaleX: 1,
+      ease: "none",
+      scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 0.2 }
+    });
+
+    gsap.utils.toArray("[data-count]").forEach((el) => {
+      const target = +el.dataset.count;
+      gsap.fromTo(
+        el,
+        { textContent: 0 },
+        {
+          textContent: target,
+          duration: 1.8,
+          ease: "power2.out",
+          snap: { textContent: 1 },
+          scrollTrigger: { trigger: el, start: "top 88%" }
+        }
+      );
+    });
+
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference) and (min-width: 768px)", () => {
+      gsap.utils.toArray("[data-reveal]").forEach((el) => {
+        gsap.from(el, {
+          y: 45,
+          opacity: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 86%" }
+        });
+      });
+
+      gsap.utils.toArray(".parallax-img").forEach((img) => {
+        gsap.fromTo(
+          img,
+          { yPercent: -10 },
+          {
+            yPercent: 10,
+            ease: "none",
+            scrollTrigger: { trigger: img.parentElement, start: "top bottom", end: "bottom top", scrub: true }
+          }
+        );
+      });
+
+      const diveTl = gsap.timeline({
+        scrollTrigger: { trigger: "#estrada", start: "top top", end: "+=140%", pin: true, scrub: 1 }
+      });
+      diveTl
+        .to("#diveWindow", { width: "100vw", height: "100vh", borderRadius: "0px", ease: "none" }, 0)
+        .to("#diveImg", { scale: 1, filter: "brightness(0.85) contrast(1.08)", ease: "none" }, 0);
+
+      const roadLine = document.getElementById("roadProgressLine");
+      if (roadLine) {
+        gsap.fromTo(
+          roadLine,
+          { attr: { y2: 0 } },
+          {
+            attr: { y2: 1000 },
+            ease: "none",
+            scrollTrigger: { trigger: ".road-timeline", start: "top 70%", end: "bottom 70%", scrub: 1 }
+          }
+        );
+      }
+
+      ScrollTrigger.create({
+        trigger: "main",
+        start: "top top",
+        end: "bottom bottom",
+        onUpdate: (self) => {
+          scrollScale = 1.04 + Math.sin(self.progress * Math.PI) * 0.08;
+        }
+      });
+    });
+
+    // Lupa de Zoom e Troca Frente/Costas
+    document.querySelectorAll("[data-zoom-container], [data-product-zoom]").forEach((stage) => {
+      stage.addEventListener("pointermove", (e) => {
+        const rect = stage.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        stage.style.setProperty("--zx", `${x}%`);
+        stage.style.setProperty("--zy", `${y}%`);
+        stage.style.setProperty("--px", `${x}%`);
+        stage.style.setProperty("--py", `${y}%`);
+      });
+    });
+
+    document.querySelectorAll("[data-flip-btn]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const media = btn.closest(".product-media");
+        const img = media.querySelector("img");
+        const current = img.dataset.showing;
+        const nextSrc = current === "back" ? img.dataset.front : img.dataset.back;
+        if (nextSrc) {
+          img.style.opacity = "0";
+          setTimeout(() => {
+            img.src = nextSrc;
+            img.dataset.showing = current === "back" ? "front" : "back";
+            img.style.opacity = "1";
+          }, 180);
+        }
+      });
+    });
+  </script>
+
+  <!-- ==========================================================================
+       SCRIPT DEDICADO: MOTOR DE E-COMMERCE & CHECKOUT (INDEPENDENTE DE ANIMAÇÕES)
+       ========================================================================== -->
+  <script>
+  (function() {
+    /* ==========================================================================
+       INTEGRAÇÃO MOTOR DE VENDAS + ERP EM TEMPO REAL (santa-maquina-core.js)
+       ========================================================================== */
+    const {
+      loadERPState,
+      subscribeToERPUpdates,
+      loadCart,
+      saveCart,
+      addToCart,
+      updateCartItemQty,
+      calculateCartSummary,
+      createOrder,
+      formatBRL
+    } = window.SMCore;
+
+    const toastEl = document.getElementById("smToast");
+    let toastTimer = null;
+    window.showToast = showToast; function showToast(msg) {
+      if (!toastEl) return;
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2800);
+    }
+
+    // Seleções atuais de tamanho por produto nos cards e no lightbox
+    window.selectedSizesByCard = {}; const selectedSizesByCard = window.selectedSizesByCard;
+    let currentLightboxProductId = null;
+    let currentLightboxSize = null;
+    let selectedCheckoutMethod = "PIX";
+
+    function getDefaultAvailableSize(product) {
+      const entries = Object.entries(product.sizes || {});
+      const firstAvail = entries.find(([, qty]) => Number(qty) > 0);
+      return firstAvail ? firstAvail[0] : (entries[0]?.[0] || "UNICO");
+    }
+
+    // Hidratar os 8 cards do Showroom com Seletor de Grade + Estoque Real do ERP
+    function renderShowroomEcommerceControls() {
+      const state = loadERPState();
+      const cards = document.querySelectorAll("#catalogGrid .product-card");
+      const pixPct = state.settings.pixDiscountPercent || 5;
+
+      cards.forEach((card, idx) => {
+        const product = state.products[idx];
+        if (!product) return;
+        card.dataset.productId = product.id;
+
+        if (!selectedSizesByCard[product.id] || Number(product.sizes[selectedSizesByCard[product.id]] || 0) <= 0) {
+          selectedSizesByCard[product.id] = getDefaultAvailableSize(product);
+        }
+        const chosenSize = selectedSizesByCard[product.id];
+        const chosenStock = Number(product.sizes[chosenSize] || 0);
+        const totalStock = Object.values(product.sizes).reduce((a, b) => a + Number(b || 0), 0);
+
+        // Atualizar título e preço
+        const titleEl = card.querySelector(".product-title");
+        const priceEl = card.querySelector(".product-price");
+        if (titleEl) titleEl.textContent = product.title;
+        if (priceEl) {
+          const pixVal = +(product.price * (1 - pixPct / 100)).toFixed(2);
+          priceEl.innerHTML = `${formatBRL(product.price)}<span class="pix-price-hint">${formatBRL(pixVal)} no PIX (${pixPct}% OFF)</span>`;
+        }
+
+        // Substituir rodapé antigo por Seletor de Grade + Botão Adicionar à Sacola
+        const footer = card.querySelector(".product-footer");
+        if (footer) {
+          footer.style.display = "block";
+          const sizeButtonsHtml = Object.entries(product.sizes)
+            .filter(([sz, qty]) => Number(qty) > 0) // REGRA: Tamanho zerado NÃO aparece no site
+            .map(([sz, qty]) => {
+              const active = sz === chosenSize ? "active" : "";
+              const label = sz === "UNICO" ? "TAMANHO ÚNICO" : sz;
+              return `<button type="button" class="size-pill ${active}" data-select-size="${sz}" title="${qty} un. em estoque">${label}</button>`;
+            })
+            .join("");
+
+          const stockLabel =
+            totalStock === 0
+              ? `<span style="color:#ff5252;">ESGOTADO NO ERP</span>`
+              : chosenStock <= 4
+              ? `<span style="color:#ff9f43;">🔥 Restam só ${chosenStock} un. (${chosenSize})</span>`
+              : `<span class="stock-live-tag">● ${chosenStock} un. disponíveis (${chosenSize})</span>`;
+
+          footer.innerHTML = `
+            <div class="size-selector-wrap" style="border-top:none; padding-top:0; margin-top:0;">
+              <div class="size-selector-header">
+                <span>ESCOLHA O TAMANHO:</span>
+                ${stockLabel}
+              </div>
+              <div class="size-pills">
+                ${sizeButtonsHtml}
+              </div>
+              <button type="button" class="add-to-cart-btn" data-add-card="${product.id}" ${totalStock === 0 ? "disabled" : ""}>
+                ${totalStock === 0 ? "Esgotado" : `🛒 Adicionar à Sacola (${chosenSize === "UNICO" ? "Único" : chosenSize})`}
+              </button>
+            </div>
+          `;
+
+          footer.querySelectorAll("[data-select-size]").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              selectedSizesByCard[product.id] = btn.dataset.selectSize;
+              renderShowroomEcommerceControls();
+            });
+          });
+
+          const addBtn = footer.querySelector("[data-add-card]");
+          if (addBtn) {
+            addBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              const size = selectedSizesByCard[product.id];
+              const res = addToCart(product.id, size, 1);
+              if (!res.ok) {
+                showToast(res.message);
+                return;
+              }
+              showToast(`✓ ${product.title} (${size}) adicionada à sacola!`);
+              renderShowroomEcommerceControls();
+              renderCartDrawer();
+              openCartDrawer();
+            });
+          }
+        }
+      });
+    }
+
+    // Lightbox integrado ao ERP
+    const modal = document.getElementById("lightboxModal");
+    const lbImg = document.getElementById("lightboxImg");
+    const lbCol = document.getElementById("lightboxCol");
+    const lbTitle = document.getElementById("lightboxTitle");
+    const lbPrice = document.getElementById("lightboxPrice");
+    const lbPixHint = document.getElementById("lightboxPixHint");
+    const lbDesc = document.getElementById("lightboxDesc");
+    const lbSizePills = document.getElementById("lightboxSizePills");
+    const lbStockHint = document.getElementById("lightboxStockHint");
+    const lbAddBtn = document.getElementById("lightboxAddBtn");
+    const lbStage = document.getElementById("lightboxStage");
+
+    function renderLightboxSizes(product) {
+      if (!product || !lbSizePills) return;
+      if (!currentLightboxSize || Number(product.sizes[currentLightboxSize] || 0) <= 0) {
+        currentLightboxSize = getDefaultAvailableSize(product);
+      }
+      const stock = Number(product.sizes[currentLightboxSize] || 0);
+      lbStockHint.textContent = stock > 0 ? `${stock} un. disponíveis (${currentLightboxSize})` : "Esgotado";
+      lbSizePills.innerHTML = Object.entries(product.sizes)
+        .map(([sz, qty]) => {
+          const disabled = Number(qty) <= 0 ? "disabled" : "";
+          const active = sz === currentLightboxSize && Number(qty) > 0 ? "active" : "";
+          return `<button type="button" class="size-pill ${active}" data-lb-size="${sz}" ${disabled}>${sz === "UNICO" ? "TAMANHO ÚNICO" : sz}</button>`;
+        })
+        .join("");
+
+      lbSizePills.querySelectorAll("[data-lb-size]").forEach((b) => {
+        b.addEventListener("click", () => {
+          currentLightboxSize = b.dataset.lbSize;
+          renderLightboxSizes(product);
+        });
+      });
+    }
+
+    document.querySelectorAll("[data-open-lightbox]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const state = loadERPState();
+        const product = state.products[+btn.dataset.openLightbox];
+        if (!product) return;
+        currentLightboxProductId = product.id;
+        currentLightboxSize = selectedSizesByCard[product.id] || getDefaultAvailableSize(product);
+
+        lbImg.onerror = () => { lbImg.src = product.fallbackImg; };
+        lbImg.src = product.imgBack || product.imgFront;
+        lbCol.textContent = product.collectionLabel;
+        lbTitle.textContent = product.title;
+        lbPrice.textContent = formatBRL(product.price);
+        const pixVal = +(product.price * (1 - (state.settings.pixDiscountPercent || 5) / 100)).toFixed(2);
+        if (lbPixHint) lbPixHint.textContent = `${formatBRL(pixVal)} no PIX (${state.settings.pixDiscountPercent || 5}% OFF)`;
+        lbDesc.textContent = product.story;
+        renderLightboxSizes(product);
+        modal.classList.add("open");
+      });
+    });
+
+    if (lbAddBtn) {
+      lbAddBtn.addEventListener("click", () => {
+        if (!currentLightboxProductId || !currentLightboxSize) return;
+        const res = addToCart(currentLightboxProductId, currentLightboxSize, 1);
+        if (!res.ok) {
+          showToast(res.message);
+          return;
+        }
+        modal.classList.remove("open");
+        showToast(`✓ ${res.product.title} (${currentLightboxSize}) adicionada!`);
+        renderShowroomEcommerceControls();
+        renderCartDrawer();
+        openCartDrawer();
+      });
+    }
+
+    lbStage.addEventListener("pointermove", (e) => {
+      const rect = lbStage.getBoundingClientRect();
+      lbImg.style.transformOrigin = `${((e.clientX - rect.left) / rect.width) * 100}% ${((e.clientY - rect.top) / rect.height) * 100}%`;
+      lbImg.style.transform = "scale(2.1)";
+    });
+    lbStage.addEventListener("pointerleave", () => { lbImg.style.transform = "scale(1)"; });
+    document.getElementById("lightboxClose").addEventListener("click", () => modal.classList.remove("open"));
+    modal.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("open"); });
+
+    /* --------------------------------------------------------------------------
+       SACOLA LATERAL (DRAWER CART) & CÁLCULO DE FRETE / CUPOM
+       -------------------------------------------------------------------------- */
+    const cartBackdrop = document.getElementById("cartBackdrop");
+    const cartDrawer = document.getElementById("cartDrawer");
+    const headerCartCount = document.getElementById("headerCartCount");
+    const drawerCountLabel = document.getElementById("drawerCountLabel");
+    const freeShipText = document.getElementById("freeShipText");
+    const freeShipFill = document.getElementById("freeShipFill");
+    const cartItemsContainer = document.getElementById("cartItemsContainer");
+    const couponInput = document.getElementById("couponInput");
+    const cepCartInput = document.getElementById("cepCartInput");
+    const shippingOptionsCart = document.getElementById("shippingOptionsCart");
+
+    window.openCartDrawer = openCartDrawer; function openCartDrawer() {
+      renderCartDrawer();
+      cartBackdrop.classList.add("open");
+      cartDrawer.classList.add("open");
+    }
+    window.closeCartDrawer = closeCartDrawer; function closeCartDrawer() {
+      cartBackdrop.classList.remove("open");
+      cartDrawer.classList.remove("open");
+    }
+
+    document.getElementById("openCartBtn").addEventListener("click", openCartDrawer);
+    document.getElementById("closeCartBtn").addEventListener("click", closeCartDrawer);
+    cartBackdrop.addEventListener("click", closeCartDrawer);
+
+    window.renderCartDrawer = renderCartDrawer; function renderCartDrawer() {
+      const cart = loadCart();
+      const summary = calculateCartSummary("PIX");
+
+      headerCartCount.textContent = summary.totalItems;
+      drawerCountLabel.textContent = `(${summary.totalItems})`;
+
+      // Barra de Frete Grátis
+      const pct = Math.min(100, (summary.subtotal / summary.freeShippingThreshold) * 100);
+      freeShipFill.style.width = `${pct}%`;
+      if (summary.subtotal === 0) {
+        freeShipText.innerHTML = `Frete Grátis em compras acima de <strong>${formatBRL(summary.freeShippingThreshold)}</strong>!`;
+      } else if (summary.missingForFreeShipping > 0) {
+        freeShipText.innerHTML = `Faltam apenas <strong style="color:var(--accent);">${formatBRL(summary.missingForFreeShipping)}</strong> para você ganhar <strong>FRETE GRÁTIS</strong>!`;
+      } else {
+        freeShipText.innerHTML = `<strong style="color:#5ce080;">🎉 PARABÉNS! Você desbloqueou FRETE GRÁTIS!</strong>`;
+      }
+
+      // Lista de itens
+      if (summary.items.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div style="text-align:center; padding: 3rem 1rem; color: var(--muted);">
+            <p style="font-family: var(--font-display); font-size: 1.8rem; color: var(--ink); margin-bottom: 0.4rem;">SUA SACOLA ESTÁ VAZIA</p>
+            <p style="font-size: 0.85rem;">Escolha suas peças na garagem e selecione o tamanho para iniciar seu pedido.</p>
+          </div>
+        `;
+      } else {
+        cartItemsContainer.innerHTML = summary.items
+          .map(
+            (item) => `
+          <div class="cart-item">
+            <img src="${item.img}" alt="${item.title}" />
+            <div>
+              <div class="cart-item-title">${item.title}</div>
+              <div class="cart-item-meta">TAMANHO: <strong style="color:var(--accent);">${item.size}</strong> · SKU: ${item.sku}</div>
+              <div class="qty-controls">
+                <button type="button" class="qty-btn" data-qty-delta="-1" data-pid="${item.productId}" data-psz="${item.size}">−</button>
+                <span class="qty-val">${item.qty}</span>
+                <button type="button" class="qty-btn" data-qty-delta="1" data-pid="${item.productId}" data-psz="${item.size}">+</button>
+              </div>
+            </div>
+            <div style="text-align:right; font-family:var(--font-mono);">
+              <strong style="color:var(--accent); font-size:0.88rem;">${formatBRL(item.lineTotal)}</strong>
+              <span style="display:block; font-size:0.64rem; color:var(--muted);">${formatBRL(item.price)} un.</span>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+
+        cartItemsContainer.querySelectorAll("[data-qty-delta]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const res = updateCartItemQty(btn.dataset.pid, btn.dataset.psz, +btn.dataset.qtyDelta);
+            if (!res.ok && res.message) showToast(res.message);
+            renderCartDrawer();
+            renderShowroomEcommerceControls();
+          });
+        });
+      }
+
+      // Mostrar/ocultar upsell do Lenço Terral se já estiver no carrinho
+      const hasLenco = summary.items.some((i) => i.productId.includes("lenco-terral"));
+      document.getElementById("cartUpsellWrap").style.display = hasLenco ? "none" : "block";
+
+      // Opções de frete quando CEP preenchido
+      if (cart.cep && summary.items.length > 0) {
+        cepCartInput.value = cart.cep;
+        shippingOptionsCart.innerHTML = summary.shippingOptions
+          .map(
+            (opt) => `
+          <label style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0.6rem; border:1px solid ${
+            opt.id === summary.selectedShipping.id ? "var(--accent)" : "var(--line)"
+          }; background:rgba(11,9,8,0.6); cursor:pointer;">
+            <span>
+              <input type="radio" name="cartShipOpt" value="${opt.id}" ${opt.id === summary.selectedShipping.id ? "checked" : ""} />
+              ${opt.label} <small style="color:var(--muted);">(${opt.eta})</small>
+            </span>
+            <strong style="color:${opt.price === 0 ? "#5ce080" : "var(--ink)"};">${opt.price === 0 ? "GRÁTIS" : formatBRL(opt.price)}</strong>
+          </label>
+        `
+          )
+          .join("");
+
+        shippingOptionsCart.querySelectorAll("input[name='cartShipOpt']").forEach((radio) => {
+          radio.addEventListener("change", () => {
+            const c = loadCart();
+            c.selectedShipping = radio.value;
+            saveCart(c);
+            renderCartDrawer();
+          });
+        });
+      } else {
+        shippingOptionsCart.innerHTML = "";
+      }
+
+      // Totais
+      document.getElementById("cartSubtotalVal").textContent = formatBRL(summary.subtotal);
+      const discRow = document.getElementById("cartDiscountRow");
+      if (summary.totalDiscount > 0) {
+        discRow.style.display = "flex";
+        document.getElementById("cartDiscountLabel").textContent = summary.activeCoupon
+          ? `Desconto (PIX 5% + ${summary.activeCoupon.code}):`
+          : "Desconto PIX (5% OFF):";
+        document.getElementById("cartDiscountVal").textContent = `- ${formatBRL(summary.totalDiscount)}`;
+      } else {
+        discRow.style.display = "none";
+      }
+
+      document.getElementById("cartShippingVal").textContent =
+        summary.items.length === 0
+          ? "R$ 0,00"
+          : summary.shippingFee === 0
+          ? "GRÁTIS"
+          : formatBRL(summary.shippingFee);
+
+      document.getElementById("cartTotalVal").textContent = formatBRL(summary.total);
+    }
+
+    // Botão Upsell Lenço
+    document.getElementById("btnUpsellLenco").addEventListener("click", () => {
+      const res = addToCart("lenco-terral-azul", "UNICO", 1);
+      if (res.ok) {
+        showToast("✓ Lenço Terral Azul adicionado à sacola!");
+        renderCartDrawer();
+        renderShowroomEcommerceControls();
+      } else {
+        showToast(res.message);
+      }
+    });
+
+    // Aplicar Cupom
+    document.getElementById("applyCouponBtn").addEventListener("click", () => {
+      const code = couponInput.value.trim().toUpperCase();
+      const state = loadERPState();
+      const found = state.coupons.find((c) => c.code.toUpperCase() === code && c.active);
+      if (!found) {
+        showToast("Cupom inválido ou expirado. Tente TERRADALUZ10");
+        return;
+      }
+      const c = loadCart();
+      c.couponCode = found.code;
+      saveCart(c);
+      showToast(`🎉 Cupom ${found.code} (${found.discountPercent}% OFF) aplicado!`);
+      renderCartDrawer();
+    });
+
+    // Calcular Frete por CEP
+    document.getElementById("calcShippingBtn").addEventListener("click", () => {
+      const cep = cepCartInput.value.replace(/\D/g, "");
+      if (cep.length < 8) {
+        showToast("Digite um CEP válido com 8 dígitos.");
+        return;
+      }
+      const c = loadCart();
+      c.cep = cep.replace(/^(\d{5})(\d{3})$/, "$1-$2");
+      saveCart(c);
+      renderCartDrawer();
+      showToast("Opções de entrega atualizadas para o seu CEP!");
+    });
+
+    /* --------------------------------------------------------------------------
+       CHECKOUT TRANSPARENTE (PIX + CARTÃO TOKENIZADO + VIACEP + PEDIDO NO ERP)
+       -------------------------------------------------------------------------- */
+    const checkoutModal = document.getElementById("checkoutModal");
+    const chkCepInput = document.getElementById("chkCep");
+    const chkAddressInput = document.getElementById("chkAddress");
+    const chkCityUfInput = document.getElementById("chkCityUf");
+
+    function renderCheckoutSummary() {
+      const state = loadERPState();
+      const summary = calculateCartSummary(selectedCheckoutMethod);
+      const gw = state.settings.gateways[state.settings.activeGateway || "mercadopago"];
+      document.getElementById("activeGatewayBadge").textContent = `CHECKOUT SEGURO · ${gw.name.toUpperCase()}`;
+
+      const chkItemsList = document.getElementById("chkItemsList");
+      chkItemsList.innerHTML = summary.items
+        .map(
+          (i) => `
+        <div style="display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:0.74rem; border-bottom:1px solid var(--line); padding-bottom:0.4rem;">
+          <span>${i.qty}x ${i.title} <strong style="color:var(--accent);">[${i.size}]</strong></span>
+          <strong>${formatBRL(i.lineTotal)}</strong>
+        </div>
+      `
+        )
+        .join("");
+
+      const chkTotalsBox = document.getElementById("chkTotalsBox");
+      chkTotalsBox.innerHTML = `
+        <div class="summary-line"><span>Subtotal:</span><span>${formatBRL(summary.subtotal)}</span></div>
+        <div class="summary-line" style="color:#5ce080;"><span>Descontos (${selectedCheckoutMethod === "PIX" ? "PIX + Cupom" : "Cupom"}):</span><span>- ${formatBRL(summary.totalDiscount)}</span></div>
+        <div class="summary-line"><span>Frete (${summary.selectedShipping.label}):</span><span>${summary.shippingFee === 0 ? "GRÁTIS" : formatBRL(summary.shippingFee)}</span></div>
+        <div class="summary-line total"><span>Total a Pagar:</span><span style="color:var(--accent);">${formatBRL(summary.total)}</span></div>
+      `;
+
+      // Atualizar select de parcelas com valores reais
+      const instSelect = document.getElementById("chkInstallments");
+      if (instSelect) {
+        instSelect.innerHTML = [1, 2, 3, 4, 6]
+          .map((n) => `<option value="${n}">${n}x de ${formatBRL(summary.total / n)} sem juros</option>`)
+          .join("");
+      }
+    }
+
+    document.getElementById("proceedCheckoutBtn").addEventListener("click", () => {
+      const summary = calculateCartSummary("PIX");
+      if (summary.items.length === 0) {
+        showToast("Adicione pelo menos 1 peça à sacola antes de finalizar.");
+        return;
+      }
+      const cart = loadCart();
+      if (cart.cep) chkCepInput.value = cart.cep;
+      document.getElementById("orderSuccessBox").style.display = "none";
+      document.getElementById("confirmOrderBtn").style.display = "inline-flex";
+      closeCartDrawer();
+      renderCheckoutSummary();
+      checkoutModal.classList.add("open");
+    });
+
+    document.getElementById("closeCheckoutBtn").addEventListener("click", () => {
+      checkoutModal.classList.remove("open");
+    });
+
+    // Busca automática de endereço via ViaCEP
+    chkCepInput.addEventListener("blur", async () => {
+      const clean = chkCepInput.value.replace(/\D/g, "");
+      if (clean.length !== 8) return;
+      const c = loadCart();
+      c.cep = clean.replace(/^(\d{5})(\d{3})$/, "$1-$2");
+      saveCart(c);
+      renderCheckoutSummary();
+
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${clean}/json/`);
+        const data = await res.json();
+        if (!data.erro) {
+          chkAddressInput.value = `${data.logradouro || ""}, Nº — ${data.bairro || ""}`;
+          chkCityUfInput.value = `${data.localidade} / ${data.uf}`;
+        }
+      } catch {
+        // Fallback offline para Fortaleza se sem internet
+        if (clean.startsWith("60") || clean.startsWith("61")) {
+          chkCityUfInput.value = "Fortaleza / CE";
+        }
+      }
+    });
+
+    // Alternar abas PIX vs Cartão
+    document.querySelectorAll("[data-pay-method]").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll("[data-pay-method]").forEach((t) => t.classList.remove("active"));
+        tab.classList.add("active");
+        selectedCheckoutMethod = tab.dataset.payMethod;
+        document.getElementById("pixPayPanel").style.display = selectedCheckoutMethod === "PIX" ? "grid" : "none";
+        document.getElementById("cardPayPanel").style.display = selectedCheckoutMethod === "CARTAO" ? "block" : "none";
+        renderCheckoutSummary();
+      });
+    });
+
+    document.getElementById("btnCopyPix").addEventListener("click", () => {
+      const copyInput = document.getElementById("pixCopyCode");
+      navigator.clipboard?.writeText(copyInput.value).catch(() => {});
+      showToast("📋 Código PIX Copia e Cola copiado!");
+    });
+
+    // Submeter Pedido -> Grava no ERP + Dá Baixa no Estoque + Atualiza DRE e CRM
+    document.getElementById("checkoutForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const cityUfParts = (chkCityUfInput.value || "Fortaleza / CE").split("/");
+      const customer = {
+        name: document.getElementById("chkName").value.trim(),
+        cpf: document.getElementById("chkCpf").value.trim(),
+        phone: document.getElementById("chkPhone").value.trim(),
+        email: document.getElementById("chkEmail").value.trim(),
+        cep: chkCepInput.value.trim(),
+        bike: document.getElementById("chkBike").value.trim() || "Custom / Clássica",
+        address: chkAddressInput.value.trim(),
+        city: (cityUfParts[0] || "Fortaleza").trim(),
+        uf: (cityUfParts[1] || "CE").trim()
+      };
+
+      const res = createOrder({
+        customer,
+        paymentMethod: selectedCheckoutMethod,
+        installments: document.getElementById("chkInstallments").value,
+        cardNumber: document.getElementById("chkCardNum").value,
+        channel: "SITE"
+      });
+
+      if (!res.ok) {
+        showToast(res.message);
+        return;
+      }
+
+      // Atualizar vitrine e sacola com o novo estoque
+      renderShowroomEcommerceControls();
+      renderCartDrawer();
+
+      // Mostrar confirmação e link WhatsApp + ERP
+      const order = res.order;
+      document.getElementById("confirmOrderBtn").style.display = "none";
+      const successBox = document.getElementById("orderSuccessBox");
+      successBox.style.display = "block";
+      document.getElementById("successOrderId").textContent = `#${order.id} (${formatBRL(order.payment.total)})`;
+
+      const itemsText = order.items.map((i) => `• ${i.qty}x ${i.title} (${i.size})`).join("%0A");
+      const waMsg = `Olá Santa Máquina! Acabei de finalizar meu pedido *#${order.id}* no site oficial:%0A${itemsText}%0A*Total:* ${formatBRL(order.payment.total)} (${order.payment.method})%0A*Entrega:* ${order.customer.address} - ${order.customer.city}/${order.customer.uf}`;
+      document.getElementById("successWhatsappBtn").href = `https://wa.me/5585997428530?text=${waMsg}`;
+
+      showToast(`🎉 Pedido #${order.id} confirmado com sucesso!`);
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        modal.classList.remove("open");
+        closeCartDrawer();
+        checkoutModal.classList.remove("open");
+      }
+      // Atalho exclusivo do administrador (Ctrl + Shift + E) para abrir o ERP oculto
+      if (e.ctrlKey && e.shiftKey && (e.key === "E" || e.key === "e")) {
+        e.preventDefault();
+        window.open("erp.html", "_blank");
+      }
+    });
+
+    // Sincronizar automaticamente quando o ERP alterar preços, estoque ou cupons em outra aba
+    subscribeToERPUpdates(() => {
+      renderShowroomEcommerceControls();
+      renderCartDrawer();
+    });
+
+    // Delegação global robusta para garantir clique imediato em qualquer botão de compra ou card
+    document.addEventListener("click", (e) => {
+      // 1. Botão "Adicionar à Sacola" dos cards
+      const addBtn = e.target.closest("[data-add-card], [data-direct-add]");
+      if (addBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const card = addBtn.closest(".product-card");
+        const state = loadERPState();
+        let product = null;
+
+        if (addBtn.dataset.addCard) {
+          product = state.products.find((p) => p.id === addBtn.dataset.addCard);
+        } else if (card) {
+          const cardsList = [...document.querySelectorAll("#catalogGrid .product-card")];
+          const idx = cardsList.indexOf(card);
+          product = idx >= 0 ? state.products[idx] : null;
+        }
+
+        if (product) {
+          const chosenSize = selectedSizesByCard[product.id] || getDefaultAvailableSize(product);
+          const res = addToCart(product.id, chosenSize, 1);
+          if (!res.ok) {
+            showToast(res.message);
+            return;
+          }
+          showToast(`✓ ${product.title} (${chosenSize === "UNICO" ? "Único" : chosenSize}) adicionada à sacola!`);
+          renderShowroomEcommerceControls();
+          renderCartDrawer();
+          openCartDrawer();
+        }
+        return;
+      }
+
+      // 2. Seletor de tamanho dos cards
+      const sizeBtn = e.target.closest("[data-select-size]");
+      if (sizeBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const card = sizeBtn.closest(".product-card");
+        if (card && card.dataset.productId) {
+          selectedSizesByCard[card.dataset.productId] = sizeBtn.dataset.selectSize;
+          renderShowroomEcommerceControls();
+        }
+        return;
+      }
+    });
+
+    renderShowroomEcommerceControls();
+    renderCartDrawer();
+    window.addEventListener("load", () => {
+      renderShowroomEcommerceControls();
+      renderCartDrawer();
+      ScrollTrigger.refresh();
+    });
+  })();
+  </script>
+</body>
+</html>

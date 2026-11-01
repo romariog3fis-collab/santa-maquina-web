@@ -1,0 +1,3135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>SANTA MÁQUINA | Loja Oficial — Custom Lifestyle & Cultura Biker</title>
+  <meta name="description" content="Loja oficial da Santa Máquina. Camisetas em malha pesada 100% algodão, bonés trucker e bandanas inspiradas na cultura biker e na história do Ceará. Compre online com 5% OFF no PIX." />
+  <meta name="theme-color" content="#ede7d7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+  <!-- Google Fonts: Bebas Neue, Fraunces (Editorial Serif), Instrument Sans, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Instrument+Sans:ital,wght@0,400..700;1,400..600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       1. TOKENS DE DESIGN (CUTTERMAN CO. INSPIRATION: CANVAS, LEATHER & CHARCOAL)
+       ========================================================================== */
+    :root {
+      --bg: #ede7d7;               /* Fundo Exato do Vídeo de Movimento da Marca */
+      --bg-alt: #f5f0e3;           /* Linho suave para seções secundárias */
+      --surface: #ffffff;          /* Branco puro para cards de produto */
+      --surface-subtle: #f9f7f2;   /* Fundo neutro e quente das fotos */
+      --surface-card: #ffffff;
+
+      --ink: #171513;              /* Grafite profundo / preto carvão editorial */
+      --ink-inverted: #f8f6f1;     /* Branco osso para textos invertidos */
+      --muted: #6e675f;            /* Cinza terroso quente / ardósia suave */
+      --muted-light: #948b81;      /* Linhas e detalhes secundários */
+
+      --accent: #8c5a2b;           /* Couro legítimo Saddle Tan (Cutterman Co.) */
+      --accent-hover: #73471f;     /* Couro escovado escuro */
+      --accent-caramel: #b87b44;   /* Caramelo conhaque artesanal */
+      --accent-spark: #a85827;     /* Terracota rústico */
+      --terracotta: #7a3e1d;       /* Marrom café / couro pinhão */
+      --success: #258348;          /* Verde confirmação */
+      --whatsapp: #25d366;
+
+      --line: rgba(23, 21, 19, 0.10);        /* Divisória sutil clara */
+      --line-strong: rgba(140, 90, 43, 0.35); /* Borda refinada de couro */
+      --shadow-sm: 0 2px 8px rgba(23, 21, 19, 0.05);
+      --shadow-md: 0 8px 24px rgba(23, 21, 19, 0.08);
+      --shadow-lg: 0 16px 40px rgba(23, 21, 19, 0.14);
+
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      overflow-x: hidden;
+      position: relative;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    /* Container base */
+    .container {
+      width: 100%;
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ==========================================================================
+       2. VÍDEO DE FUNDO SUTIL (OTIMIZADO PARA SMARTPHONE)
+       ========================================================================== */
+    .brand-video-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      background-color: var(--bg);
+      transform: translateZ(0);
+    }
+
+    .brand-video-backdrop video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.18;
+      filter: saturate(0.85) contrast(1.05);
+      mix-blend-mode: multiply;
+    }
+
+    .brand-video-backdrop::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 20%, rgba(237, 231, 215, 0.5) 0%, rgba(237, 231, 215, 0.94) 85%);
+      pointer-events: none;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-bottom: 70px; /* espaço para floating bar no mobile */
+    }
+
+    /* ==========================================================================
+       3. TOP ANNOUNCEMENT BAR & SITE HEADER
+       ========================================================================== */
+    .announcement-bar {
+      background-color: var(--ink);
+      color: var(--ink-inverted);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      text-align: center;
+      position: relative;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .announcement-bar span {
+      color: #dfba86;
+      font-weight: 700;
+    }
+
+    .site-header {
+      background-color: rgba(237, 231, 215, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      transition: all 0.3s var(--ease);
+      padding-top: env(safe-area-inset-top, 0);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      gap: 16px;
+    }
+
+    .brand-identity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .brand-seal-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--line-strong);
+      object-fit: cover;
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-logo-text {
+      font-family: var(--font-display);
+      font-size: 1.85rem;
+      letter-spacing: 0.04em;
+      line-height: 0.95;
+      color: var(--ink);
+    }
+
+    .brand-subtext {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    /* Botões de Acesso Rápido às Histórias (Desktop) */
+    .story-nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background-color: rgba(255, 255, 255, 0.7);
+      color: var(--ink);
+      transition: all 0.2s var(--ease);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .pill-btn:hover, .pill-btn:active {
+      background-color: #ffffff;
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .erp-link-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(23, 21, 19, 0.15);
+      background: transparent;
+      color: var(--muted);
+      transition: all 0.2s var(--ease);
+      min-height: 40px;
+    }
+
+    .erp-link-btn:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .cart-trigger-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--ink);
+      color: var(--ink-inverted);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      border-radius: 6px;
+      box-shadow: 0 4px 14px rgba(23, 21, 19, 0.16);
+      transition: all 0.25s var(--ease);
+      cursor: pointer;
+      min-height: 40px;
+    }
+
+    .cart-trigger-btn:hover {
+      background-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(140, 90, 43, 0.3);
+    }
+
+    .cart-badge {
+      background-color: var(--accent-spark);
+      color: #ffffff;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       4. BARRA DE NAVEGAÇÃO DE HISTÓRIAS MOBILE (SWIPE HORIZONTAL TOUCH)
+       ========================================================================== */
+    .mobile-story-bar-wrapper {
+      display: none;
+      background-color: rgba(237, 231, 215, 0.88);
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 8px 16px;
+    }
+
+    .mobile-story-bar-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mobile-story-scroll {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: max-content;
+    }
+
+    .mobile-story-scroll .pill-btn {
+      padding: 6px 12px;
+      font-size: 0.70rem;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    /* ==========================================================================
+       5. COMPACT HERO: VISIBILIDADE IMEDIATA DAS PEÇAS
+       ========================================================================== */
+    .hero-compact {
+      padding: 24px 0 14px 0;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(237, 231, 215, 0.3) 0%, rgba(245, 240, 227, 0.7) 100%);
+    }
+
+    .hero-compact-content {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .hero-text-block {
+      max-width: 680px;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .hero-kicker::before {
+      content: '';
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background-color: var(--accent);
+      border-radius: 50%;
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+      line-height: 0.95;
+      letter-spacing: 0.03em;
+      color: var(--ink);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .hero-subheadline {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .hero-benefits-strip {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--ink);
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .benefit-item span {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       6. SHOWROOM IMEDIATO & FILTROS COM TOGGLE DE GRADE NO MOBILE
+       ========================================================================== */
+    .shop-section {
+      padding: 20px 0 50px 0;
+      position: relative;
+    }
+
+    .filter-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .category-tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.65);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      max-width: 100%;
+    }
+
+    .category-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-tab-btn {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: 6px;
+      color: var(--muted);
+      transition: all 0.2s var(--ease);
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .cat-tab-btn:hover {
+      color: var(--ink);
+    }
+
+    .cat-tab-btn.active {
+      background-color: var(--ink);
+      color: var(--ink-inverted);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .toolbar-right-side {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .catalog-count-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    /* Toggle 1 Coluna / 2 Colunas para Smartphone */
+    .mobile-view-toggle {
+      display: none;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 2px;
+    }
+
+    .view-toggle-btn {
+      padding: 5px 8px;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      border-radius: 4px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .view-toggle-btn.active {
+      background: var(--ink);
+      color: #ffffff;
+    }
+
+    /* Grid de Produtos */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    /* Card de Produto Refinado (Cutterman Co.) */
+    .product-card {
+      background: var(--surface);
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(140, 90, 43, 0.3);
+    }
+
+    .product-badge-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px 6px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .badge-collection {
+      color: var(--accent);
+    }
+
+    .badge-sub {
+      color: var(--muted-light);
+    }
+
+    /* Mídia / Imagem com botões táteis */
+    .product-media-wrap {
+      position: relative;
+      background-color: var(--surface-subtle);
+      aspect-ratio: 1 / 1.05;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .product-media-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.35s var(--ease);
+    }
+
+    .product-card:hover .product-media-wrap img {
+      transform: scale(1.03);
+    }
+
+    .media-actions-bar {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      z-index: 2;
+    }
+
+    .media-pill-btn {
+      background-color: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: all 0.2s var(--ease);
+      min-height: 32px;
+    }
+
+    .media-pill-btn:active, .media-pill-btn:hover {
+      background-color: var(--ink);
+      color: var(--ink-inverted);
+      border-color: var(--ink);
+    }
+
+    /* Informações do Produto */
+    .product-info-wrap {
+      padding: 14px 16px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+
+    .product-title-row {
+      margin-bottom: 6px;
+    }
+
+    .product-card-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      letter-spacing: 0.04em;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .product-pricing-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .price-main {
+      font-family: var(--font-sans);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .price-pix {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .product-summary {
+      font-size: 0.80rem;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 14px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Seletor de Tamanhos Touch-Friendly */
+    .size-selector-box {
+      margin-bottom: 14px;
+    }
+
+    .size-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .size-label-row strong {
+      color: var(--ink);
+    }
+
+    .size-pill-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .size-btn {
+      min-width: 40px;
+      height: 36px;
+      padding: 0 10px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background-color: var(--surface-subtle);
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s var(--ease);
+      touch-action: manipulation;
+    }
+
+    .size-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background-color: #ffffff;
+    }
+
+    .size-btn.active {
+      background-color: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(140, 90, 43, 0.3);
+    }
+
+    /* Botão Adicionar à Sacola Imediato */
+    .btn-add-cart {
+      width: 100%;
+      background-color: var(--ink);
+      color: var(--ink-inverted);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+      border: 1px solid var(--ink);
+      min-height: 46px;
+      touch-action: manipulation;
+    }
+
+    .btn-add-cart:hover, .btn-add-cart:active {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px rgba(140, 90, 43, 0.3);
+    }
+
+    .btn-add-cart.added {
+      background-color: var(--success);
+      border-color: var(--success);
+    }
+
+    /* ==========================================================================
+       7. BARRA FLUTUANTE DE COMPRA NO MOBILE (STICKY BOTTOM BAR)
+       ========================================================================== */
+    .mobile-floating-cart-bar {
+      display: none;
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: max(12px, env(safe-area-inset-bottom, 12px));
+      z-index: 85;
+      background: var(--ink);
+      color: var(--ink-inverted);
+      border-radius: 12px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 10px 16px;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      animation: slideUpFloat 0.3s var(--ease);
+      transition: transform 0.2s var(--ease);
+    }
+
+    @keyframes slideUpFloat {
+      from { transform: translateY(60px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .mobile-floating-cart-bar:active {
+      transform: scale(0.98);
+    }
+
+    .floating-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .floating-bar-badge {
+      background: var(--accent-spark);
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .floating-bar-label {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .floating-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .floating-bar-total {
+      color: #dfba86;
+    }
+
+    .floating-bar-btn-text {
+      background: var(--accent);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ==========================================================================
+       8. MODAL EDITORIAL: HISTÓRIAS & MEDIDAS (BOTTOM-SHEET NO MOBILE)
+       ========================================================================== */
+    .story-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(23, 21, 19, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
+    }
+
+    .story-modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .story-modal-card {
+      background-color: var(--bg);
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 920px;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(20px) scale(0.98);
+      transition: transform 0.35s var(--ease);
+      position: relative;
+    }
+
+    .story-modal-overlay.open .story-modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header-sticky {
+      position: sticky;
+      top: 0;
+      background-color: rgba(237, 231, 215, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .modal-tab-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-tab-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .modal-tab-btn {
+      font-family: var(--font-mono);
+      font-size: 0.70rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .modal-tab-btn:hover {
+      color: var(--ink);
+      border-color: var(--accent);
+    }
+
+    .modal-tab-btn.active {
+      background-color: var(--ink);
+      color: var(--ink-inverted);
+      border-color: var(--ink);
+    }
+
+    .modal-close-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--ink);
+      transition: all 0.2s var(--ease);
+      flex-shrink: 0;
+    }
+
+    .modal-close-btn:hover {
+      background-color: var(--ink);
+      color: #ffffff;
+    }
+
+    .modal-body-content {
+      padding: 28px 32px 40px 32px;
+    }
+
+    .story-pane {
+      display: none;
+      animation: fadeIn 0.25s var(--ease);
+    }
+
+    .story-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .story-header-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .story-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 14px;
+    }
+
+    .story-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .story-image-feature {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      margin: 16px 0;
+    }
+
+    .story-prose {
+      font-size: 0.96rem;
+      line-height: 1.65;
+      color: #383431;
+      margin-bottom: 16px;
+    }
+
+    .story-prose strong {
+      color: var(--ink);
+    }
+
+    .quote-box {
+      border-left: 3px solid var(--accent);
+      padding: 12px 18px;
+      margin: 20px 0;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 0 8px 8px 0;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--terracotta);
+    }
+
+    /* Tabela de Medidas Responsiva */
+    .size-table-wrap {
+      overflow-x: auto;
+      margin: 20px 0;
+      background: var(--surface);
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .size-table {
+      width: 100%;
+      min-width: 500px;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    .size-table th {
+      background: var(--surface-subtle);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .size-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--font-mono);
+    }
+
+    .size-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ==========================================================================
+       9. CART DRAWER (SACOLA DE COMPRAS OTIMIZADA PARA MOBILE)
+       ========================================================================== */
+    .cart-drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      background: rgba(23, 21, 19, 0.65);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
+    }
+
+    .cart-drawer-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cart-drawer-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 440px;
+      z-index: 9999;
+      background-color: #ffffff;
+      box-shadow: -8px 0 32px rgba(23, 21, 19, 0.2);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s var(--ease);
+      padding-top: env(safe-area-inset-top, 0);
+    }
+
+    .cart-drawer-backdrop.open .cart-drawer-panel {
+      transform: translateX(0);
+    }
+
+    .cart-drawer-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+    }
+
+    .cart-drawer-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Barra de Frete Grátis Dinâmica */
+    .shipping-bar-box {
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    .shipping-bar-text {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .shipping-progress-track {
+      height: 6px;
+      background: rgba(23, 21, 19, 0.1);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .shipping-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s var(--ease);
+    }
+
+    .cart-drawer-body {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .cart-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .cart-empty-message {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--muted);
+      font-family: var(--font-sans);
+    }
+
+    .cart-item-row {
+      display: flex;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cart-item-thumb {
+      width: 64px;
+      height: 70px;
+      border-radius: 6px;
+      background: var(--surface-subtle);
+      object-fit: contain;
+      border: 1px solid var(--line);
+      flex-shrink: 0;
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .cart-item-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      line-height: 1.05;
+      text-transform: uppercase;
+    }
+
+    .cart-item-meta {
+      font-family: var(--font-mono);
+      font-size: 0.70rem;
+      color: var(--muted);
+      margin: 2px 0 6px 0;
+    }
+
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .qty-stepper {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--surface-subtle);
+    }
+
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .qty-btn:active {
+      background: #ffffff;
+    }
+
+    .qty-val {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 0 8px;
+      font-weight: 700;
+    }
+
+    .item-remove-btn {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 4px 6px;
+    }
+
+    .item-remove-btn:hover {
+      color: #990000;
+    }
+
+    .cart-item-price {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .cart-drawer-footer {
+      padding: 16px 20px max(16px, env(safe-area-inset-bottom, 16px)) 20px;
+      border-top: 1px solid var(--line);
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+
+    .cart-totals-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.80rem;
+    }
+
+    .cart-totals-row.total-bold {
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    .pix-discount-note {
+      font-family: var(--font-mono);
+      font-size: 0.70rem;
+      color: var(--accent);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .checkout-btn-whatsapp {
+      width: 100%;
+      background-color: var(--whatsapp);
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 14px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+      margin-bottom: 8px;
+      transition: all 0.2s var(--ease);
+      min-height: 48px;
+    }
+
+    .checkout-btn-whatsapp:active {
+      transform: scale(0.98);
+      background-color: #1eb954;
+    }
+
+    .checkout-btn-pix {
+      width: 100%;
+      background-color: var(--ink);
+      color: var(--ink-inverted);
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 12px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+      min-height: 44px;
+    }
+
+    .checkout-btn-pix:active {
+      background-color: var(--accent);
+    }
+
+    /* Toast de Notificação */
+    .toast-notice {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom, 20px));
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background-color: var(--ink);
+      color: var(--ink-inverted);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      z-index: 10000;
+      transition: transform 0.3s var(--ease);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      width: max-content;
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    .toast-notice.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ==========================================================================
+       10. LIGHTBOX ZOOM MODAL
+       ========================================================================== */
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(23, 21, 19, 0.88);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s var(--ease);
+    }
+
+    .lightbox-modal.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .lightbox-card {
+      background: var(--surface);
+      max-width: 640px;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .lightbox-img-wrap {
+      background: var(--surface-subtle);
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .lightbox-img-wrap img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .lightbox-footer {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--line);
+    }
+
+    /* ==========================================================================
+       11. FOOTER EDITORIAL (CUTTERMAN CO. INSPIRADO)
+       ========================================================================== */
+    .site-footer {
+      background-color: var(--surface-subtle);
+      border-top: 1px solid var(--line);
+      padding: 40px 0 24px 0;
+      margin-top: auto;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    .footer-col-title {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .footer-links a:hover, .footer-links button:hover {
+      color: var(--ink);
+    }
+
+    .footer-bottom-bar {
+      border-top: 1px solid var(--line);
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.70rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* ==========================================================================
+       12. RESPONSIVIDADE PROFISSIONAL PARA SMARTPHONES (BREAKPOINTS)
+       ========================================================================== */
+    @media (max-width: 1100px) {
+      .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 16px;
+      }
+      .story-nav-pills {
+        display: none;
+      }
+      .mobile-story-bar-wrapper {
+        display: block;
+      }
+      .header-inner {
+        height: 58px;
+      }
+      .brand-seal-icon {
+        width: 36px;
+        height: 36px;
+      }
+      .brand-logo-text {
+        font-size: 1.45rem;
+      }
+      .brand-subtext {
+        font-size: 0.58rem;
+      }
+      .erp-link-btn span {
+        display: none;
+      }
+      .erp-link-btn {
+        padding: 7px 9px;
+        min-height: 36px;
+      }
+      .cart-trigger-btn {
+        padding: 8px 12px;
+        min-height: 36px;
+        font-size: 0.72rem;
+      }
+      .cart-trigger-btn span.label {
+        display: none;
+      }
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .mobile-view-toggle {
+        display: flex;
+      }
+      .mobile-floating-cart-bar {
+        display: flex;
+      }
+      .cart-drawer-panel {
+        max-width: 100%;
+      }
+      .modal-body-content {
+        padding: 20px 18px 32px 18px;
+      }
+      .story-modal-card {
+        border-radius: 16px 16px 0 0;
+        max-height: 92vh;
+        margin-top: auto;
+      }
+      .story-modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .container {
+        padding: 0 12px;
+      }
+      .announcement-bar {
+        font-size: 0.65rem;
+        padding: 6px 10px;
+      }
+      .hero-compact {
+        padding: 16px 0 10px 0;
+      }
+      .hero-kicker {
+        font-size: 0.62rem;
+      }
+      .hero-headline {
+        font-size: 1.85rem;
+      }
+      .hero-subheadline {
+        font-size: 0.82rem;
+      }
+      .hero-benefits-strip {
+        gap: 10px;
+        font-size: 0.68rem;
+      }
+
+      /* Grid padrão no smartphone: 1 coluna ampla para detalhes e toque fácil */
+      .product-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        max-width: 440px;
+        margin: 0 auto;
+      }
+
+      /* Quando o usuário clica no toggle de 2 colunas */
+      .product-grid.view-2-col {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        max-width: 100%;
+      }
+
+      .product-grid.view-2-col .product-info-wrap {
+        padding: 10px 10px 14px 10px;
+      }
+
+      .product-grid.view-2-col .product-card-title {
+        font-size: 1.15rem;
+      }
+
+      .product-grid.view-2-col .price-main {
+        font-size: 1.1rem;
+      }
+
+      .product-grid.view-2-col .price-pix {
+        font-size: 0.68rem;
+      }
+
+      .product-grid.view-2-col .product-summary {
+        display: none;
+      }
+
+      .product-grid.view-2-col .size-btn {
+        min-width: 32px;
+        height: 28px;
+        font-size: 0.68rem;
+        padding: 0 4px;
+      }
+
+      .product-grid.view-2-col .btn-add-cart {
+        padding: 10px 8px;
+        font-size: 0.70rem;
+        min-height: 40px;
+      }
+
+      .product-grid.view-2-col .media-pill-btn {
+        padding: 4px 8px;
+        font-size: 0.60rem;
+        min-height: 28px;
+      }
+
+      /* Footer em 1 coluna */
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+  
+    .size-btn.disabled, .size-btn[disabled] {
+      opacity: 0.35 !important;
+      text-decoration: line-through !important;
+      cursor: not-allowed !important;
+      pointer-events: none !important;
+      background-color: rgba(23, 21, 19, 0.06) !important;
+      border: 1px dashed rgba(23, 21, 19, 0.22) !important;
+      color: var(--muted) !important;
+      box-shadow: none !important;
+    }
+
+    .btn-add-cart:disabled {
+      opacity: 0.50 !important;
+      cursor: not-allowed !important;
+      background-color: #55504a !important;
+      border-color: #55504a !important;
+      color: #ede7d7 !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    .stock-status.sold-out {
+      color: #b03a2e !important;
+      font-weight: 700;
+    }
+
+    .stock-status.low-stock {
+      color: #b87b44 !important;
+      font-weight: 700;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- VÍDEO DE FUNDO SUTIL (1080P DA MARCA) -->
+  <div class="brand-video-backdrop" aria-hidden="true">
+    <video autoplay loop muted playsinline src="assets/logo_movement_v2.mp4"></video>
+  </div>
+
+  <div class="page-wrap">
+
+    <!-- ANNOUNCEMENT BAR -->
+    <div class="announcement-bar">
+      ✦ FRETE GRÁTIS BRASIL ACIMA DE R$ 250 • <span>5% OFF NO PIX</span> • ATÉ 6X SEM JUROS
+    </div>
+
+    <!-- SITE HEADER STICKY -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <div class="brand-identity">
+          <img src="assets/logo_selo_offroad.jpg" alt="Selo Oficial Santa Máquina" class="brand-seal-icon" />
+          <div class="brand-titles">
+            <span class="brand-logo-text">SANTA MÁQUINA</span>
+            <span class="brand-subtext">03°43'S 38°32'W · FORTALEZA, CE · ESTD. 2019</span>
+          </div>
+        </div>
+
+        <!-- BOTÕES DE HISTÓRIA E CULTURA (DESKTOP) -->
+        <nav class="story-nav-pills" aria-label="Histórias e Informações">
+          <button type="button" class="pill-btn" data-open-story="historia">
+            📖 1884 & Dragão do Mar
+          </button>
+          <button type="button" class="pill-btn" data-open-story="oficina">
+            🏍 Cultura de Oficina
+          </button>
+          <button type="button" class="pill-btn" data-open-story="simbolos">
+            🧭 Os 4 Símbolos
+          </button>
+          <button type="button" class="pill-btn" data-open-story="medidas">
+            📏 Guia de Medidas
+          </button>
+        </nav>
+
+        <!-- AÇÕES DO HEADER: ERP E SACOLA -->
+        <div class="header-actions">
+          <a href="erp.html" class="erp-link-btn" title="Painel de Gestão ERP">
+            ⚙ <span>ERP</span>
+          </a>
+          <button type="button" class="cart-trigger-btn" id="openCartBtn" aria-label="Abrir sacola de compras">
+            🛒 <span class="label">SACOLA</span>
+            <span class="cart-badge" id="headerCartCount">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- BARRA HORIZONTAL DE HISTÓRIAS NO MOBILE (SWIPE TOUCH) -->
+    <div class="mobile-story-bar-wrapper" aria-label="Acesso Rápido a Histórias e Medidas">
+      <div class="mobile-story-scroll">
+        <button type="button" class="pill-btn" data-open-story="historia">📖 1884 & Abolição</button>
+        <button type="button" class="pill-btn" data-open-story="oficina">🏍 Moto Véia na Rua</button>
+        <button type="button" class="pill-btn" data-open-story="simbolos">🧭 Os 4 Símbolos</button>
+        <button type="button" class="pill-btn" data-open-story="medidas">📏 Guia de Medidas</button>
+        <button type="button" class="pill-btn" data-open-story="envios">📦 Envios & Trocas</button>
+        <a href="erp.html" class="pill-btn">⚙ Painel ERP</a>
+      </div>
+    </div>
+
+    <!-- COMPACT HERO: VISIBILIDADE IMEDIATA DAS PEÇAS -->
+    <section class="hero-compact">
+      <div class="container">
+        <div class="hero-compact-content">
+          <div class="hero-text-block">
+            <div class="hero-kicker">Custom Lifestyle & Cultura Biker Local</div>
+            <h1 class="hero-headline">ROUPA FEITA PARA RODAR, VIVER E CONTAR HISTÓRIA.</h1>
+            <p class="hero-subheadline">
+              Malha pesada 100% algodão penteado (fio 26.1), gola canelada de 3cm e costuras reforçadas de ombro a ombro. Selecione o tamanho e adicione à sacola:
+            </p>
+          </div>
+          <div class="hero-benefits-strip">
+            <div class="benefit-item">
+              <span>✦</span> 100% Algodão Pesado
+            </div>
+            <div class="benefit-item">
+              <span>⚡</span> Envio em 24h
+            </div>
+            <div class="benefit-item">
+              <span>🔄</span> 1ª Troca Grátis
+            </div>
+            <div class="benefit-item">
+              <span>🇧🇷</span> Feito no Ceará
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHOWROOM PRINCIPAL ("LOGO DE CARA AS PEÇAS") -->
+    <main class="shop-section">
+      <div class="container">
+        <!-- BARRA DE FILTROS & VIEW TOGGLE -->
+        <div class="filter-toolbar">
+          <div class="category-tabs" role="tablist">
+            <button type="button" class="cat-tab-btn active" data-filter="all">Todas (8)</button>
+            <button type="button" class="cat-tab-btn" data-filter="camisetas">Camisetas (5)</button>
+            <button type="button" class="cat-tab-btn" data-filter="acessorios">Acessórios (3)</button>
+            <button type="button" class="cat-tab-btn" data-filter="local">Coleção 1884</button>
+          </div>
+
+          <div class="toolbar-right-side">
+            <span class="catalog-count-label" id="productCountLabel">8 peças exclusivas</span>
+            <!-- Seletor de Grade 1 Coluna / 2 Colunas para Smartphone -->
+            <div class="mobile-view-toggle" aria-label="Visualização em colunas">
+              <button type="button" class="view-toggle-btn active" id="view1ColBtn" title="1 Coluna">☰ 1x</button>
+              <button type="button" class="view-toggle-btn" id="view2ColBtn" title="2 Colunas">⊞ 2x</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- GRID DE PRODUTOS (8 PEÇAS RESPONSIVAS) -->
+        <div class="product-grid" id="productGrid">
+
+          <!-- 1. CAMISETA PILOTO OFF-WHITE -->
+          <article class="product-card" data-category="camisetas" data-product-id="camiseta-piloto-off-white">
+            <div class="product-badge-bar">
+              <span class="badge-collection">✦ COLEÇÃO CLÁSSICOS</span>
+              <span class="badge-sub">OFF-WHITE</span>
+            </div>
+            <div class="product-media-wrap">
+              <img
+                src="assets/piloto_off_costas.png"
+                data-front="assets/piloto_off_frente.png"
+                data-back="assets/piloto_off_costas.png"
+                data-showing="back"
+                alt="Camiseta Piloto Off-White"
+                class="prod-img"
+                loading="eager"
+              />
+              <div class="media-actions-bar">
+                <button type="button" class="media-pill-btn flip-btn">↻ Frente / Costas</button>
+                <button type="button" class="media-pill-btn zoom-btn">🔍 Ampliar</button>
+              </div>
+            </div>
+            <div class="product-info-wrap">
+              <div class="product-title-row">
+                <h2 class="product-card-title">Camiseta Piloto Off-White</h2>
+                <div class="product-pricing-wrap">
+                  <span class="price-main">R$ 89,90</span>
+                  <span class="price-pix">R$ 85,41 no PIX</span>
+                </div>
+              </div>
+              <p class="product-summary">
+                A paixão pelas motos clássicas e customizadas. Malha pesada, gola canelada e estampa silk de alta definição.
+              </p>
+              <div class="size-selector-box">
+                <div class="size-label-row">
+                  <span>TAMANHO: <strong class="active-size-label">M</strong></span>
+                  <span class="stock-status">Em Estoque</span>
+                </div>
+                <div class="size-pill-row">
+                  <button type="button" class="size-btn" data-size="P">P</button>
+                  <button type="button" class="size-btn active" data-size="M">M</button>
+                  <button type="button" class="size-btn" data-size="G">G</button>
+                  <button type="button" class="size-btn" data-size="GG">GG</button>
+                  <button type="button" class="size-btn" data-size="XG">XG</button>
+                </div>
+              </div>
+              <button type="button" class="btn-add-cart" data-add-id="camiseta-piloto-off-white">
+                🛒 Adicionar à Sacola
+              </button>
+            </div>
+          </article>
+
+          <!-- 2. CAMISETA LOCAL MARROM -->
+          <article class="product-card" data-category="camisetas local" data-product-id="camiseta-local-marrom">
+            <div class="product-badge-bar">
+              <span class="badge-collection">✦ COLEÇÃO LOCAL (1884)</span>
+              <span class="badge-sub">MARROM</span>
+            </div>
+            <div class="product-media-wrap">
+              <img
+                src="assets/local_marrom_costas.png"
+                data-front="assets/local_marrom_frente.png"
+                data-back="assets/local_marrom_costas.png"
+                data-showing="back"
+                alt="Camiseta Local Marrom"
+                class="prod-img"
+                loading="eager"
+              />
+              <div class="media-actions-bar">
+                <button type="button" class="media-pill-btn flip-btn">↻ Frente / Costas</button>
+                <button type="button" class="media-pill-btn zoom-btn">🔍 Ampliar</button>
+              </div>
+            </div>
+            <div class="product-info-wrap">
+              <div class="product-title-row">
+                <h2 class="product-card-title">Camiseta Local Marrom</h2>
+                <div class="product-pricing-wrap">
+                  <span class="price-main">R$ 89,90</span>
+                  <span class="price-pix">R$ 85,41 no PIX</span>
+                </div>
+              </div>
+              <p class="product-summary">
+                Homenagem ao Marco de 1884 e à greve de Chico da Matilde no Ceará. Silk resistente em malha marrom envelhecida.
+              </p>
+              <div class="size-selector-box">
+                <div class="size-label-row">
+                  <span>TAMANHO: <strong class="active-size-label">M</strong></span>
+                  <span class="stock-status">Em Estoque</span>
+                </div>
+                <div class="size-pill-row">
+                  <button type="button" class="size-btn" data-size="P">P</button>
+                  <button type="button" class="size-btn active" data-size="M">M</button>
+                  <button type="button" class="size-btn" data-size="G">G</button>
+                  <button type="button" class="size-btn" data-size="GG">GG</button>
+                  <button type="button" class="size-btn" data-size="XG">XG</button>
+                </div>
+              </div>
+              <button type="button" class="btn-add-cart" data-add-id="camiseta-local-marrom">
+                🛒 Adicionar à Sacola
+              </button>
+            </div>
+          </article>
+
+          <!-- 3. CAMISETA ÓLEO BRANCA -->
+          <article class="product-card" data-category="camisetas local" data-product-id="camiseta-oleo-branca">
+            <div class="product-badge-bar">
+              <span class="badge-collection">✦ OFICINA & GRAXA</span>
+              <span class="badge-sub">BRANCA</span>
+            </div>
+            <div class="product-media-wrap">
+              <img
+                src="assets/oleo_branca_costas.png"
+                data-front="assets/oleo_branca_frente.png"
+                data-back="assets/oleo_branca_costas.png"
+                data-showing="back"
+                alt="Camiseta Óleo Branca"
+                class="prod-img"
+                loading="lazy"
+              />
+              <div class="media-actions-bar">
+                <button type="button" class="media-pill-btn flip-btn">↻ Frente / Costas</button>
+                <button type="button" class="media-pill-btn zoom-btn">🔍 Ampliar</button>
+              </div>
+            </div>
+            <div class="product-info-wrap">
+              <div class="product-title-row">
+                <h2 class="product-card-title">Camiseta Óleo Branca</h2>
+                <div class="product-pricing-wrap">
+                  <span class="price-main">R$ 89,90</span>
+                  <span class="price-pix">R$ 85,41 no PIX</span>
+                </div>
+              </div>
+              <p class="product-summary">
+                O manifesto da troca de óleo e da camaradagem de garagem. Nascida para rodar na estrada sob o sol do Ceará.
+              </p>
+              <div class="size-selector-box">
+                <div class="size-label-row">
+                  <span>TAMANHO: <strong class="active-size-label">M</strong></span>
+                  <span class="stock-status">Em Estoque</span>
+                </div>
+                <div class="size-pill-row">
+                  <button type="button" class="size-btn" data-size="P">P</button>
+                  <button type="button" class="size-btn active" data-size="M">M</button>
+                  <button type="button" class="size-btn" data-size="G">G</button>
+                  <button type="button" class="size-btn" data-size="GG">GG</button>
+                  <button type="button" class="size-btn" data-size="XG">XG</button>
+                </div>
+              </div>
+              <button type="button" class="btn-add-cart" data-add-id="camiseta-oleo-branca">
+                🛒 Adicionar à Sacola
+              </button>
+            </div>
+          </article>
+
+          <!-- 4. CAMISETA LOGO PRETA -->
+          <article class="product-card" data-category="camisetas" data-product-id="camiseta-logo-preta">
+            <div class="product-badge-bar">
+              <span class="badge-collection">✦ O ÍCONE DA MARCA</span>
+              <span class="badge-sub">PRETA</span>
+            </div>
+            <div class="product-media-wrap">
+              <img
+                src="assets/logo_preta_costas.png"
+                data-front="assets/logo_preta_frente.png"
+                data-back="assets/logo_preta_costas.png"
+                data-showing="back"
+                alt="Camiseta Logo Preta"
+                class="prod-img"
+                loading="lazy"
+              />
+              <div class="media-actions-bar">
+                <button type="button" class="media-pill-btn flip-btn">↻ Frente / Costas</button>
+                <button type="button" class="media-pill-btn zoom-btn">🔍 Ampliar</button>
+              </div>
+            </div>
+            <div class="product-info-wrap">
+              <div class="product-title-row">
+                <h2 class="product-card-title">Camiseta Logo Preta</h2>
+                <div class="product-pricing-wrap">
+                  <span class="price-main">R$ 89,90</span>
+                  <span class="price-pix">R$ 85,41 no PIX</span>
+                </div>
+              </div>
+              <p class="product-summary">
+                A peça que deu início à história. Selo circular clássico Santa Máquina silkado nas costas com alta aderência.
+              </p>
+              <div class="size-selector-box">
+                <div class="size-label-row">
+                  <span>TAMANHO: <strong class="active-size-label">M</strong></span>
+                  <span class="stock-status">Em Estoque</span>
+                </div>
+                <div class="size-pill-row">
+                  <button type="button" class="size-btn" data-size="P">P</button>
+                  <button type="button" class="size-btn active" data-size="M">M</button>
+                  <button type="button" class="size-btn" data-size="G">G</button>
+                  <button type="button" class="size-btn" data-size="GG">GG</button>
+                  <button type="button" class="size-btn" data-size="XG">XG</button>
+                </div>
+              </div>
+              <button type="button" class="btn-add-cart" data-add-id="camiseta-logo-preta">
+                🛒 Adicionar à Sacola
+              </button>
+            </div>
+          </article>
+
+          <!-- 5. BONÉ TRUCKER LOGO PRETO -->
+          <article class="product-card" data-category="acessorios" data-product-id="bone-trucker-logo-preto">
+            <div class="product-badge-bar">
+              <span class="badge-collection">✦ ACESSÓRIO DE ROTA</span>
+              <span class="badge-sub">SNAPBACK</span>
+            </div>
+            <div class="product-media-wrap">
+              <img
+                src="assets/bone_frente.png"
+                data-front="assets/bone_frente.png"
+                data-back="assets/bone_lateral.png"
+                data-showing="front"
+                alt="Boné Trucker Logo Preto"
+                class="prod-img"
+                loading="lazy"
+              />
+              <div class="media-actions-bar">
+                <button type="button" class="media-pill-btn flip-btn">↻ Frente / Lateral</button>
+                <button type="button" class="media-pill-btn zoom-btn">🔍 Ampliar</button>
+              </div>
+            </div>
+            <div class="product-info-wrap">
+              <div class="product-title-row">
+                <h2 class="product-card-title">Boné Trucker Logo Preto</h2>
+                <div class="product-pricing-wrap">
+                  <span class="price-main">R$ 79,90</span>
+                  <span class="price-pix">R$ 75,91 no PIX</span>
+                </div>
+              </div>
+              <p class="product-summary">
+                Pensado para o pós-capacete: tela respirável traseira, copa estruturada e fecho snapback regulável.
+              </p>
+              <div class="size-selector-box">
+                <div class="size-label-row">
+                  <span>TAMANHO: <strong class="active-size-label">ÚNICO</strong></span>
+                  <span class="stock-status">Ajustável</span>
+                </div>
+                <div class="size-pill-row">
+                  <button type="button" class="size-btn active" data-size="UNICO">TAMANHO ÚNICO (SNAPBACK)</button>
+                </div>
+              </div>
+              <button type="button" class="btn-add-cart" data-add-id="bone-trucker-logo-preto">
+                🛒 Adicionar à Sacola
+              </button>
+            </div>
+          </article>
+
+          <!-- 6. CAMISETA LOCAL PRETA -->
+          <article class="product-card" data-category="camisetas local" data-product-id="camiseta-local-preta">
+            <div class="product-badge-bar">
+              <span class="badge-collection">✦ COLEÇÃO LOCAL</span>
+              <span class="badge-sub">PRETA</span>
+            </div>
+            <div class="product-media-wrap">
+              <img
+                src="assets/local_preta_costas.png"
+                data-front="assets/local_preta_frente.png"
+                data-back="assets/local_preta_costas.png"
+                data-showing="back"
+                alt="Camiseta Local Preta"
+                class="prod-img"
+                loading="lazy"
+              />
+              <div class="media-actions-bar">
+                <button type="button" class="media-pill-btn flip-btn">↻ Frente / Costas</button>
+                <button type="button" class="media-pill-btn zoom-btn">🔍 Ampliar</button>
+              </div>
+            </div>
+            <div class="product-info-wrap">
+              <div class="product-title-row">
+                <h2 class="product-card-title">Camiseta Local Preta</h2>
+                <div class="product-pricing-wrap">
+                  <span class="price-main">R$ 89,90</span>
+                  <span class="price-pix">R$ 85,41 no PIX</span>
+                </div>
+              </div>
+              <p class="product-summary">
+                Tipografia do Marco 1884 em contraste branco sobre o preto carvão profundo. Estilo e resistência na estrada.
+              </p>
+              <div class="size-selector-box">
+                <div class="size-label-row">
+                  <span>TAMANHO: <strong class="active-size-label">M</strong></span>
+                  <span class="stock-status">Em Estoque</span>
+                </div>
+                <div class="size-pill-row">
+                  <button type="button" class="size-btn" data-size="P">P</button>
+                  <button type="button" class="size-btn active" data-size="M">M</button>
+                  <button type="button" class="size-btn" data-size="G">G</button>
+                  <button type="button" class="size-btn" data-size="GG">GG</button>
+                  <button type="button" class="size-btn" data-size="XG">XG</button>
+                </div>
+              </div>
+              <button type="button" class="btn-add-cart" data-add-id="camiseta-local-preta">
+                🛒 Adicionar à Sacola
+              </button>
+            </div>
+          </article>
+
+          <!-- 7. LENÇO TERRAL AZUL -->
+          <article class="product-card" data-category="acessorios local" data-product-id="lenco-terral-azul">
+            <div class="product-badge-bar">
+              <span class="badge-collection">✦ BANDANA / LENÇO</span>
+              <span class="badge-sub">AZUL</span>
+            </div>
+            <div class="product-media-wrap">
+              <img
+                src="assets/lenco_azul.png"
+                data-front="assets/lenco_azul.png"
+                data-back="assets/lenco_azul.png"
+                data-showing="front"
+                alt="Lenço Terral Azul"
+                class="prod-img"
+                loading="lazy"
+              />
+              <div class="media-actions-bar">
+                <button type="button" class="media-pill-btn flip-btn">✦ Arte Exclusiva</button>
+                <button type="button" class="media-pill-btn zoom-btn">🔍 Ampliar</button>
+              </div>
+            </div>
+            <div class="product-info-wrap">
+              <div class="product-title-row">
+                <h2 class="product-card-title">Lenço Terral Azul</h2>
+                <div class="product-pricing-wrap">
+                  <span class="price-main">R$ 54,90</span>
+                  <span class="price-pix">R$ 52,16 no PIX</span>
+                </div>
+              </div>
+              <p class="product-summary">
+                Gravuras dos 4 símbolos: Sol, Mar, Rota e Sertão. Tecido leve e multiuso para proteção contra sol e poeira.
+              </p>
+              <div class="size-selector-box">
+                <div class="size-label-row">
+                  <span>TAMANHO: <strong class="active-size-label">ÚNICO</strong></span>
+                  <span class="stock-status">55 x 55 cm</span>
+                </div>
+                <div class="size-pill-row">
+                  <button type="button" class="size-btn active" data-size="UNICO">55 x 55 CM (ÚNICO)</button>
+                </div>
+              </div>
+              <button type="button" class="btn-add-cart" data-add-id="lenco-terral-azul">
+                🛒 Adicionar à Sacola
+              </button>
+            </div>
+          </article>
+
+          <!-- 8. LENÇO TERRAL OFF-WHITE -->
+          <article class="product-card" data-category="acessorios local" data-product-id="lenco-terral-off">
+            <div class="product-badge-bar">
+              <span class="badge-collection">✦ BANDANA / LENÇO</span>
+              <span class="badge-sub">OFF-WHITE</span>
+            </div>
+            <div class="product-media-wrap">
+              <img
+                src="assets/lenco_off.png"
+                data-front="assets/lenco_off.png"
+                data-back="assets/lenco_off.png"
+                data-showing="front"
+                alt="Lenço Terral Off-White"
+                class="prod-img"
+                loading="lazy"
+              />
+              <div class="media-actions-bar">
+                <button type="button" class="media-pill-btn flip-btn">✦ Arte Exclusiva</button>
+                <button type="button" class="media-pill-btn zoom-btn">🔍 Ampliar</button>
+              </div>
+            </div>
+            <div class="product-info-wrap">
+              <div class="product-title-row">
+                <h2 class="product-card-title">Lenço Terral Off-White</h2>
+                <div class="product-pricing-wrap">
+                  <span class="price-main">R$ 54,90</span>
+                  <span class="price-pix">R$ 52,16 no PIX</span>
+                </div>
+              </div>
+              <p class="product-summary">
+                A cor natural da matéria-prima com a cosmologia do vento terral cearense estampada em linhas finas.
+              </p>
+              <div class="size-selector-box">
+                <div class="size-label-row">
+                  <span>TAMANHO: <strong class="active-size-label">ÚNICO</strong></span>
+                  <span class="stock-status">55 x 55 cm</span>
+                </div>
+                <div class="size-pill-row">
+                  <button type="button" class="size-btn active" data-size="UNICO">55 x 55 CM (ÚNICO)</button>
+                </div>
+              </div>
+              <button type="button" class="btn-add-cart" data-add-id="lenco-terral-off">
+                🛒 Adicionar à Sacola
+              </button>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- FOOTER EDITORIAL INSPIRADO NA CUTTERMAN -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-col-title">Santa Máquina Custom Lifestyle</div>
+            <p style="font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 14px;">
+              Marca cearense independente de slow-fashion biker. Criamos peças duráveis com peso, história e respeito às raízes do Ceará.
+            </p>
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink);">
+              Oficina & Ateliê: Av. da Saudade, Fortaleza — CE
+            </div>
+          </div>
+          <div>
+            <div class="footer-col-title">História & Conceito</div>
+            <ul class="footer-links">
+              <li><button type="button" data-open-story="historia">1884 & Dragão do Mar</button></li>
+              <li><button type="button" data-open-story="oficina">Moto Véia na Rua</button></li>
+              <li><button type="button" data-open-story="simbolos">Os 4 Símbolos</button></li>
+              <li><button type="button" data-open-story="medidas">Guia de Medidas</button></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-col-title">Atendimento & Apoio</div>
+            <ul class="footer-links">
+              <li><a href="https://wa.me/5585999999999" target="_blank" rel="noopener">WhatsApp Direto</a></li>
+              <li><button type="button" data-open-story="envios">Política de Frete</button></li>
+              <li><button type="button" data-open-story="envios">Trocas & Devoluções</button></li>
+              <li><a href="erp.html">Painel ERP / Estoque</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-col-title">Garantia Santa Máquina</div>
+            <p style="font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 12px;">
+              Cada camiseta é inspecionada manualmente antes do despacho. Primeira troca gratuita em até 30 dias após o recebimento.
+            </p>
+            <div style="display: flex; gap: 8px;">
+              <span style="font-family: var(--font-mono); font-size: 0.7rem; background: #ffffff; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--line);">PIX 5% OFF</span>
+              <span style="font-family: var(--font-mono); font-size: 0.7rem; background: #ffffff; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--line);">ATÉ 6X SEM JUROS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+          <div>© 2019–2026 SANTA MÁQUINA INDÚSTRIA & VESTUÁRIO LTDA.</div>
+          <div>FORTALEZA, CEARÁ — BRASIL · 03°43'S 38°32'W</div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ==========================================================================
+       BARRA FLUTUANTE DE COMPRA NO MOBILE (STICKY ACTION BAR)
+       ========================================================================== -->
+  <aside class="mobile-floating-cart-bar" id="mobileStickyBar" aria-label="Resumo da Sacola">
+    <div class="floating-bar-left">
+      <span class="floating-bar-badge" id="mobileFloatingBadge">0</span>
+      <span class="floating-bar-label">Minha Sacola</span>
+    </div>
+    <div class="floating-bar-right">
+      <span class="floating-bar-total" id="mobileFloatingTotal">R$ 0,00</span>
+      <span class="floating-bar-btn-text">Ver Sacola →</span>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       MODAL DE HISTÓRIA EDITORIAL (ABERTO VIA BOTÕES / BOTTOM SHEET NO MOBILE)
+       ========================================================================== -->
+  <div class="story-modal-overlay" id="storyModal" role="dialog" aria-modal="true" aria-labelledby="modalStoryTitle">
+    <div class="story-modal-card">
+      <div class="modal-header-sticky">
+        <div class="modal-tab-bar" role="tablist">
+          <button type="button" class="modal-tab-btn active" data-tab="historia">1884</button>
+          <button type="button" class="modal-tab-btn" data-tab="oficina">Moto Véia</button>
+          <button type="button" class="modal-tab-btn" data-tab="simbolos">4 Símbolos</button>
+          <button type="button" class="modal-tab-btn" data-tab="medidas">Medidas</button>
+          <button type="button" class="modal-tab-btn" data-tab="envios">Envios</button>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeStoryModalBtn" aria-label="Fechar janela">✕</button>
+      </div>
+
+      <div class="modal-body-content">
+
+        <!-- ABA 1: 1884 & DRAGÃO DO MAR -->
+        <div class="story-pane active" id="pane-historia">
+          <div class="story-header-kicker">Capítulo 01 · A Abolição no Ceará</div>
+          <h2 class="story-title" id="modalStoryTitle">Terra da Luz & o Grito de <em>Chico da Matilde</em></h2>
+          <img src="assets/local_lifestyle.jpg" alt="Cultura Biker e Paisagem Cearense" class="story-image-feature" />
+          <div class="story-prose">
+            <p>
+              Mais do que uma camiseta, a linha <strong>LOCAL (1884)</strong> é um grito de liberdade estampado no peito e nas costas. Em 1881, <strong>Francisco José do Nascimento</strong> — o Dragão do Mar —, liderou os jangadeiros cearenses na recusa heroica de transportar pessoas escravizadas no Porto de Fortaleza: <em>“No porto do Ceará não se embarcam mais escravos”</em>.
+            </p>
+            <div class="quote-box">
+              “Em 25 de março de 1884, quatro anos antes da Lei Áurea, o Ceará tornava-se a primeira província brasileira a abolir a escravidão, sendo batizado por José do Patrocínio como a Terra da Luz.”
+            </div>
+            <p>
+              A Santa Máquina traz essa insurreição nas suas estampas como bússola moral: liberdade, honra, respeito e resistência ao asfalto conivente.
+            </p>
+          </div>
+        </div>
+
+        <!-- ABA 2: MOTO VÉIA NA RUA -->
+        <div class="story-pane" id="pane-oficina">
+          <div class="story-header-kicker">Capítulo 02 · Oficina & Camaradas</div>
+          <h2 class="story-title">“Moto Véia na Rua” & a <em>Cultura de Garagem</em></h2>
+          <img src="assets/netim_lifestyle.jpg" alt="Oficina Santa Máquina em Fortaleza" class="story-image-feature" />
+          <div class="story-prose">
+            <p>
+              Nascida em <strong>2019</strong> em Fortaleza, a Santa Máquina celebra o humor, o suor e a camaradagem de quem mantém as máquinas clássicas rodando. Não somos sobre vitrines estéreis ou motos intocadas guardadas em bolhas: somos sobre a chave de fenda gasta, o carburador regulado de ouvido e a gasolina na veia.
+            </p>
+            <div class="quote-box">
+              “Nossa oficina é ponto de encontro, café forte e histórias contadas ao lado de motores esfriando após centenas de quilômetros de sol forte.”
+            </div>
+            <p>
+              Cada peça nossa carrega essa textura: malha encorpada que aguenta sol, vento e graxa sem perder a forma.
+            </p>
+          </div>
+        </div>
+
+        <!-- ABA 3: OS 4 SÍMBOLOS -->
+        <div class="story-pane" id="pane-simbolos">
+          <div class="story-header-kicker">Capítulo 03 · Cosmologia Visual</div>
+          <h2 class="story-title">Os 4 Pontos Cardeais do <em>Terral Cearense</em></h2>
+          <img src="assets/lenco_azul.png" alt="Bandana Terral Santa Máquina" class="story-image-feature" style="object-fit: contain; background: var(--surface);" />
+          <div class="story-prose">
+            <p>
+              O <strong>Lenço Terral</strong> sintetiza a cosmologia visual da Santa Máquina. Ao redor do monograma <code>SM</code>, quatro gravuras marcam os pontos cardeais do viver cearense:
+            </p>
+            <ul style="margin: 14px 0 14px 20px; line-height: 1.7;">
+              <li><strong>O Sol:</strong> a luz implacável do Equador e a força do sertanejo.</li>
+              <li><strong>O Mar & a Vela:</strong> a bravura dos jangadeiros e a brisa do litoral.</li>
+              <li><strong>A Rota & a Pista:</strong> o traçado da estrada aberta, que convida a acelerar.</li>
+              <li><strong>O Sertão & a Máquina:</strong> o motor de combustão cruzando a caatinga viva.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ABA 4: GUIA DE MEDIDAS -->
+        <div class="story-pane" id="pane-medidas">
+          <div class="story-header-kicker">Modelagem & Caimento</div>
+          <h2 class="story-title">Guia de <em>Medidas Exatas</em></h2>
+          <p class="story-prose">
+            Nossas camisetas seguem o padrão clássico regular/levemente streetwear, confeccionadas em 100% algodão penteado pesado de 220g/m². Não encolhem na lavagem correta (água fria, secagem à sombra).
+          </p>
+          <div class="size-table-wrap">
+            <table class="size-table">
+              <thead>
+                <tr>
+                  <th>Tamanho</th>
+                  <th>Tórax</th>
+                  <th>Comprimento</th>
+                  <th>Manga</th>
+                  <th>Sugestão de Altura / Peso</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>P</strong></td>
+                  <td>52 cm</td>
+                  <td>72 cm</td>
+                  <td>22 cm</td>
+                  <td>1,65m – 1,73m · até 70 kg</td>
+                </tr>
+                <tr>
+                  <td><strong>M</strong></td>
+                  <td>55 cm</td>
+                  <td>74 cm</td>
+                  <td>23 cm</td>
+                  <td>1,72m – 1,80m · 70 a 82 kg</td>
+                </tr>
+                <tr>
+                  <td><strong>G</strong></td>
+                  <td>58 cm</td>
+                  <td>76 cm</td>
+                  <td>24 cm</td>
+                  <td>1,78m – 1,86m · 80 a 92 kg</td>
+                </tr>
+                <tr>
+                  <td><strong>GG</strong></td>
+                  <td>61 cm</td>
+                  <td>79 cm</td>
+                  <td>25 cm</td>
+                  <td>1,82m – 1,92m · 90 a 105 kg</td>
+                </tr>
+                <tr>
+                  <td><strong>XG</strong></td>
+                  <td>64 cm</td>
+                  <td>82 cm</td>
+                  <td>26 cm</td>
+                  <td>1,85m+ · acima de 105 kg</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ABA 5: ENVIOS & TROCAS -->
+        <div class="story-pane" id="pane-envios">
+          <div class="story-header-kicker">Segurança & Prazos</div>
+          <h2 class="story-title">Política de <em>Envios & Trocas</em></h2>
+          <div class="story-prose">
+            <p>
+              <strong>Envio Ágil:</strong> Pedidos com pagamento aprovado até as 13h são postados no mesmo dia útil diretamente de Fortaleza para qualquer lugar do Brasil via Correios ou Jadlog.
+            </p>
+            <p>
+              <strong>Primeira Troca sem Custo:</strong> Caso o tamanho não fique perfeito, nós cobrimos os custos de frete da primeira troca em até 30 dias corridos após o recebimento.
+            </p>
+            <p>
+              <strong>Atendimento Humanizado:</strong> Fale com nossos fundadores e mecânicos diretamente pelo WhatsApp comercial.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       CART DRAWER (SACOLA DE COMPRAS LATERAL / FULL NO MOBILE)
+       ========================================================================== -->
+  <div class="cart-drawer-backdrop" id="cartDrawerBackdrop">
+    <aside class="cart-drawer-panel" id="cartDrawerPanel" role="dialog" aria-modal="true" aria-labelledby="cartDrawerTitle">
+      <div class="cart-drawer-header">
+        <h2 class="cart-drawer-title" id="cartDrawerTitle">Sua Sacola (<span id="cartTotalItems">0</span>)</h2>
+        <button type="button" class="modal-close-btn" id="closeCartBtn" aria-label="Fechar sacola">✕</button>
+      </div>
+
+      <!-- Barra de Frete Grátis -->
+      <div class="shipping-bar-box">
+        <div class="shipping-bar-text">
+          <span id="shippingGoalLabel">Faltam R$ 250,00 para Frete Grátis</span>
+          <span id="shippingGoalPercent">0%</span>
+        </div>
+        <div class="shipping-progress-track">
+          <div class="shipping-progress-fill" id="shippingProgressFill"></div>
+        </div>
+      </div>
+
+      <!-- Lista de Itens -->
+      <div class="cart-drawer-body">
+        <div class="cart-items-list" id="cartItemsList">
+          <div class="cart-empty-message">
+            <p style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; color: var(--ink);">Sua sacola está vazia</p>
+            <p style="font-size: 0.85rem;">Escolha uma peça do showroom para começar.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rodapé da Sacola com Totais e Botões de Compra -->
+      <div class="cart-drawer-footer">
+        <div class="cart-totals-row">
+          <span>Subtotal</span>
+          <span id="cartSubtotalValue">R$ 0,00</span>
+        </div>
+        <div class="cart-totals-row">
+          <span>Desconto PIX (5% OFF)</span>
+          <span id="cartPixDiscountValue">- R$ 0,00</span>
+        </div>
+        <div class="cart-totals-row total-bold">
+          <span>Total</span>
+          <span id="cartTotalValue">R$ 0,00</span>
+        </div>
+        <div class="pix-discount-note" id="cartPixNote">
+          ✦ Economize no PIX: Total de R$ 0,00 à vista
+        </div>
+
+        <button type="button" class="checkout-btn-whatsapp" id="checkoutWhatsappBtn">
+          💬 Finalizar Pedido no WhatsApp
+        </button>
+        <button type="button" class="checkout-btn-pix" id="checkoutPixBtn">
+          ⚡ Pagar com PIX Direto (5% OFF)
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- LIGHTBOX DE AMPLIAÇÃO / ZOOM -->
+  <div class="lightbox-modal" id="lightboxModal">
+    <div class="lightbox-card">
+      <div class="lightbox-img-wrap">
+        <img id="lightboxImg" src="" alt="Ampliação do Produto" />
+      </div>
+      <div class="lightbox-footer">
+        <div>
+          <h3 id="lightboxTitle" style="font-family: var(--font-display); font-size: 1.25rem;">PRODUTO</h3>
+          <span id="lightboxPrice" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); font-weight: 700;">R$ 89,90</span>
+        </div>
+        <button type="button" class="modal-close-btn" id="closeLightboxBtn">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST DE NOTIFICAÇÃO -->
+  <div class="toast-notice" id="toastNotice">
+    <span>✓ Peça adicionada à sacola!</span>
+  </div>
+
+  <!-- SCRIPTS ESSENCIAIS: SINCRONIZAÇÃO ERP + CARRINHO + INTERAÇÃO TOTAL -->
+  <script src="santa-maquina-core.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Acesso ao Core Engine da Santa Máquina
+      const SMC = window.SMCore || {};
+      const formatBRL = SMC.formatBRL || function (val) {
+        return 'R$ ' + Number(val || 0).toFixed(2).replace('.', ',');
+      };
+
+      // Estado de seleção de tamanho por produto
+      const selectedSizesByProduct = {};
+
+      // 2. Elementos Globais
+      const toastEl = document.getElementById('toastNotice');
+      let toastTimer = null;
+      function showToast(msg) {
+        if (!toastEl) return;
+        toastEl.innerHTML = '<span>' + msg + '</span>';
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, 3000);
+      }
+
+      // Gaveta da Sacola (Cart Drawer)
+      const cartBackdrop = document.getElementById('cartDrawerBackdrop');
+      function openCartDrawer() {
+        if (cartBackdrop) cartBackdrop.classList.add('open');
+      }
+      function closeCartDrawer() {
+        if (cartBackdrop) cartBackdrop.classList.remove('open');
+      }
+
+      // Modal de Histórias
+      const storyModal = document.getElementById('storyModal');
+      function openStoryTab(tabName) {
+        if (!storyModal) return;
+        switchStoryTab(tabName);
+        storyModal.classList.add('open');
+      }
+      function closeStoryModal() {
+        if (!storyModal) return;
+        storyModal.classList.remove('open');
+      }
+      function switchStoryTab(tabName) {
+        if (!storyModal) return;
+        storyModal.querySelectorAll('.modal-tab-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+        });
+        storyModal.querySelectorAll('.story-pane').forEach(pane => {
+          pane.classList.toggle('active', pane.id === 'pane-' + tabName);
+        });
+      }
+
+      // 3. SINCRONIZAÇÃO EM TEMPO REAL COM O ERP (PEÇAS E TAMANHOS ZERADOS NÃO APARECEM)
+      function applyFiltersAndStockVisibility() {
+        const activeTab = document.querySelector('.cat-tab-btn.active');
+        const filter = activeTab ? activeTab.getAttribute('data-filter') : 'all';
+
+        const cards = document.querySelectorAll('#productGrid .product-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+          const isOutOfStock = card.getAttribute('data-out-of-stock') === 'true';
+          const cats = card.getAttribute('data-category') || '';
+          const matchesCategory = (filter === 'all' || cats.includes(filter));
+
+          // REGRA: Se a peça estiver com estoque total zerado no ERP, NÃO APARECE NO SITE!
+          if (isOutOfStock || !matchesCategory) {
+            card.style.display = 'none';
+          } else {
+            card.style.display = 'flex';
+            visibleCount++;
+          }
+        });
+
+        const countLabel = document.getElementById('productCountLabel');
+        if (countLabel) {
+          countLabel.textContent = visibleCount + ' peças disponíveis no estoque';
+        }
+      }
+
+      function syncShowroomWithERP() {
+        if (!SMC.loadERPState) return;
+        const state = SMC.loadERPState();
+        if (!state || !state.products) return;
+
+        const cards = document.querySelectorAll('#productGrid .product-card');
+        cards.forEach(card => {
+          const productId = card.getAttribute('data-product-id');
+          const product = state.products.find(p => p.id === productId);
+          if (!product) return;
+
+          // Calcula estoque total da peça
+          const totalStock = Object.values(product.sizes || {}).reduce((acc, qty) => acc + Number(qty || 0), 0);
+
+          // REGRA EXPLÍCITA: Se o estoque da peça estiver totalmente zerado no ERP, ela NÃO APARECE NO SITE!
+          if (totalStock <= 0) {
+            card.setAttribute('data-out-of-stock', 'true');
+            card.style.display = 'none';
+            return;
+          } else {
+            card.removeAttribute('data-out-of-stock');
+          }
+
+          // Filtra apenas os tamanhos que REALMENTE têm estoque > 0
+          const availableSizes = Object.entries(product.sizes || {}).filter(([sz, qty]) => Number(qty) > 0);
+
+          // Se o tamanho atualmente selecionado estiver zerado ou não definido, seleciona o primeiro com estoque
+          let currentSize = selectedSizesByProduct[productId];
+          const currentSizeStock = currentSize ? Number(product.sizes[currentSize] || 0) : 0;
+
+          if (!currentSize || currentSizeStock <= 0) {
+            if (availableSizes.length > 0) {
+              currentSize = availableSizes[0][0];
+              selectedSizesByProduct[productId] = currentSize;
+            } else {
+              currentSize = null;
+            }
+          }
+
+          const stockOfChosen = currentSize ? Number(product.sizes[currentSize] || 0) : 0;
+
+          // Atualiza o rótulo de tamanho e status de estoque no card
+          const labelEl = card.querySelector('.active-size-label');
+          if (labelEl) {
+            labelEl.textContent = currentSize === 'UNICO' ? 'ÚNICO' : (currentSize || 'ESGOTADO');
+          }
+
+          const statusEl = card.querySelector('.stock-status');
+          if (statusEl) {
+            if (stockOfChosen <= 0) {
+              statusEl.className = 'stock-status sold-out';
+              statusEl.textContent = 'ESGOTADO';
+            } else if (stockOfChosen <= 3) {
+              statusEl.className = 'stock-status low-stock';
+              statusEl.textContent = '🔥 Restam só ' + stockOfChosen + ' un.';
+            } else {
+              statusEl.className = 'stock-status';
+              statusEl.textContent = '● ' + stockOfChosen + ' un. disponíveis';
+            }
+          }
+
+          // REGRA EXPLÍCITA: TAMANHO COM ESTOQUE ZERADO NÃO APARECE NO SITE!
+          const sizeButtons = card.querySelectorAll('.size-btn');
+          sizeButtons.forEach(btn => {
+            const sz = btn.getAttribute('data-size');
+            const qty = Number(product.sizes[sz] || 0);
+
+            if (qty <= 0) {
+              // ESTOQUE ZERADO: OCULTA O BOTÃO (NÃO APARECE NO SITE)
+              btn.style.display = 'none';
+              btn.classList.remove('active');
+              btn.setAttribute('disabled', 'disabled');
+            } else {
+              // TEM ESTOQUE: EXIBE NORMALMENTE
+              btn.style.display = 'inline-flex';
+              btn.removeAttribute('disabled');
+              btn.setAttribute('title', qty + ' un. em estoque');
+              if (sz === currentSize) {
+                btn.classList.add('active');
+              } else {
+                btn.classList.remove('active');
+              }
+            }
+          });
+
+          // Atualiza o Botão Adicionar à Sacola
+          const addBtn = card.querySelector('.btn-add-cart');
+          if (addBtn) {
+            if (!currentSize || stockOfChosen <= 0) {
+              addBtn.setAttribute('disabled', 'disabled');
+              addBtn.innerHTML = '✕ Tamanho Esgotado';
+            } else {
+              addBtn.removeAttribute('disabled');
+              addBtn.innerHTML = '🛒 Adicionar à Sacola (' + (currentSize === 'UNICO' ? 'Único' : currentSize) + ')';
+            }
+          }
+        });
+
+        applyFiltersAndStockVisibility();
+      }
+
+      // 4. ATUALIZAÇÃO DA SACOLA (CART DRAWER) VIA SMCore
+      function updateCartUI() {
+        if (!SMC.calculateCartSummary) return;
+
+        const summary = SMC.calculateCartSummary('PIX');
+        const totalItems = summary.totalItems || 0;
+        const subtotal = summary.subtotal || 0;
+        const pixDiscount = summary.pixDiscount || 0;
+        const totalWithPix = summary.pixTotal || (subtotal - pixDiscount);
+
+        // Badges no Header e Gaveta
+        const headerCount = document.getElementById('headerCartCount');
+        if (headerCount) headerCount.textContent = totalItems;
+
+        const drawerCount = document.getElementById('cartTotalItems');
+        if (drawerCount) drawerCount.textContent = totalItems;
+
+        // Barra Flutuante Mobile
+        const floatingBar = document.getElementById('mobileStickyBar');
+        const floatBadge = document.getElementById('mobileFloatingBadge');
+        const floatTotal = document.getElementById('mobileFloatingTotal');
+        if (floatBadge) floatBadge.textContent = totalItems;
+        if (floatTotal) floatTotal.textContent = formatBRL(subtotal);
+        if (floatingBar) {
+          floatingBar.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+
+        // Totais na Gaveta
+        const subtotalEl = document.getElementById('cartSubtotalValue');
+        if (subtotalEl) subtotalEl.textContent = formatBRL(subtotal);
+
+        const pixDiscountEl = document.getElementById('cartPixDiscountValue');
+        if (pixDiscountEl) pixDiscountEl.textContent = '- ' + formatBRL(pixDiscount);
+
+        const totalEl = document.getElementById('cartTotalValue');
+        if (totalEl) totalEl.textContent = formatBRL(subtotal);
+
+        const pixNoteEl = document.getElementById('cartPixNote');
+        if (pixNoteEl) {
+          pixNoteEl.textContent = '✦ Economize no PIX: Total de ' + formatBRL(totalWithPix) + ' à vista';
+        }
+
+        // Barra de Frete Grátis (Meta: freeShippingThreshold do ERP)
+        const freeGoal = summary.freeShippingThreshold || 250;
+        const missing = summary.missingForFreeShipping || Math.max(0, freeGoal - subtotal);
+        const pct = Math.min(100, Math.round((subtotal / freeGoal) * 100));
+
+        const shippingLabel = document.getElementById('shippingGoalLabel');
+        const shippingPct = document.getElementById('shippingGoalPercent');
+        const shippingFill = document.getElementById('shippingProgressFill');
+
+        if (shippingLabel && shippingPct && shippingFill) {
+          if (missing <= 0 && subtotal > 0) {
+            shippingLabel.innerHTML = '🎉 <strong>PARABÉNS! VOCÊ GANHOU FRETE GRÁTIS!</strong>';
+            shippingPct.textContent = '100%';
+            shippingFill.style.width = '100%';
+            shippingFill.style.backgroundColor = 'var(--success)';
+          } else {
+            shippingLabel.textContent = 'Faltam ' + formatBRL(missing) + ' para Frete Grátis';
+            shippingPct.textContent = pct + '%';
+            shippingFill.style.width = pct + '%';
+            shippingFill.style.backgroundColor = 'var(--accent)';
+          }
+        }
+
+        // Renderiza Lista de Itens na Gaveta
+        const listEl = document.getElementById('cartItemsList');
+        if (!listEl) return;
+
+        if (!summary.items || summary.items.length === 0) {
+          listEl.innerHTML = `
+            <div class="cart-empty-message">
+              <p style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; color: var(--ink);">Sua sacola está vazia</p>
+              <p style="font-size: 0.85rem;">Escolha uma peça do showroom para começar.</p>
+            </div>
+          `;
+          return;
+        }
+
+        let html = '';
+        summary.items.forEach(item => {
+          html += `
+            <div class="cart-item-row" data-pid="${item.productId}" data-psz="${item.size}">
+              <img src="${item.img || 'assets/logo_selo_offroad.jpg'}" alt="${item.title}" class="cart-item-thumb" />
+              <div class="cart-item-details">
+                <div>
+                  <h3 class="cart-item-title">${item.title}</h3>
+                  <div class="cart-item-meta">TAMANHO: <strong>${item.size === 'UNICO' ? 'ÚNICO' : item.size}</strong> · SKU: ${item.sku || 'SM'}</div>
+                </div>
+                <div class="cart-item-controls">
+                  <div class="qty-stepper">
+                    <button type="button" class="qty-btn" data-cart-delta="-1" data-pid="${item.productId}" data-psz="${item.size}">-</button>
+                    <span class="qty-val">${item.qty}</span>
+                    <button type="button" class="qty-btn" data-cart-delta="1" data-pid="${item.productId}" data-psz="${item.size}">+</button>
+                  </div>
+                  <span class="cart-item-price">${formatBRL(item.lineTotal)}</span>
+                  <button type="button" class="item-remove-btn" data-cart-remove data-pid="${item.productId}" data-psz="${item.size}">Remover</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        listEl.innerHTML = html;
+      }
+
+      // 5. DELEGAÇÃO DE EVENTOS DE CLIQUE NA PÁGINA
+      document.addEventListener('click', function (e) {
+        // Abrir Sacola
+        if (e.target.closest('#openCartBtn') || e.target.closest('#mobileStickyBar')) {
+          e.preventDefault();
+          openCartDrawer();
+          return;
+        }
+
+        // Fechar Sacola
+        if (e.target.closest('#closeCartBtn') || e.target === cartBackdrop) {
+          e.preventDefault();
+          closeCartDrawer();
+          return;
+        }
+
+        // Alterar Quantidade na Sacola (+ / -)
+        const deltaBtn = e.target.closest('[data-cart-delta]');
+        if (deltaBtn) {
+          e.preventDefault();
+          const pid = deltaBtn.getAttribute('data-pid');
+          const psz = deltaBtn.getAttribute('data-psz');
+          const delta = parseInt(deltaBtn.getAttribute('data-cart-delta'), 10);
+          if (SMC.updateCartItemQty) {
+            const res = SMC.updateCartItemQty(pid, psz, delta);
+            if (!res.ok && res.message) showToast(res.message);
+            updateCartUI();
+            syncShowroomWithERP();
+          }
+          return;
+        }
+
+        // Remover Item da Sacola
+        const removeBtn = e.target.closest('[data-cart-remove]');
+        if (removeBtn) {
+          e.preventDefault();
+          const pid = removeBtn.getAttribute('data-pid');
+          const psz = removeBtn.getAttribute('data-psz');
+          if (SMC.updateCartItemQty) {
+            SMC.updateCartItemQty(pid, psz, -999);
+            updateCartUI();
+            syncShowroomWithERP();
+          }
+          return;
+        }
+
+        // Seleção de Tamanho no Card de Produto
+        const sizeBtn = e.target.closest('.size-btn');
+        if (sizeBtn) {
+          e.preventDefault();
+          if (sizeBtn.disabled || sizeBtn.classList.contains('disabled')) {
+            showToast('Este tamanho está esgotado no momento.');
+            return;
+          }
+          const card = sizeBtn.closest('.product-card');
+          if (card) {
+            const productId = card.getAttribute('data-product-id');
+            const chosenSize = sizeBtn.getAttribute('data-size') || 'M';
+            selectedSizesByProduct[productId] = chosenSize;
+            syncShowroomWithERP();
+          }
+          return;
+        }
+
+        // BOTÃO ADICIONAR À SACOLA (TOTALMENTE INTEGRADO AO ERP)
+        const addBtn = e.target.closest('.btn-add-cart');
+        if (addBtn) {
+          e.preventDefault();
+          if (addBtn.disabled) return;
+
+          const card = addBtn.closest('.product-card');
+          const productId = addBtn.getAttribute('data-add-id') || (card && card.getAttribute('data-product-id'));
+          const chosenSize = selectedSizesByProduct[productId] || 'M';
+
+          if (SMC.addToCart) {
+            const res = SMC.addToCart(productId, chosenSize, 1);
+            if (!res.ok) {
+              showToast(res.message || 'Estoque insuficiente para este tamanho.');
+              syncShowroomWithERP();
+              return;
+            }
+
+            // Sucesso na adição
+            showToast('✓ ' + (res.product ? res.product.title : 'Peça') + ' (' + chosenSize + ') adicionada à sacola!');
+            syncShowroomWithERP();
+            updateCartUI();
+            openCartDrawer();
+
+            // Animação temporária no botão
+            const origHtml = addBtn.innerHTML;
+            addBtn.classList.add('added');
+            addBtn.innerHTML = '✓ ADICIONADO!';
+            setTimeout(() => {
+              addBtn.classList.remove('added');
+              addBtn.innerHTML = origHtml;
+            }, 1200);
+
+            if (navigator.vibrate) {
+              try { navigator.vibrate(40); } catch (err) {}
+            }
+          }
+          return;
+        }
+
+        // Troca Frente / Costas
+        const flipBtn = e.target.closest('.flip-btn');
+        if (flipBtn) {
+          e.preventDefault();
+          const card = flipBtn.closest('.product-card');
+          if (card) {
+            const img = card.querySelector('.prod-img');
+            if (img) {
+              const front = img.getAttribute('data-front');
+              const back = img.getAttribute('data-back');
+              const currentShowing = img.getAttribute('data-showing') || 'back';
+
+              if (currentShowing === 'back' && front) {
+                img.src = front;
+                img.setAttribute('data-showing', 'front');
+              } else if (back) {
+                img.src = back;
+                img.setAttribute('data-showing', 'back');
+              }
+            }
+          }
+          return;
+        }
+
+        // Zoom / Lightbox
+        const zoomBtn = e.target.closest('.zoom-btn');
+        if (zoomBtn) {
+          e.preventDefault();
+          const card = zoomBtn.closest('.product-card');
+          if (card) {
+            const img = card.querySelector('.prod-img');
+            const title = card.querySelector('.product-card-title');
+            const price = card.querySelector('.price-main');
+
+            const lbModal = document.getElementById('lightboxModal');
+            const lbImg = document.getElementById('lightboxImg');
+            const lbTitle = document.getElementById('lightboxTitle');
+            const lbPrice = document.getElementById('lightboxPrice');
+
+            if (lbModal && lbImg && img) {
+              lbImg.src = img.src;
+              if (lbTitle && title) lbTitle.textContent = title.textContent;
+              if (lbPrice && price) lbPrice.textContent = price.textContent;
+              lbModal.classList.add('open');
+            }
+          }
+          return;
+        }
+
+        // Fechar Lightbox
+        if (e.target.closest('#closeLightboxBtn') || e.target.id === 'lightboxModal') {
+          const lbModal = document.getElementById('lightboxModal');
+          if (lbModal) lbModal.classList.remove('open');
+          return;
+        }
+
+        // Abrir Modal de Histórias / Medidas
+        const storyBtn = e.target.closest('[data-open-story]');
+        if (storyBtn) {
+          e.preventDefault();
+          openStoryTab(storyBtn.getAttribute('data-open-story'));
+          return;
+        }
+
+        // Fechar Modal de Histórias
+        if (e.target.closest('#closeStoryModalBtn') || e.target.id === 'storyModal') {
+          e.preventDefault();
+          closeStoryModal();
+          return;
+        }
+
+        // Troca de Abas dentro do Modal de Histórias
+        const modalTabBtn = e.target.closest('.modal-tab-btn');
+        if (modalTabBtn) {
+          e.preventDefault();
+          switchStoryTab(modalTabBtn.getAttribute('data-tab'));
+          return;
+        }
+
+        // Filtros de Categoria
+        const filterBtn = e.target.closest('.cat-tab-btn');
+        if (filterBtn) {
+          e.preventDefault();
+          document.querySelectorAll('.cat-tab-btn').forEach(b => b.classList.remove('active'));
+          filterBtn.classList.add('active');
+          applyFiltersAndStockVisibility();
+          return;
+        }
+
+        // Toggle de Visualização de Grade no Mobile
+        if (e.target.closest('#view1ColBtn')) {
+          e.preventDefault();
+          document.getElementById('view1ColBtn').classList.add('active');
+          document.getElementById('view2ColBtn').classList.remove('active');
+          document.getElementById('productGrid').classList.remove('view-2-col');
+          return;
+        }
+
+        if (e.target.closest('#view2ColBtn')) {
+          e.preventDefault();
+          document.getElementById('view2ColBtn').classList.add('active');
+          document.getElementById('view1ColBtn').classList.remove('active');
+          document.getElementById('productGrid').classList.add('view-2-col');
+          return;
+        }
+
+        // Finalizar Pedido no WhatsApp
+        if (e.target.closest('#checkoutWhatsappBtn')) {
+          e.preventDefault();
+          const summary = SMC.calculateCartSummary ? SMC.calculateCartSummary('PIX') : null;
+          if (!summary || !summary.items || summary.items.length === 0) {
+            alert('Sua sacola está vazia! Adicione uma peça antes de finalizar.');
+            return;
+          }
+
+          let msg = '🏍 *PEDIDO OFICIAL — SANTA MÁQUINA*\n\n';
+          summary.items.forEach(it => {
+            msg += '• ' + it.qty + 'x ' + it.title + ' (' + (it.size === 'UNICO' ? 'Único' : it.size) + ') — ' + formatBRL(it.lineTotal) + '\n';
+          });
+          msg += '\n*Subtotal:* ' + formatBRL(summary.subtotal);
+          msg += '\n*Total no PIX (5% OFF):* ' + formatBRL(summary.pixTotal || (summary.subtotal - summary.pixDiscount));
+          msg += '\n\n*Dados de Envio:*\nNome Completo:\nEndereço / CEP:\nForma de Pagamento (PIX ou Cartão):';
+
+          const waUrl = 'https://wa.me/5585999999999?text=' + encodeURIComponent(msg);
+          window.open(waUrl, '_blank');
+          return;
+        }
+
+        // Pagamento PIX Direto
+        if (e.target.closest('#checkoutPixBtn')) {
+          e.preventDefault();
+          const summary = SMC.calculateCartSummary ? SMC.calculateCartSummary('PIX') : null;
+          if (!summary || !summary.items || summary.items.length === 0) {
+            alert('Sua sacola está vazia!');
+            return;
+          }
+          const pixTotal = summary.pixTotal || (summary.subtotal - summary.pixDiscount);
+          const pixKey = 'financeiro@santamaquinaloja.com.br';
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(pixKey).then(() => {
+              alert('Chave PIX copiada com sucesso!\n\nChave: ' + pixKey + '\nValor com 5% de Desconto: ' + formatBRL(pixTotal) + '\n\nEnvie o comprovante pelo WhatsApp com o seu pedido.');
+            }).catch(() => {
+              alert('Chave PIX: ' + pixKey + '\nValor com 5% de Desconto: ' + formatBRL(pixTotal));
+            });
+          } else {
+            alert('Chave PIX: ' + pixKey + '\nValor com 5% de Desconto: ' + formatBRL(pixTotal));
+          }
+          return;
+        }
+      });
+
+      // Fechar Modais com Tecla ESC
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          closeCartDrawer();
+          closeStoryModal();
+          const lb = document.getElementById('lightboxModal');
+          if (lb) lb.classList.remove('open');
+        }
+      });
+
+      // 6. INICIALIZAÇÃO & INSCRIÇÃO EM ATUALIZAÇÕES DO ERP EM TEMPO REAL
+      syncShowroomWithERP();
+      updateCartUI();
+
+      // Quando o ERP em outra aba (ou na mesma) atualizar o estoque
+      if (SMC.subscribeToERPUpdates) {
+        SMC.subscribeToERPUpdates(function () {
+          syncShowroomWithERP();
+          updateCartUI();
+        });
+      }
+
+      window.addEventListener('storage', function (e) {
+        if (e.key === 'sm_erp_state' || e.key === 'sm_cart') {
+          syncShowroomWithERP();
+          updateCartUI();
+        }
+      });
+
+      window.addEventListener('load', function () {
+        syncShowroomWithERP();
+        updateCartUI();
+      });
+
+    })();
+  </script>
+
+</body>
+</html>
